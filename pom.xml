@@ -113,7 +113,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.stannis.Main</mainClass>
+                                    <mainClass>com.com.stannis.Main</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
