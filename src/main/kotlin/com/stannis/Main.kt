@@ -1,5 +1,6 @@
 package com.stannis
 
+import com.stannis.dataModel.dataType
 import com.stannis.parser.reader.Parser
 import com.stannis.parser.reader.Reader
 
@@ -9,4 +10,6 @@ fun main(args: Array<String>) {
 //    println(data)
     val parser: Parser = Parser()
     parser.test()
+    println("DAWDSa")
+    dataType.printData()
 }
