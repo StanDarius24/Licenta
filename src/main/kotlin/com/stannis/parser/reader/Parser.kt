@@ -10,9 +10,10 @@ import org.eclipse.cdt.core.parser.*
 class Parser {
     fun test() {
         val reader = Reader()
-        //val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\main.cpp")
+        val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\cfiles\\exemplu.c")
         //val data = reader.readFileAsLinesUsingBufferedReader("/home/stan/Desktop/Licenta/src/main/resources/cfiles/exemplu.c")
-        val data = reader.readFileAsLinesUsingBufferedReader("/home/stan/Desktop/Licenta/src/test/kotlin/com/stannis/c/test1.c")
+//        val data = reader.readFileAsLinesUsingBufferedReader("/home/stan/Desktop/Licenta/src/test/kotlin/com/stannis/c/test1.c")
+//        val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\test\\kotlin\\com\\stannis\\c\\test1.c")
         val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
         val astVisitorOverride = ASTVisitorOverride()

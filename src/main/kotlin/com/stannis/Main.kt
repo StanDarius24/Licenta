@@ -1,7 +1,6 @@
 package com.stannis
 
-import com.stannis.dataModel.DataType
-import com.stannis.json.JsonBuilder
+import com.stannis.dataModel.Declaration
 import com.stannis.parser.reader.Parser
 
 fun main() {
@@ -10,7 +9,8 @@ fun main() {
 //    println(data)
     val parser = Parser()
     parser.test()
-    println("DAWDSa")
+//    println("DAWDSa")
 //    DataType.printData()
+
 
 }

@@ -1,15 +1,20 @@
 package com.stannis.parser.reader.visitor
 
-import com.stannis.dataModel.DataType
 import org.eclipse.cdt.core.dom.ast.*
+import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 
 class ASTVisitorOverride: ASTVisitor() {
 
+    override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
+        println("Found a ICPPASTClassVirtSpecifier" + classVirtSpecifier?.rawSignature)
+        return PROCESS_CONTINUE
+    }
+
     override fun visit(declaration: IASTDeclaration): Int {
         println("Found a declaration: " + declaration.rawSignature)
-        DataType.add(declaration.rawSignature)
         return PROCESS_CONTINUE
     }
 
@@ -25,6 +30,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(name: IASTName): Int {
         println("Found a IASTName: " + name.rawSignature)
+
         return PROCESS_CONTINUE
     }
 
@@ -35,11 +41,13 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declarator: IASTDeclarator): Int {
         println("Found an IASTDeclarator " + declarator.rawSignature)
+
         return PROCESS_CONTINUE
     }
 
     override fun visit(declarSpec: IASTDeclSpecifier): Int {
         println("Found an IASTDeclSpecifier: " + declarSpec.rawSignature)
+
         return PROCESS_CONTINUE
     }
 
@@ -83,7 +91,7 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    override fun visit(iastEnumerator: IASTEnumerationSpecifier.IASTEnumerator): Int {
+    override fun visit(iastEnumerator: IASTEnumerator): Int {
         println("Found an IASTTypeId: " + iastEnumerator.rawSignature)
         return PROCESS_CONTINUE
     }
@@ -93,7 +101,7 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    override fun visit(icppastBaseSpecifier: ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier): Int {
+    override fun visit(icppastBaseSpecifier: ICPPASTBaseSpecifier): Int {
         println("Found an IASTTypeId: " + icppastBaseSpecifier.rawSignature)
         return PROCESS_CONTINUE
     }

@@ -1,5 +1,3 @@
-#include<stdio.h>
-
 int power(int b, int e)
 {
     if(e == 0)
@@ -8,17 +6,9 @@ int power(int b, int e)
     return (b*power(b, e-1));
 }
 
-int main()
-{
-    printf("\n\n\t\tStudytonight - Best place to learn\n\n\n");
-    int base, exp;
-    float b;
-    printf("Enter base number: ");
-    scanf("%d", &base);
-    printf("\n\nEnter Power factor: ");
-    scanf("%d", &exp);
-    printf("\n\n\n\t\t\t%d^%d = %d", base, exp, power(base, exp));
-    printf("\n\n\t\t\tCoding is Fun !\n\n\n");
-    return 0;
+void print(struct Person *p) {
+	while(p!=NULL) {
+		printf("name:%s,  age:%d, street:%s\n",p->name, p->age, p->street);
+		p=p->urm;
+	}
 }
-
