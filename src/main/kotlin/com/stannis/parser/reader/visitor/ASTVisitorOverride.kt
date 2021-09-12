@@ -1,7 +1,6 @@
 package com.stannis.parser.reader.visitor
 
-import com.stannis.dataModel.dataType
-import jdk.dynalink.beans.StaticClass
+import com.stannis.dataModel.DataType
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
@@ -10,6 +9,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declaration: IASTDeclaration): Int {
         println("Found a declaration: " + declaration.rawSignature)
+        DataType.add(declaration.rawSignature)
         return PROCESS_CONTINUE
     }
 
@@ -40,7 +40,6 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declarSpec: IASTDeclSpecifier): Int {
         println("Found an IASTDeclSpecifier: " + declarSpec.rawSignature)
-        dataType.add(declarSpec.rawSignature)
         return PROCESS_CONTINUE
     }
 

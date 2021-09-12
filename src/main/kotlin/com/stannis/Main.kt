@@ -1,15 +1,16 @@
 package com.stannis
 
-import com.stannis.dataModel.dataType
+import com.stannis.dataModel.DataType
+import com.stannis.json.JsonBuilder
 import com.stannis.parser.reader.Parser
-import com.stannis.parser.reader.Reader
 
-fun main(args: Array<String>) {
+fun main() {
 //    val reader = Reader()
 //    val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\main.cpp")
 //    println(data)
-    val parser: Parser = Parser()
+    val parser = Parser()
     parser.test()
     println("DAWDSa")
-    dataType.printData()
+//    DataType.printData()
+
 }

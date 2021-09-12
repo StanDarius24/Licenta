@@ -12,6 +12,7 @@ int main()
 {
     printf("\n\n\t\tStudytonight - Best place to learn\n\n\n");
     int base, exp;
+    float b;
     printf("Enter base number: ");
     scanf("%d", &base);
     printf("\n\nEnter Power factor: ");
