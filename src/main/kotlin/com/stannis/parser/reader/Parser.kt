@@ -46,9 +46,6 @@ class Parser {
         astVisitorOverride.shouldVisitImplicitNameAlternates = true
         astVisitorOverride.shouldVisitImplicitDestructorNames = true
         translationUnit.accept(astVisitorOverride)
-        println()
-        println()
-        println(astVisitorOverride.getUnit())
     }
 
 

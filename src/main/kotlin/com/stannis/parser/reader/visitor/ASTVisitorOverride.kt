@@ -1,31 +1,13 @@
 package com.stannis.parser.reader.visitor
 
-import com.stannis.dataModel.Declaration
-import com.stannis.dataModel.Method
-import com.stannis.services.forDataModel.DeclarationService
-import com.stannis.services.forDataModel.MethodService
-import com.stannis.services.forDataModel.StatementService
-import com.stannis.services.forDataModel.UnitService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
-import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
-
-    private var unit = UnitService()
-    private var method = MethodService()
-    private var statement = StatementService()
-    private var declaration = DeclarationService()
-
-    private var declarationParameter = false
-
-    fun getUnit(): ArrayList<Method> {
-        return unit.getUnit()
-    }
 
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
         println("Found a ICPPASTClassVirtSpecifier" + classVirtSpecifier?.rawSignature)
@@ -34,9 +16,21 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declaration: IASTDeclaration): Int {
         println("Found a declaration: " + declaration.rawSignature)
-        method.reinit()
-        method.addContent(declaration.rawSignature)
-        unit.addMethod(method.getMethod())
+        if(declaration is CPPASTFunctionDefinition) {
+            println("func Defi")
+            declaration.declSpecifier.rawSignature // return type
+            declaration.declarator.name.rawSignature // function name
+            (declaration.declarator as CPPASTFunctionDeclarator).parameters // array of parameterDeclaration (int x, int y) function signature/antet
+            (declaration.body as CPPASTCompoundStatement).statements
+                .iterator().forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
+            // CPPASTCompoundStatement array
+            // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
+        } else if (declaration is CPPASTSimpleDeclaration) {
+            println("simpl Declaration")
+            declaration.declSpecifier.rawSignature // return type
+            declaration.declarators // array of Declarators
+            // much more like int x = function(smth...)
+        }
         return PROCESS_CONTINUE
     }
 
@@ -52,22 +46,22 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(name: IASTName): Int {
         println("Found a IASTName: " + name.rawSignature)
-        if (method.getMethod().name == null) {
-            method.addMethodName(name.rawSignature)
-        } else if (statement.getStatement().Token == null) {
-            return PROCESS_CONTINUE
-        } else {
-            declaration.addDeclarationName(name.rawSignature)
-        }
+//        if (method.getMethod().name == null) {
+//            method.addMethodName(name.rawSignature)
+//        } else if (statement.getStatement().Token == null) {
+//            return PROCESS_CONTINUE
+//        } else {
+//            declaration.addDeclarationName(name.rawSignature)
+//        }
         return PROCESS_CONTINUE
     }
 
     override fun visit(parameterDeclaration: IASTParameterDeclaration): Int {
         println("Found a IASTParameterDeclaration: " + parameterDeclaration.rawSignature )
-        declaration.reinit()
-        declaration.addDeclarationName(parameterDeclaration.declarator.rawSignature)
-        declaration.addDeclarationReturnType(parameterDeclaration.declSpecifier.rawSignature)
-        method.addAntet(declaration.getDeclaration())
+//        declaration.reinit()
+//        declaration.addDeclarationName(parameterDeclaration.declarator.rawSignature)
+//        declaration.addDeclarationReturnType(parameterDeclaration.declSpecifier.rawSignature)
+//        method.addAntet(declaration.getDeclaration())
         return PROCESS_CONTINUE
     }
 
@@ -79,12 +73,12 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declarSpec: IASTDeclSpecifier): Int {
         println("Found an IASTDeclSpecifier: " + declarSpec.rawSignature)
-        if (method.getMethod().returnType == null) {
-             method.addReturnType(declarSpec.rawSignature)
-         } else {
-             declaration.addDeclarationReturnType(declarSpec.rawSignature)
-             method.addDeclaration(declaration.getDeclaration())
-         }
+//        if (method.getMethod().returnType == null) {
+//             method.addReturnType(declarSpec.rawSignature)
+//         } else {
+//             declaration.addDeclarationReturnType(declarSpec.rawSignature)
+//             method.addDeclaration(declaration.getDeclaration())
+//         }
 
         return PROCESS_CONTINUE
     }
@@ -96,7 +90,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(ptrOper: IASTPointerOperator): Int {
         println("Found an IASTPointerOperator: " + ptrOper.rawSignature)
-        declaration.declarationPointer()
+//        declaration.declarationPointer()
         return PROCESS_CONTINUE
     }
 
@@ -112,7 +106,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(token: IASTToken) : Int {
         println("Found an IASTToken: " + token.rawSignature)
-        statement.addToken(token.rawSignature)
+//        statement.addToken(token.rawSignature)
         return PROCESS_CONTINUE
     }
 
@@ -121,28 +115,73 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    fun refactorCPPASTEEqualsInitializer(equals: IASTInitializer?) {
+    private fun refactorCPPASTEEqualsInitializer(equals: IASTInitializer?) {
         println(equals)
         if ( equals is CPPASTEqualsInitializer) {
-            equals.children.get(0).rawSignature // ecuation x = 5;
+            equals.children[0].rawSignature // ecuation x = 5;
         } else if(equals != null) {
-            (equals.children.get(0) as CPPASTFunctionCallExpression).arguments // array of arguments
-            (equals.children.get(0) as CPPASTFunctionCallExpression).functionNameExpression // expression name
+            (equals.children[0] as CPPASTFunctionCallExpression).arguments // array of arguments
+            (equals.children[0] as CPPASTFunctionCallExpression).functionNameExpression // expression name
         }
     }
 
-    fun seeCPASTCompoundStatement(data: IASTStatement) {
+    fun getOperands(binaryExpression: CPPASTBinaryExpression) {
+        while((binaryExpression.operand1 !is CPPASTIdExpression) || (binaryExpression.operand1 !is CPPASTLiteralExpression)) {
+            if(binaryExpression.operand1 is CPPASTBinaryExpression) {
+                getOperands(binaryExpression.operand1 as CPPASTBinaryExpression)
+            }
+            break
+        }
+        while((binaryExpression.operand2 !is CPPASTIdExpression) || (binaryExpression.operand2 !is CPPASTLiteralExpression)) {
+            if(binaryExpression.operand2 is CPPASTBinaryExpression) {
+                getOperands(binaryExpression.operand2 as CPPASTBinaryExpression)
+            }
+            break
+        }
+        if(binaryExpression.operand1 !is CPPASTBinaryExpression) {
+            println(binaryExpression.operand1.rawSignature)
+        }
+        if(binaryExpression.operand2 !is CPPASTBinaryExpression) {
+            println(binaryExpression.operand2.rawSignature)
+        }
+    }
+
+    private fun seeCPASTCompoundStatement(data: IASTStatement) {
         println("---------")
         println(data.rawSignature)
-        if ( data is CPPASTDeclarationStatement ) {
-            (data.declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature  // type
-            (data.declaration as CPPASTSimpleDeclaration).declarators.iterator().next().name.rawSignature // name
-            refactorCPPASTEEqualsInitializer((data.declaration as CPPASTSimpleDeclaration).declarators.get(0).initializer)
+        when (data) {
+            is CPPASTDeclarationStatement -> {
+                (data.declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature  // type
+                (data.declaration as CPPASTSimpleDeclaration).declarators.iterator().next().name.rawSignature // name
+                refactorCPPASTEEqualsInitializer((data.declaration as CPPASTSimpleDeclaration).declarators[0].initializer)
+            }
+            is CPPASTExpressionStatement -> {
+                println("expr")
+                if (data.expression is CPPASTBinaryExpression) {
+                    (data.expression as CPPASTBinaryExpression).operand1.rawSignature // operand1
+                    (data.expression as CPPASTBinaryExpression).operand2.rawSignature // operand2
+                } else if(data.expression is CPPASTFunctionCallExpression) {
+                    (data.expression as CPPASTFunctionCallExpression).arguments // array of arguments
+                    (data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature // function name
+                }
+            }
+            is CPPASTIfStatement -> {
+                println("ifStatement")
+            }
+            is CPPASTWhileStatement -> {
+                println("while")
+                getOperands(data.condition as CPPASTBinaryExpression)
+                seeCPASTCompoundStatement(data.body)
+            }
+            is CPPASTProblemStatement -> {
+                println("problStatement")
+            }
+            is CPPASTCompoundStatement -> {
+                println("cmpStat")
+                data.statements.iterator()
+                    .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
+            }
         }
-        else if (data is CPPASTExpressionStatement)
-            println("expr")
-        else if (data is CPPASTIfStatement)
-            println("ifStatement")
         println()
     }
 
