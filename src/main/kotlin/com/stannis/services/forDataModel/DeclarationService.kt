@@ -6,6 +6,10 @@ class DeclarationService {
 
     private var declaration = Declaration(null, null, null)
 
+    fun reinit() {
+        this.declaration = Declaration(null, null, null)
+    }
+
     fun addDeclarationName(name: String) {
         declaration = Declaration(null, name, null)
     }

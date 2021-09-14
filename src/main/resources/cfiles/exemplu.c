@@ -1,14 +1,35 @@
-int power(int b, int e)
-{
-    if(e == 0)
-        return 1;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-    return (b*power(b, e-1));
+int fibonacci(int x) {
+    *y = &x;
+
+    while( x == 5 && y != NULL && z < 4) {
+            int x = 3;
+            x = x + 2;
+
+            fibonacci(4);
+
+            if(x = 1)
+                x++;
+            else
+                x--;
+        }
+    y = y + 5
+    int x = max(3,4);
+    main(12,1);
+    if( x == 0 )
+        return 0;
+    else
+        return fibonacci(x-1) * x;
 }
 
-void print(struct Person *p) {
-	while(p!=NULL) {
-		printf("name:%s,  age:%d, street:%s\n",p->name, p->age, p->street);
-		p=p->urm;
-	}
+int main(int argc, char const *argv[])
+{
+    int x = 5;
+    int a = fibonacci(5);
+    a = a + x;
+    printf("%d", &a);
+	return 0;
 }

@@ -1,11 +1,15 @@
 package com.stannis.services.forDataModel
 
+import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 
 class MethodService {
 
-    private var declarationService: DeclarationService = DeclarationService()
     private var method = Method(null, null, null, null, null, null)
+
+    fun reinit() {
+        method = Method(null, null, null, null, null, null)
+    }
 
     fun addMethod(content: String) {
         method.content = content
@@ -19,11 +23,25 @@ class MethodService {
         method.returnType = returnType
     }
 
-    fun addAntet() {
-        method.antet?.add(declarationService.getDeclaration())
+    fun addAntet(declaration: Declaration) {
+        if(method.antet.isNullOrEmpty()) {
+            val x = ArrayList<Declaration>()
+            x.add(declaration)
+            method.antet = x
+        } else {
+            method.antet!!.add(declaration)
+        }
     }
 
-    fun addDeclaration() {
-        method.declarations?.add(declarationService.getDeclaration())
+    fun addDeclaration(declaration: Declaration) {
+        method.declarations?.add(declaration)
+    }
+
+    fun addContent(content: String) {
+        method.content = content
+    }
+
+    fun getMethod() : Method {
+        return method
     }
 }
