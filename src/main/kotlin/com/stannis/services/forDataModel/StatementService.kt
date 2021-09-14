@@ -6,6 +6,10 @@ class StatementService {
 
     private var statement = Statement(null, null)
 
+    fun reinit() {
+        statement = Statement(null, null)
+    }
+
     fun addContent(content: String) {
         statement.content = content
     }
