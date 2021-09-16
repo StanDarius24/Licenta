@@ -2,7 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-int fibonacci(int x) {
+int calculator(int y) {
+    return y + 3;
+}
+
+int fibonacci(int x, int b, float *c) {
+
+    calculator(4);
+
     *y = &x;
     int yz, po, wd,sa;
     yz = yz + y + 13 + fibonacci(3);

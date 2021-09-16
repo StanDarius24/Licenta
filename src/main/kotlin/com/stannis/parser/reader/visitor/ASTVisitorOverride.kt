@@ -1,26 +1,58 @@
 package com.stannis.parser.reader.visitor
 
+import com.stannis.dataModel.Antet
+import com.stannis.dataModel.Declaration
+import com.stannis.dataModel.Method
+import com.stannis.dataModel.Unit
+import com.stannis.services.MethodService
+import com.stannis.services.UnitService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
+import org.eclipse.cdt.internal.core.dom.parser.cpp.semantics.EvalFunctionCall
 
 class ASTVisitorOverride: ASTVisitor() {
+
+    private var unit = Unit(null, null)
+    private var method = Method(null, null, null)
+    private var declaration = Declaration(null, null, null)
+
+    private val unitService = UnitService()
+    private val methodService = MethodService()
 
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
         println("Found a ICPPASTClassVirtSpecifier" + classVirtSpecifier?.rawSignature)
         return PROCESS_CONTINUE
     }
 
+    private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
+        if(deecl is CPPASTParameterDeclaration) {
+            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1)
+            listOfDeclaration.add(declaration)
+        }
+    }
+
+    private fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration>{
+        val listOfDeclaration = ArrayList<Declaration>()
+        params.iterator().forEachRemaining { param: ICPPASTParameterDeclaration -> getTypes(param, listOfDeclaration)}
+        return listOfDeclaration
+    }
+
     override fun visit(declaration: IASTDeclaration): Int {
+        method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
             println("func Defi")
-            declaration.declSpecifier.rawSignature // return type
-            declaration.declarator.name.rawSignature // function name
-            (declaration.declarator as CPPASTFunctionDeclarator).parameters // array of parameterDeclaration (int x, int y) function signature/antet
+            methodService.setAntet(method,
+                    Antet(
+                        declaration.declSpecifier.rawSignature,
+                        declaration.declarator.name.rawSignature,
+                        getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
+                    )
+                )
             (declaration.body as CPPASTCompoundStatement).statements
                 .iterator().forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
             // CPPASTCompoundStatement array
@@ -41,6 +73,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
+        unit = unitService.createUnit()
         return PROCESS_CONTINUE
     }
 
@@ -129,9 +162,6 @@ class ASTVisitorOverride: ASTVisitor() {
         println(data.rawSignature)
         when (data) {
             is CPPASTDeclarationStatement -> {
-//                (data.declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature  // type
-//                (data.declaration as CPPASTSimpleDeclaration).declarators.iterator().next().name.rawSignature // name
-//                refactorCPPASTEEqualsInitializer((data.declaration as CPPASTSimpleDeclaration).declarators[0].initializer)
                 declStatement(data.declaration as CPPASTSimpleDeclaration)
             }
             is CPPASTExpressionStatement -> {
@@ -172,6 +202,7 @@ class ASTVisitorOverride: ASTVisitor() {
             iastStatement.statements.iterator()
                 .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
         }
+        // var x = EvalFunctionCall()
         return PROCESS_CONTINUE
     }
 

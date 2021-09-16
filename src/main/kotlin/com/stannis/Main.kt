@@ -1,13 +1,6 @@
 package com.stannis
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.stannis.dataModel.Declaration
-import com.stannis.dataModel.Method
-import com.stannis.dataModel.Statement
 import com.stannis.parser.reader.Parser
-import com.stannis.services.forDataModel.UnitService
-import javax.swing.plaf.nimbus.State
 
 fun main() {
 //    val reader = Reader()
