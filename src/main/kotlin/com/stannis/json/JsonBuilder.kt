@@ -1,10 +1,12 @@
 package com.stannis.json
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.stannis.dataModel.Method
+
 class JsonBuilder {
-    companion object {
-        fun classToJson(theClass: Class<*>?): String {
-            return Gson().toJson(theClass)
-        }
+    fun createJson(method: Method): String{
+        val gson = GsonBuilder().setPrettyPrinting().create()
+        val jsonString = gson.toJson(method)
+        return jsonString
     }
 }
