@@ -1,5 +1,6 @@
 package com.stannis.parser.reader
 
+import com.stannis.json.JsonBuilder
 import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
@@ -10,6 +11,7 @@ import org.eclipse.cdt.core.parser.*
 class Parser {
     fun test() {
         val reader = Reader()
+//        val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\main.cpp")
         val data = reader.readFileAsLinesUsingBufferedReader("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\cfiles\\exemplu.c")
         //val data = reader.readFileAsLinesUsingBufferedReader("/home/stan/Desktop/Licenta/src/main/resources/cfiles/exemplu.c")
 //        val data = reader.readFileAsLinesUsingBufferedReader("/home/stan/Desktop/Licenta/src/test/kotlin/com/stannis/c/test1.c")
@@ -46,6 +48,8 @@ class Parser {
         astVisitorOverride.shouldVisitImplicitNameAlternates = true
         astVisitorOverride.shouldVisitImplicitDestructorNames = true
         translationUnit.accept(astVisitorOverride)
+        val builder = JsonBuilder()
+        println(builder.createJson(astVisitorOverride.getUnit()))
     }
 
 
