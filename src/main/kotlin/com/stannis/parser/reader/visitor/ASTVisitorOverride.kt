@@ -1,5 +1,13 @@
 package com.stannis.parser.reader.visitor
 
+import com.stannis.dataModel.*
+import com.stannis.dataModel.statementTypes.Return
+import com.stannis.dataModel.Unit
+import com.stannis.dataModel.statementTypes.FunctionCall
+import com.stannis.dataModel.statementTypes.Initialization
+import com.stannis.dataModel.statementTypes.While
+import com.stannis.services.MethodService
+import com.stannis.services.UnitService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
@@ -9,29 +17,63 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
 
+    private var unit = Unit(null, null)
+    private var method = Method(null, null, null)
+    private var declaration = Declaration(null, null, null, null)
+
+    private val unitService = UnitService()
+    private val methodService = MethodService()
+
+    fun getUnit() :Unit {
+        return this.unit
+    }
+
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
         println("Found a ICPPASTClassVirtSpecifier" + classVirtSpecifier?.rawSignature)
         return PROCESS_CONTINUE
     }
 
+    private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
+        if(deecl is CPPASTParameterDeclaration) {
+            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1, null)
+            listOfDeclaration.add(declaration)
+        }
+    }
+
+    private fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration>{
+        val listOfDeclaration = ArrayList<Declaration>()
+        params.iterator().forEachRemaining { param: ICPPASTParameterDeclaration -> getTypes(param, listOfDeclaration)}
+        return listOfDeclaration
+    }
+
+
     override fun visit(declaration: IASTDeclaration): Int {
+        method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
-            println("func Defi")
-            declaration.declSpecifier.rawSignature // return type
-            declaration.declarator.name.rawSignature // function name
-            (declaration.declarator as CPPASTFunctionDeclarator).parameters // array of parameterDeclaration (int x, int y) function signature/antet
-            (declaration.body as CPPASTCompoundStatement).statements
-                .iterator().forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
-            // CPPASTCompoundStatement array
-            // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
+            handleCPPASTFunctionDefinition(declaration, method)
         } else if (declaration is CPPASTSimpleDeclaration) {
             println("simpl Declaration")
             declaration.declSpecifier.rawSignature // return type
             declaration.declarators // array of Declarators
             // much more like int x = function(smth...)
         }
+        unitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
+    }
+
+    private fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, method: Method) {
+        methodService.setAntet(method,
+            Antet(
+                declaration.declSpecifier.rawSignature,
+                declaration.declarator.name.rawSignature,
+                getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
+            )
+        )
+        (declaration.body as CPPASTCompoundStatement).statements
+            .iterator().forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data, method) }
+        // CPPASTCompoundStatement array
+        // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
     }
 
     override fun visit(initializer: IASTInitializer): Int {
@@ -41,45 +83,27 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
+        unit = unitService.createUnit()
         return PROCESS_CONTINUE
     }
 
     override fun visit(name: IASTName): Int {
         println("Found a IASTName: " + name.rawSignature)
-//        if (method.getMethod().name == null) {
-//            method.addMethodName(name.rawSignature)
-//        } else if (statement.getStatement().Token == null) {
-//            return PROCESS_CONTINUE
-//        } else {
-//            declaration.addDeclarationName(name.rawSignature)
-//        }
         return PROCESS_CONTINUE
     }
 
     override fun visit(parameterDeclaration: IASTParameterDeclaration): Int {
         println("Found a IASTParameterDeclaration: " + parameterDeclaration.rawSignature )
-//        declaration.reinit()
-//        declaration.addDeclarationName(parameterDeclaration.declarator.rawSignature)
-//        declaration.addDeclarationReturnType(parameterDeclaration.declSpecifier.rawSignature)
-//        method.addAntet(declaration.getDeclaration())
         return PROCESS_CONTINUE
     }
 
     override fun visit(declarator: IASTDeclarator): Int {
         println("Found an IASTDeclarator " + declarator.rawSignature)
-
         return PROCESS_CONTINUE
     }
 
     override fun visit(declarSpec: IASTDeclSpecifier): Int {
         println("Found an IASTDeclSpecifier: " + declarSpec.rawSignature)
-//        if (method.getMethod().returnType == null) {
-//             method.addReturnType(declarSpec.rawSignature)
-//         } else {
-//             declaration.addDeclarationReturnType(declarSpec.rawSignature)
-//             method.addDeclaration(declaration.getDeclaration())
-//         }
-
         return PROCESS_CONTINUE
     }
 
@@ -90,7 +114,6 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(ptrOper: IASTPointerOperator): Int {
         println("Found an IASTPointerOperator: " + ptrOper.rawSignature)
-//        declaration.declarationPointer()
         return PROCESS_CONTINUE
     }
 
@@ -106,7 +129,6 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(token: IASTToken) : Int {
         println("Found an IASTToken: " + token.rawSignature)
-//        statement.addToken(token.rawSignature)
         return PROCESS_CONTINUE
     }
 
@@ -115,63 +137,138 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    private fun refactorCPPASTEEqualsInitializer(equals: IASTInitializer?) {
-        println(equals)
-        if ( equals is CPPASTEqualsInitializer) {
-            equals.children[0].rawSignature // ecuation x = 5;
-        } else if(equals != null) {
-            (equals.children[0] as CPPASTFunctionCallExpression).arguments // array of arguments
-            (equals.children[0] as CPPASTFunctionCallExpression).functionNameExpression // expression name
+    private fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
+        data!!.iterator().forEachRemaining {
+                datax: IASTInitializerClause ->
+            run {
+                when (datax) {
+                    is CPPASTLiteralExpression -> {
+                        statement!!.add(datax.rawSignature)
+                    }
+                    is CPPASTFunctionCallExpression -> {
+                        val list = ArrayList<String>()
+                        datax.arguments.iterator().forEachRemaining { data: IASTInitializerClause -> list.add(data.rawSignature) }
+                        val func = FunctionCall(
+                            null,
+                            datax.functionNameExpression.rawSignature,
+                                list, null
+                            )
+                        (statement as FunctionCall).add(func)
+                    }
+                    is CPPASTIdExpression -> {
+                        statement!!.add(datax.name.rawSignature)
+                    }
+                }
+            }
         }
     }
 
-    fun getOperands(binaryExpression: CPPASTBinaryExpression) {
+    private fun getArgumentsType(functionCall: CPPASTFunctionCallExpression, statement: Statement?) {
+        declarationStatementForArgumentType(functionCall.arguments, statement)
+
+    }
+
+    private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
+            println(functionCallExpression.rawSignature)
+
+        val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
+        getArgumentsType(functionCallExpression, functionCall)
+        (statement as Initialization).add(functionCall)
+        (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
+        functionCallExpression.arguments // array of arguments
+        functionCallExpression.evaluation
+    }
+
+    private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
+        if((binaryExpression is CPPASTIdExpression) || (binaryExpression is CPPASTLiteralExpression) || (binaryExpression is CPPASTUnaryExpression)) {
+            println(binaryExpression.rawSignature)
+            statement!!.add(binaryExpression.rawSignature)
+        } else if(binaryExpression is CPPASTFunctionCallExpression) {
+            getFunctionArguments(binaryExpression, statement)
+        }
+    }
+
+     private fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) {
         while((binaryExpression.operand1 !is CPPASTIdExpression) || (binaryExpression.operand1 !is CPPASTLiteralExpression)) {
             if(binaryExpression.operand1 is CPPASTBinaryExpression) {
-                getOperands(binaryExpression.operand1 as CPPASTBinaryExpression)
+                getOperands(binaryExpression.operand1 as CPPASTBinaryExpression, statement)
             }
             break
         }
         while((binaryExpression.operand2 !is CPPASTIdExpression) || (binaryExpression.operand2 !is CPPASTLiteralExpression)) {
             if(binaryExpression.operand2 is CPPASTBinaryExpression) {
-                getOperands(binaryExpression.operand2 as CPPASTBinaryExpression)
+                getOperands(binaryExpression.operand2 as CPPASTBinaryExpression, statement)
             }
             break
         }
-        if(binaryExpression.operand1 !is CPPASTBinaryExpression) {
-            println(binaryExpression.operand1.rawSignature)
-        }
-        if(binaryExpression.operand2 !is CPPASTBinaryExpression) {
-            println(binaryExpression.operand2.rawSignature)
+         handleOperands(binaryExpression.operand1, statement)
+         handleOperands(binaryExpression.operand2, statement)
+    }
+
+    private fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method?) {
+        simpleDeclaration.declarators.iterator().forEachRemaining { data ->
+            val decl = Declaration(data.name.rawSignature, simpleDeclaration.declSpecifier.rawSignature , data.pointerOperators.size == 1, null)
+            getFunctionCall(data, decl)
+            methodService.addDeclaration(method!!, decl)
         }
     }
 
-    private fun seeCPASTCompoundStatement(data: IASTStatement) {
+    private fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
+        if( data != null) {
+            if( data.initializer != null) {
+                data.initializer.children.iterator().forEachRemaining { datax: IASTNode ->
+                    run {
+                        when (datax) {
+                            is CPPASTFunctionCallExpression -> {
+                                val funcCall = FunctionCall(
+                                    null,
+                                    datax.functionNameExpression.rawSignature,
+                                    null,
+                                    null
+                                )
+                                declarationStatementForArgumentType(datax.arguments, funcCall)
+                                decl.function = funcCall
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun seeCPASTCompoundStatement(data: IASTStatement, method: Method?) {
         println("---------")
         println(data.rawSignature)
         when (data) {
             is CPPASTDeclarationStatement -> {
-                (data.declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature  // type
-                (data.declaration as CPPASTSimpleDeclaration).declarators.iterator().next().name.rawSignature // name
-                refactorCPPASTEEqualsInitializer((data.declaration as CPPASTSimpleDeclaration).declarators[0].initializer)
+                declStatement(data.declaration as CPPASTSimpleDeclaration, method)
             }
             is CPPASTExpressionStatement -> {
                 println("expr")
                 if (data.expression is CPPASTBinaryExpression) {
-                    (data.expression as CPPASTBinaryExpression).operand1.rawSignature // operand1
-                    (data.expression as CPPASTBinaryExpression).operand2.rawSignature // operand2
-                } else if(data.expression is CPPASTFunctionCallExpression) {
-                    (data.expression as CPPASTFunctionCallExpression).arguments // array of arguments
-                    (data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature // function name
+                    val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
+                    getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
+                    methodService.addStatement(method!!, initialization)
+                } else if( data.expression is CPPASTFunctionCallExpression) {
+                        val functcall = FunctionCall( null,
+                            ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
+                            null,null
+                        )
+                    getArgumentsType(data.expression as CPPASTFunctionCallExpression, functcall)
+                    methodService.addStatement(method!!, functcall)
                 }
             }
             is CPPASTIfStatement -> {
                 println("ifStatement")
+                getOperands(data.conditionExpression as CPPASTBinaryExpression, null)
+                seeCPASTCompoundStatement(data.thenClause, null)
+                seeCPASTCompoundStatement(data.elseClause, null)
             }
             is CPPASTWhileStatement -> {
                 println("while")
-                getOperands(data.condition as CPPASTBinaryExpression)
-                seeCPASTCompoundStatement(data.body)
+                val whileT = While(null, null)
+                getOperands(data.condition as CPPASTBinaryExpression, whileT)
+                seeCPASTCompoundStatement(data.body, null)
             }
             is CPPASTProblemStatement -> {
                 println("problStatement")
@@ -179,18 +276,44 @@ class ASTVisitorOverride: ASTVisitor() {
             is CPPASTCompoundStatement -> {
                 println("cmpStat")
                 data.statements.iterator()
-                    .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
+                    .forEachRemaining { dataStatement: IASTStatement -> seeCPASTCompoundStatement(dataStatement, null) }
+            }
+            is CPPASTReturnStatement -> {
+                 val returnT = Return(null)
+                if( data.returnValue is CPPASTLiteralExpression || data.returnValue is CPPASTIdExpression || data.returnValue is CPPASTUnaryExpression) {
+                    returnT.add(data.returnValue.rawSignature)
+                    println(data.returnValue.rawSignature)
+                } else {
+                    getOperands(data.returnValue as CPPASTBinaryExpression, returnT)
+                }
+                methodService.addStatement(method!!, returnT)
+            }
+            is CPPASTForStatement -> {
+                print(data.rawSignature)
+                getForStatement(data, method)
             }
         }
         println()
     }
 
+    private fun getForStatement(data: CPPASTForStatement, method: Method?) {
+        //                var forT = For(
+//                    data.initializerStatement.rawSignature,
+//                )
+        data.initializerStatement // declaration Statement int x = 0;
+        data.conditionExpression // conditia i<5 || calc();
+        data.conditionDeclaration // declaration in condition
+        data.iterationExpression // iteratii Binary expr / IdExpr etc..
+        data.body // compound statement
+    }
+
     override fun visit(iastStatement: IASTStatement): Int {
         println("Found an IASTStatement: " + iastStatement.rawSignature)
-        if ( iastStatement is CPPASTCompoundStatement ) { //  CPPASTExpressionStatement)
-            iastStatement.statements.iterator()
-                .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data) }
-        }
+//        if ( iastStatement is CPPASTCompoundStatement ) { //  CPPASTExpressionStatement)
+//            iastStatement.statements.iterator()
+//                .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data, null) }
+//        }
+        // var x = EvalFunctionCall()
         return PROCESS_CONTINUE
     }
 
