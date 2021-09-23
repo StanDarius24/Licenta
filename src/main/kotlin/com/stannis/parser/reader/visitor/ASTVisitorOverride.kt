@@ -3,6 +3,8 @@ package com.stannis.parser.reader.visitor
 import com.stannis.dataModel.*
 import com.stannis.dataModel.statementTypes.Return
 import com.stannis.dataModel.Unit
+import com.stannis.dataModel.statementTypes.FunctionCall
+import com.stannis.dataModel.statementTypes.Initialization
 import com.stannis.dataModel.statementTypes.While
 import com.stannis.services.MethodService
 import com.stannis.services.UnitService
@@ -17,7 +19,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     private var unit = Unit(null, null)
     private var method = Method(null, null, null)
-    private var declaration = Declaration(null, null, null)
+    private var declaration = Declaration(null, null, null, null)
 
     private val unitService = UnitService()
     private val methodService = MethodService()
@@ -33,7 +35,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
         if(deecl is CPPASTParameterDeclaration) {
-            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1)
+            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1, null)
             listOfDeclaration.add(declaration)
         }
     }
@@ -135,9 +137,43 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
+    private fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
+        data!!.iterator().forEachRemaining {
+                datax: IASTInitializerClause ->
+            run {
+                when (datax) {
+                    is CPPASTLiteralExpression -> {
+                        statement!!.add(datax.rawSignature)
+                    }
+                    is CPPASTFunctionCallExpression -> {
+                        val list = ArrayList<String>()
+                        datax.arguments.iterator().forEachRemaining { data: IASTInitializerClause -> list.add(data.rawSignature) }
+                        val func = FunctionCall(
+                            null,
+                            datax.functionNameExpression.rawSignature,
+                                list, null
+                            )
+                        (statement as FunctionCall).add(func)
+                    }
+                    is CPPASTIdExpression -> {
+                        statement!!.add(datax.name.rawSignature)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getArgumentsType(functionCall: CPPASTFunctionCallExpression, statement: Statement?) {
+        declarationStatementForArgumentType(functionCall.arguments, statement)
+
+    }
+
     private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
             println(functionCallExpression.rawSignature)
-        statement!!.add(functionCallExpression.rawSignature)
+
+        val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
+        getArgumentsType(functionCallExpression, functionCall)
+        (statement as Initialization).add(functionCall)
         (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
         functionCallExpression.arguments // array of arguments
         functionCallExpression.evaluation
@@ -151,7 +187,6 @@ class ASTVisitorOverride: ASTVisitor() {
             getFunctionArguments(binaryExpression, statement)
         }
     }
-
 
      private fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) {
         while((binaryExpression.operand1 !is CPPASTIdExpression) || (binaryExpression.operand1 !is CPPASTLiteralExpression)) {
@@ -168,13 +203,36 @@ class ASTVisitorOverride: ASTVisitor() {
         }
          handleOperands(binaryExpression.operand1, statement)
          handleOperands(binaryExpression.operand2, statement)
-
     }
 
     private fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method?) {
         simpleDeclaration.declarators.iterator().forEachRemaining { data ->
-            val decl = Declaration(data.name.rawSignature, simpleDeclaration.declSpecifier.rawSignature , data.pointerOperators.size == 1)
+            val decl = Declaration(data.name.rawSignature, simpleDeclaration.declSpecifier.rawSignature , data.pointerOperators.size == 1, null)
+            getFunctionCall(data, decl)
             methodService.addDeclaration(method!!, decl)
+        }
+    }
+
+    private fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
+        if( data != null) {
+            if( data.initializer != null) {
+                data.initializer.children.iterator().forEachRemaining { datax: IASTNode ->
+                    run {
+                        when (datax) {
+                            is CPPASTFunctionCallExpression -> {
+                                val funcCall = FunctionCall(
+                                    null,
+                                    datax.functionNameExpression.rawSignature,
+                                    null,
+                                    null
+                                )
+                                declarationStatementForArgumentType(datax.arguments, funcCall)
+                                decl.function = funcCall
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -188,10 +246,16 @@ class ASTVisitorOverride: ASTVisitor() {
             is CPPASTExpressionStatement -> {
                 println("expr")
                 if (data.expression is CPPASTBinaryExpression) {
-                    getOperands(data.expression as CPPASTBinaryExpression, null)
+                    val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
+                    getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
+                    methodService.addStatement(method!!, initialization)
                 } else if( data.expression is CPPASTFunctionCallExpression) {
-                    ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature // name
-                    (data.expression as CPPASTFunctionCallExpression).arguments // array or arguments
+                        val functcall = FunctionCall( null,
+                            ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
+                            null,null
+                        )
+                    getArgumentsType(data.expression as CPPASTFunctionCallExpression, functcall)
+                    methodService.addStatement(method!!, functcall)
                 }
             }
             is CPPASTIfStatement -> {
@@ -227,10 +291,8 @@ class ASTVisitorOverride: ASTVisitor() {
             is CPPASTForStatement -> {
                 print(data.rawSignature)
                 getForStatement(data, method)
-
             }
         }
-
         println()
     }
 
@@ -247,10 +309,10 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(iastStatement: IASTStatement): Int {
         println("Found an IASTStatement: " + iastStatement.rawSignature)
-        if ( iastStatement is CPPASTCompoundStatement ) { //  CPPASTExpressionStatement)
-            iastStatement.statements.iterator()
-                .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data, null) }
-        }
+//        if ( iastStatement is CPPASTCompoundStatement ) { //  CPPASTExpressionStatement)
+//            iastStatement.statements.iterator()
+//                .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data, null) }
+//        }
         // var x = EvalFunctionCall()
         return PROCESS_CONTINUE
     }
