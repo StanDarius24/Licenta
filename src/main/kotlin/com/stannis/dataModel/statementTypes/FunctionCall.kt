@@ -6,7 +6,7 @@ data class FunctionCall(
     var returntype: String?,
     var name: String?,
     var parameters: ArrayList<String>?,
-    var functcalls: ArrayList<FunctionCall>?
+    var functionCalls: ArrayList<FunctionCall>?
 ): Statement
 {
     override fun add(data: String) {
@@ -16,10 +16,10 @@ data class FunctionCall(
         parameters!!.add(data)
     }
 
-    fun add(data: FunctionCall) {
-        if(functcalls == null) {
-            functcalls = ArrayList()
+    override fun add(data: FunctionCall) {
+        if(functionCalls == null) {
+            functionCalls = ArrayList()
         }
-        functcalls!!.add(data)
+        functionCalls!!.add(data)
     }
 }

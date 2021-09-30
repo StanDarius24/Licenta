@@ -8,7 +8,7 @@ import com.stannis.dataModel.Statement
 class MethodService {
 
     fun createMethod(): Method {
-        return Method(null, null, null)
+        return Method(null, null, null, null)
     }
 
     fun addDeclaration(method: Method, declaration: Declaration) {
