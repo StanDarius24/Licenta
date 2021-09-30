@@ -7,7 +7,7 @@ data class Initialization(
     var name: String?,
     var value: ArrayList<String>?,
     var declaration: ArrayList<Declaration>?,
-    var functionCall: ArrayList<FunctionCall>?
+    var functionCalls: ArrayList<FunctionCall>?
 ): Statement {
     override fun add(data: String) {
             if (value == null) {
@@ -15,11 +15,11 @@ data class Initialization(
             }
         value!!.add(data)
     }
-    fun add(data: FunctionCall) {
-        if (functionCall == null) {
-            functionCall = ArrayList()
+    override fun add(data: FunctionCall) {
+        if (functionCalls == null) {
+            functionCalls = ArrayList()
         }
-        functionCall!!.add(data)
+        functionCalls!!.add(data)
     }
     fun add(data: Declaration) {
         if(declaration == null) {

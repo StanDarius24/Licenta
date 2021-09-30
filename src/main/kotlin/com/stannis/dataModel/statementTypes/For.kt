@@ -9,46 +9,17 @@ import com.stannis.dataModel.Statement
 //data.body // compound statement
 
 data class For(
-    var initializer: ArrayList<String>?,
-    var conditionExpr: ArrayList<String>?,
-    var conditionDecl: ArrayList<String>?,
-    var iteration: ArrayList<String>?,
-    var statement: ArrayList<Statement>?
+    var initializer: ArrayList<Initialization>?,
+    var conditionExpr: ArrayList<Initialization>?,
+    var conditionDecl: ArrayList<Initialization>?,
+    var iteration: ArrayList<Initialization>?,
 ): Statement {
-
-    fun addInitializer(data: String) {
-        if(initializer == null) {
-            initializer = ArrayList()
-        }
-        initializer!!.add(data)
-    }
-
-    fun addConditionExpr(data: String) {
-        if(conditionExpr == null) {
-            conditionExpr = ArrayList()
-        }
-        conditionExpr!!.add(data)
-    }
-
-    fun addConditionDecl(data: String) {
-        if(conditionDecl == null) {
-            conditionDecl = ArrayList()
-        }
-        conditionDecl!!.add(data)
-    }
-
-    fun addIteration(data: String) {
-        if(iteration == null) {
-            iteration = ArrayList()
-        }
-        iteration!!.add(data)
-    }
-
-    fun addStatement(statement: Statement) {
-        this.statement!!.add(statement) //????????
-    }
-
     override fun add(data: String) {
         TODO("Not yet implemented")
     }
+
+    override fun add(data: FunctionCall) {
+        TODO("Not yet implemented")
+    }
+
 }
