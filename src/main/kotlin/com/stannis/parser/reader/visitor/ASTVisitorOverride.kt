@@ -150,10 +150,17 @@ class ASTVisitorOverride: ASTVisitor() {
                             datax.functionNameExpression.rawSignature,
                                 list, null
                             )
-                        (statement as FunctionCall).add(func)
+                        if( statement is FunctionCall) {
+                            statement.add(func)
+                        } else if(statement is Initialization){
+                            statement.add(func)
+                        }
                     }
                     is CPPASTIdExpression -> {
                         statement!!.add(datax.name.rawSignature)
+                    } // to add CppastBinaryExpression
+                    is CPPASTBinaryExpression -> {
+                        getOperands(datax, statement)
                     }
                 }
             }
@@ -173,6 +180,7 @@ class ASTVisitorOverride: ASTVisitor() {
         statement!!.add(functionCall)
         (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
         functionCallExpression.arguments // array of arguments
+        declarationStatementForArgumentType(functionCallExpression.arguments, statement)
         functionCallExpression.evaluation
     }
 
@@ -295,7 +303,7 @@ class ASTVisitorOverride: ASTVisitor() {
             }
             is CPPASTReturnStatement -> {
                  val returnT = Return(null, null)
-                if( data.returnValue is CPPASTLiteralExpression || data.returnValue is CPPASTIdExpression || data.returnValue is CPPASTUnaryExpression) {
+                if( data.returnValue is CPPASTLiteralExpression || data.returnValue is CPPASTIdExpression || data.returnValue is CPPASTUnaryExpression || data.returnValue is CPPASTFieldReference) {
                     returnT.add(data.returnValue.rawSignature)
                     println(data.returnValue.rawSignature)
                 } else {
@@ -305,17 +313,43 @@ class ASTVisitorOverride: ASTVisitor() {
             }
             is CPPASTForStatement -> {
                 print(data.rawSignature)
-                ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature // int
+                val forT = For(null, null, null, null)
+                methodService.addStatement(method!!, forT)
+                solveForInitialization(data.initializerStatement, forT)
+
+
+
+                ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature // ( int
                 ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators // array of declarations = calculator(4) +dasda etc
+                // declaratirs =>  name = i, initializer initializer Compound Statement fArguments (fOperand1; fOperand2)
                 data.conditionDeclaration //????
                 data.conditionExpression // declarations i < dadsa || dasdw test(x)
                 data.iterationExpression // i = i + dadsawdsa
                 (data.body as CPPASTCompoundStatement).statements // body
-                getForStatement(data, method!!)
+                getForStatement(data, method)
             }
         }
         println()
     }
+
+    private fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
+        println(initializerStatement)
+        var decl = Declaration(null, (initializerStatement as CPPASTDeclarationStatement).declaration.rawSignature, null, null)
+        ((initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators
+            .iterator().forEachRemaining {
+                declarator ->
+                run {
+                    createDeclarators(declarator, forT)
+                }
+            }
+    }
+
+    private fun createDeclarators(declarator: IASTDeclarator?, forT: For) {
+        var initT = Initialization(declarator!!.name.rawSignature, null, null, null)
+
+
+    }
+
 
     private fun getForStatement(data: CPPASTForStatement, method: Method?) {
         //                var forT = For(
