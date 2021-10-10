@@ -11,7 +11,7 @@ import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
-
+ //TODO REFACTORIIING
 class ASTVisitorOverride: ASTVisitor() {
 
     private var unit = Unit(null, null)
@@ -180,7 +180,7 @@ class ASTVisitorOverride: ASTVisitor() {
         statement!!.add(functionCall)
         (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
         functionCallExpression.arguments // array of arguments
-        declarationStatementForArgumentType(functionCallExpression.arguments, statement)
+        declarationStatementForArgumentType(functionCallExpression.arguments, statement) //TODO functioncall multiple parameter
         functionCallExpression.evaluation
     }
 
@@ -193,7 +193,7 @@ class ASTVisitorOverride: ASTVisitor() {
         }
     }
 
-     private fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) {
+     private fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) { //TODO boolean operands need a fix
         while((binaryExpression.operand1 !is CPPASTIdExpression) || (binaryExpression.operand1 !is CPPASTLiteralExpression)) {
             if(binaryExpression.operand1 is CPPASTBinaryExpression) {
                 getOperands(binaryExpression.operand1 as CPPASTBinaryExpression, statement)
@@ -313,9 +313,16 @@ class ASTVisitorOverride: ASTVisitor() {
             }
             is CPPASTForStatement -> {
                 print(data.rawSignature)
-                val forT = For(null, null, null, null)
+                val forT = For(null, null, null, null, null)
                 methodService.addStatement(method!!, forT)
                 solveForInitialization(data.initializerStatement, forT)
+                solveForConditionExpression(data.conditionExpression, forT)
+                solveForIterationExpression(data.iterationExpression, forT)
+                if(data.body != null) {
+                    val meth = Method(null, null, null, null)
+                    forT.addMethod(meth)
+                    seeCPASTCompoundStatement(data.body, meth)
+                }
 
 
 
@@ -326,40 +333,50 @@ class ASTVisitorOverride: ASTVisitor() {
                 data.conditionExpression // declarations i < dadsa || dasdw test(x)
                 data.iterationExpression // i = i + dadsawdsa
                 (data.body as CPPASTCompoundStatement).statements // body
-                getForStatement(data, method)
             }
         }
         println()
     }
 
+    private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
+        println(iterationExpression?.rawSignature)
+        val initT = Initialization(null, null, null, null)
+        (iterationExpression as CPPASTExpressionList).expressions.iterator()
+            .forEachRemaining { expression ->
+                run {
+                    getOperands(expression as CPPASTBinaryExpression, initT)
+                }
+            }
+        forT.addIteration(initT)
+    }
+
+    private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
+        println(conditionExpression!!.rawSignature)
+        val initT = Initialization(null, null, null, null)
+        forT.addConditionExpression(initT)
+        getOperands(conditionExpression as CPPASTBinaryExpression, initT)
+    }
+
     private fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
         println(initializerStatement)
-        var decl = Declaration(null, (initializerStatement as CPPASTDeclarationStatement).declaration.rawSignature, null, null)
         ((initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators
             .iterator().forEachRemaining {
                 declarator ->
                 run {
-                    createDeclarators(declarator, forT)
+                    setInitializer(declarator, forT)
                 }
             }
     }
 
-    private fun createDeclarators(declarator: IASTDeclarator?, forT: For) {
-        var initT = Initialization(declarator!!.name.rawSignature, null, null, null)
-
-
-    }
-
-
-    private fun getForStatement(data: CPPASTForStatement, method: Method?) {
-        //                var forT = For(
-//                    data.initializerStatement.rawSignature,
-//                )
-        data.initializerStatement // declaration Statement int x = 0;
-        data.conditionExpression // conditia i<5 || calc();
-        data.conditionDeclaration // declaration in condition
-        data.iterationExpression // iteratii Binary expr / IdExpr etc..
-        data.body // compound statement
+    private fun setInitializer(declarator: IASTDeclarator?, forT: For) { //TODO make this a general function for every state of For{}
+        val initT = Initialization(declarator!!.name.rawSignature, null, null, null)
+        forT.addInitializer(initT)
+        (declarator.initializer as CPPASTEqualsInitializer).initializerClause // fOperand1, fOperand2
+        if ((declarator.initializer as CPPASTEqualsInitializer).initializerClause is CPPASTBinaryExpression) {
+            getOperands((declarator.initializer as CPPASTEqualsInitializer).initializerClause as CPPASTBinaryExpression, initT)
+        } else if((declarator.initializer as CPPASTEqualsInitializer).initializerClause is CPPASTLiteralExpression) {
+            initT.add((declarator.initializer as CPPASTEqualsInitializer).initializerClause.rawSignature)
+        }
     }
 
     override fun visit(iastStatement: IASTStatement): Int {

@@ -2,14 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+int data() {
 
-int main() {
-    int a;
+    for(int i = calculator(4) + calculator( calculator (3) + y); i< b || test(x); i= i+1 , j = j +1) {
+        int x;
+
+        x = data(3);
+        while(x) {
+            data(3);
+        }
+
+    }
 }
-
-//int data() {
-//
-//for(int i = calculator(4) + calculator( calculator (3) + y); i< b || test(x); i= i+1 ) {
 //    int x = 0;
 //    add(x);
 //    while(x = 0 ) {
