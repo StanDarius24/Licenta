@@ -1,15 +1,41 @@
 package com.stannis.services
 
+import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.FunctionCall
 import com.stannis.dataModel.statementTypes.Initialization
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator
 import org.eclipse.cdt.core.dom.ast.IASTExpression
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause
+import org.eclipse.cdt.core.dom.ast.IASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class FunctionCallsService {
 
-    private fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
+    fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
+        if( data != null) {
+            if( data.initializer != null) {
+                data.initializer.children.iterator().forEachRemaining { datax: IASTNode ->
+                    run {
+                        when (datax) {
+                            is CPPASTFunctionCallExpression -> {
+                                val funcCall = FunctionCall(
+                                    null,
+                                    datax.functionNameExpression.rawSignature,
+                                    null,
+                                    null
+                                )
+                                declarationStatementForArgumentType(datax.arguments, funcCall)
+                                decl.function = funcCall
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
         data!!.iterator().forEachRemaining {
                 datax: IASTInitializerClause ->
             run {
@@ -42,7 +68,7 @@ class FunctionCallsService {
         }
     }
 
-    private fun getArgumentsType(functionCall: CPPASTFunctionCallExpression, statement: Statement?) {
+    fun getArgumentsType(functionCall: CPPASTFunctionCallExpression, statement: Statement?) {
         declarationStatementForArgumentType(functionCall.arguments, statement)
 
     }

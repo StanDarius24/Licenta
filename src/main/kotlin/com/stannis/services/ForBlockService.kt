@@ -13,7 +13,6 @@ class ForBlockService {
 
     private val functionCallsService = FunctionCallsService()
     private val methodService = MethodService()
-    private val astVisitorOverride = ASTVisitorOverride()
 
     fun solveForBlock(data: CPPASTForStatement, method: Method?) {
         val forT = For(null, null, null, null, null)
@@ -24,7 +23,8 @@ class ForBlockService {
         if(data.body != null) {
             val meth = Method(null, null, null, null)
             forT.addMethod(meth)
-                astVisitorOverride.seeCPASTCompoundStatement(data.body, meth)
+                CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
+
         }
     }
 

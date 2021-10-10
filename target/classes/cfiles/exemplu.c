@@ -5,12 +5,7 @@
 int data() {
 
     for(int i = calculator(4) + calculator( calculator (3) + y); i< b || test(x); i= i+1 , j = j +1) {
-        int x;
-
-        x = data(3);
-        while(x) {
-            data(3);
-        }
+       
 
     }
 }
