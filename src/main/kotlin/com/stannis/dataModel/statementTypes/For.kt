@@ -1,5 +1,6 @@
 package com.stannis.dataModel.statementTypes
 
+import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 
 //data.initializerStatement // declaration Statement int x = 0;
@@ -13,13 +14,47 @@ data class For(
     var conditionExpr: ArrayList<Initialization>?,
     var conditionDecl: ArrayList<Initialization>?,
     var iteration: ArrayList<Initialization>?,
+    var body: Method?
 ): Statement {
+
     override fun add(data: String) {
         TODO("Not yet implemented")
     }
 
     override fun add(data: FunctionCall) {
         TODO("Not yet implemented")
+    }
+
+    fun addInitializer(data: Initialization) {
+        if(initializer == null) {
+            initializer = ArrayList()
+        }
+        initializer!!.add(data)
+    }
+
+    fun addConditionExpression(data: Initialization) {
+        if(conditionExpr == null) {
+            conditionExpr = ArrayList()
+        }
+        conditionExpr!!.add(data)
+    }
+
+    fun addConditionDeclaration(data: Initialization) {
+        if(conditionDecl == null) {
+            conditionExpr = ArrayList()
+        }
+        conditionExpr!!.add(data)
+    }
+
+    fun addIteration(data: Initialization) {
+        if(iteration == null) {
+            iteration = ArrayList()
+        }
+        iteration!!.add(data)
+    }
+
+    fun addMethod(data: Method) {
+        body = data
     }
 
 }
