@@ -50,9 +50,10 @@ class CoreParserClass {
                             methodService.addStatement(method!!, functcall)
                         }
                         is CPPASTUnaryExpression -> {
-                            println(data.rawSignature)
+                            val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null)
+                            methodService.addStatement(method!!, initT)
                         }
-                    }
+                    } // Operator 9 is ++
                 }
                 is CPPASTIfStatement -> {
                     println("ifStatement")

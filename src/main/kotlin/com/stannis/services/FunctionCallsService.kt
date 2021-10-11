@@ -35,7 +35,7 @@ class FunctionCallsService {
         }
     }
 
-    fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
+    private fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
         data!!.iterator().forEachRemaining {
                 datax: IASTInitializerClause ->
             run {
@@ -81,7 +81,6 @@ class FunctionCallsService {
         statement!!.add(functionCall)
         (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
         functionCallExpression.arguments // array of arguments
-        declarationStatementForArgumentType(functionCallExpression.arguments, statement) //TODO functioncall multiple parameter
         functionCallExpression.evaluation
     }
 
