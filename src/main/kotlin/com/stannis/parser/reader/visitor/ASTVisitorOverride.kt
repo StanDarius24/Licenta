@@ -49,11 +49,24 @@ class ASTVisitorOverride: ASTVisitor() {
         if(declaration is CPPASTFunctionDefinition) {
             handleCPPASTFunctionDefinition(declaration, method)
         } else if (declaration is CPPASTSimpleDeclaration) {
-            println("simpl Declaration")
-            declaration.declSpecifier.rawSignature // return type
-            declaration.declarators // array of Declarators
-            // much more like int x = function(smth...)
+            // simple Declaration class Animal{...}
+            println("class") // CPASTCompositeTypeSpecifier -> CLASS
+            // declSpecifier it s just a string in C
+            if(declaration.declSpecifier is CPPASTSimpleDeclSpecifier) {
+                declaration.declarators.iterator().forEachRemaining { data ->
+                    val decl = Declaration(data.name.rawSignature, declaration.declSpecifier.rawSignature , data.pointerOperators.size == 1, null)
+                    methodService.addDeclaration(method, decl)
+                }
+
+                println("simpl Declaration")
+                declaration.declSpecifier.rawSignature // return type
+                declaration.declarators // array of Declarators
+                // much more like int x = function(smth...)
+            } else {
+                println("C++ class")
+            }
         }
+        if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         unitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
     }

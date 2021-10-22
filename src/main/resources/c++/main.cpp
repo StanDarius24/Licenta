@@ -1,6 +1,6 @@
 #include<iostream>
 
-class Animal {
+class Animal { // declarare structura separata, class, atribuire acestei structuri metodele care sunt implementate?
 private:
 	std::string name;
 	double height;

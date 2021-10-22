@@ -42,12 +42,23 @@ class CoreParserClass {
                             methodService.addStatement(method!!, initialization)
                         }
                         is CPPASTFunctionCallExpression -> {
-                            val functcall = FunctionCall( null,
-                                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
-                                null,null
-                            )
-                            functionCallsService.getArgumentsType(data.expression as CPPASTFunctionCallExpression, functcall)
-                            methodService.addStatement(method!!, functcall)
+
+                            if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTFieldReference ) {
+                                println((data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature)
+                                var methodCall = CPPMethodCall(null, null)
+                            // method call with .
+                            } else {
+                                val functcall = FunctionCall(
+                                    null,
+                                    ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
+                                    null, null
+                                )
+                                functionCallsService.getArgumentsType(
+                                    data.expression as CPPASTFunctionCallExpression,
+                                    functcall
+                                )
+                                methodService.addStatement(method!!, functcall)
+                            }
                         }
                         is CPPASTUnaryExpression -> {
                             val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null)
