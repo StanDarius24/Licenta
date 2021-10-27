@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct data{
+int number;
+char nume[20];
+struct data *urm;
+addMSGFunc addMSG;
+}messageData;
+
 typedef void (*addMSGFunc)(unsigned char *, int, struct linkedList *);
 
 typedef struct data{

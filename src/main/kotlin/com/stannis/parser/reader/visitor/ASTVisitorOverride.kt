@@ -2,8 +2,6 @@ package com.stannis.parser.reader.visitor
 
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
-import com.stannis.dataModel.statementTypes.FunctionCall
-import com.stannis.dataModel.statementTypes.Initialization
 import com.stannis.dataModel.statementTypes.TypedefStructure
 import com.stannis.services.*
 import org.eclipse.cdt.core.dom.ast.*
@@ -14,7 +12,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
  //TODO REFACTORIIING
 class ASTVisitorOverride: ASTVisitor() {
-
+    private var switch = false
     private var unit = Unit(null, null)
     private var method = Method(null, null, null, null, null)
     private var declaration = Declaration(null, null, null, null)
@@ -47,6 +45,21 @@ class ASTVisitorOverride: ASTVisitor() {
 
 
     override fun visit(declaration: IASTDeclaration): Int {
+        if(method.statements != null && method.statements!!.size > 0) {
+            method.statements!!.iterator().forEachRemaining { elements ->
+                run {
+                    if (elements is TypedefStructure) {
+                        if(declaration.parent is CPPASTCompositeTypeSpecifier && elements.name == (declaration.parent as CPPASTCompositeTypeSpecifier).name.rawSignature) {
+                            switch = true
+                        }
+                    }
+                }
+            }
+        }
+        if(switch) {
+            switch = false
+            return PROCESS_CONTINUE
+        }
         method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
@@ -93,7 +106,7 @@ class ASTVisitorOverride: ASTVisitor() {
                 }
                 is CPPASTCompositeTypeSpecifier -> {
                     val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
-                    if(declaration.declarators.size > 0) {
+                    if(declaration.declarators.isNotEmpty()) {
                         declaration.declarators.iterator().forEachRemaining {
                             declrS ->
                             run {
