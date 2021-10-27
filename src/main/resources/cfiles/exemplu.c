@@ -2,10 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef void (*addMSGFunc)(unsigned char *, int, struct linkedList *);
+
 typedef struct data{
 int number;
 char nume[20];
 struct data *urm;
+addMSGFunc addMSG;
+}messageData;
+
+void addMSGImpl(unsigned char *data, int size, struct linkedList *self)
+{
+    printf("data");
 }
 
 int data() {

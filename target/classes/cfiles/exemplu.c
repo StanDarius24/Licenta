@@ -2,6 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef void (*addMSGFunc)(unsigned char *, int, struct linkedList *);
+
+typedef struct data{
+int number;
+char nume[20];
+struct data *urm;
+addMSGFunc addMSG;
+}messageData;
+
+void addMSGImpl(unsigned char *data, int size, struct linkedList *self)
+{
+    printf("data");
+}
+
 int data() {
     for(int i = calculator(4) + calculator( calculator (3) + y); i< b || test(x); i= i+1 , j = j +1) {
             int x = 0;

@@ -21,7 +21,7 @@ class ForBlockService {
         solveForConditionExpression(data.conditionExpression, forT)
         solveForIterationExpression(data.iterationExpression, forT)
         if(data.body != null) {
-            val meth = Method(null, null, null, null)
+            val meth = Method(null, null, null, null, null)
             forT.addMethod(meth)
                 CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
 

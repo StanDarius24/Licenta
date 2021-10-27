@@ -22,4 +22,10 @@ data class FunctionCall(
         }
         functionCalls!!.add(data)
     }
+    fun addParameters(data: String) {
+        if(parameters == null) {
+            parameters = ArrayList()
+        }
+        parameters!!.add(data)
+    }
 }

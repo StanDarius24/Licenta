@@ -82,7 +82,7 @@ class CoreParserClass {
                     println("while")
                     val whileT = While(null, null, null, null)
                     methodService.addStatement(method!!, whileT)
-                    val methodChild = Method(null, null, null, null)
+                    val methodChild = Method(null, null, null, null, null)
                     whileT.addblock(methodChild)
                     functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
                     seeCPASTCompoundStatement(data.body, methodChild)
