@@ -2,6 +2,9 @@ package com.stannis.parser.reader.visitor
 
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
+import com.stannis.dataModel.statementTypes.FunctionCall
+import com.stannis.dataModel.statementTypes.Initialization
+import com.stannis.dataModel.statementTypes.TypedefStructure
 import com.stannis.services.*
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -13,7 +16,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 class ASTVisitorOverride: ASTVisitor() {
 
     private var unit = Unit(null, null)
-    private var method = Method(null, null, null, null)
+    private var method = Method(null, null, null, null, null)
     private var declaration = Declaration(null, null, null, null)
 
 
@@ -49,11 +52,95 @@ class ASTVisitorOverride: ASTVisitor() {
         if(declaration is CPPASTFunctionDefinition) {
             handleCPPASTFunctionDefinition(declaration, method)
         } else if (declaration is CPPASTSimpleDeclaration) {
-            println("simpl Declaration")
-            declaration.declSpecifier.rawSignature // return type
-            declaration.declarators // array of Declarators
-            // much more like int x = function(smth...)
+            // simple Declaration class Animal{...}
+            println("class") // CPASTCompositeTypeSpecifier -> CLASS
+            // declSpecifier it s just a string in C
+            when (declaration.declSpecifier) {
+                is CPPASTSimpleDeclSpecifier -> {
+                    declaration.declarators.iterator().forEachRemaining { data ->
+                        val typedefSt  =TypedefStructure(null, null, null)
+                        methodService.addStatement(method, typedefSt)
+                        if(data is CPPASTFunctionDeclarator) {
+                            data.parameters.iterator().forEachRemaining { parametersx ->
+                                val declaratorTT = Declaration(
+                                    if(parametersx.declarator.nestedDeclarator != null) {
+                                        parametersx.declarator.nestedDeclarator.rawSignature
+                                    } else {
+                                        parametersx.declarator.name.rawSignature
+                                },
+                                    parametersx.declSpecifier.rawSignature
+                                    , parametersx.declarator.pointerOperators.size == 1, null
+                                )
+                                typedefSt.add(declaratorTT)
+                            }
+                        }
+                        val decl = Declaration(
+                            if(data.nestedDeclarator != null) {
+                            data.nestedDeclarator.rawSignature
+                        } else {
+                            data.name.rawSignature
+                        },
+                            declaration.declSpecifier.rawSignature,
+                            data.pointerOperators.size == 1,
+                            null)
+                        typedefSt.initialization = decl
+                    }
+
+                    println("simpl Declaration")
+                    declaration.declSpecifier.rawSignature // return type
+                    declaration.declarators // array of Declarators
+                    // much more like int x = function(smth...)
+                }
+                is CPPASTCompositeTypeSpecifier -> {
+                    val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
+                    if(declaration.declarators.size > 0) {
+                        declaration.declarators.iterator().forEachRemaining {
+                            declrS ->
+                            run {
+                                val declAfterTypedef = Declaration(
+                                    if(declrS.nestedDeclarator != null) {
+                                        declrS.nestedDeclarator.rawSignature
+                                    } else {
+                                        declrS.name.rawSignature
+                                    },
+                                    ((declrS.parent as CPPASTSimpleDeclaration).declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature,
+                                    null,
+                                    null
+                                )
+                                methodService.addDeclaration(method, declAfterTypedef)
+                            }
+                        }
+
+                    }
+                    methodService.addStatement(method, typedefT)
+                    declaration.declSpecifier.children.iterator().forEachRemaining {
+                        data ->
+                        run {
+                            if (data is CPPASTSimpleDeclaration) {
+                                println(data.rawSignature)
+                                data.declarators.iterator().forEachRemaining {
+                                    datax ->
+                                    run {
+                                        typedefT.add(
+                                            Declaration(
+                                                datax.name.rawSignature,
+                                                data.declSpecifier.rawSignature,
+                                                datax.pointerOperators.size == 1,
+                                                null
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    println("c++ class")
+                }
+            }
         }
+        if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         unitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
     }

@@ -42,17 +42,29 @@ class CoreParserClass {
                             methodService.addStatement(method!!, initialization)
                         }
                         is CPPASTFunctionCallExpression -> {
-                            val functcall = FunctionCall( null,
-                                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
-                                null,null
-                            )
-                            functionCallsService.getArgumentsType(data.expression as CPPASTFunctionCallExpression, functcall)
-                            methodService.addStatement(method!!, functcall)
+
+                            if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTFieldReference ) {
+                                println((data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature)
+                                var methodCall = CPPMethodCall(null, null)
+                            // method call with .
+                            } else {
+                                val functcall = FunctionCall(
+                                    null,
+                                    ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
+                                    null, null
+                                )
+                                functionCallsService.getArgumentsType(
+                                    data.expression as CPPASTFunctionCallExpression,
+                                    functcall
+                                )
+                                methodService.addStatement(method!!, functcall)
+                            }
                         }
                         is CPPASTUnaryExpression -> {
-                            println(data.rawSignature)
+                            val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null)
+                            methodService.addStatement(method!!, initT)
                         }
-                    }
+                    } // Operator 9 is ++
                 }
                 is CPPASTIfStatement -> {
                     println("ifStatement")
@@ -70,7 +82,7 @@ class CoreParserClass {
                     println("while")
                     val whileT = While(null, null, null, null)
                     methodService.addStatement(method!!, whileT)
-                    val methodChild = Method(null, null, null, null)
+                    val methodChild = Method(null, null, null, null, null)
                     whileT.addblock(methodChild)
                     functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
                     seeCPASTCompoundStatement(data.body, methodChild)
