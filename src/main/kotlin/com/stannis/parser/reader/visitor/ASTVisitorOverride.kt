@@ -15,7 +15,7 @@ class ASTVisitorOverride: ASTVisitor() {
     private var switch = false
     private var unit = Unit(null, null)
     private var method = Method(null, null, null, null, null)
-    private var declaration = Declaration(null, null, null, null)
+    private var declaration = Declaration(null, null, null, null, 0)
 
 
     private val unitService = UnitService()
@@ -32,7 +32,16 @@ class ASTVisitorOverride: ASTVisitor() {
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
         if(deecl is CPPASTParameterDeclaration) {
-            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1, null)
+            declaration = Declaration(
+                deecl.declarator.name.rawSignature,
+                deecl.declSpecifier.rawSignature,
+                deecl.declarator.pointerOperators.size == 1,
+                null,
+                if (deecl is CPPASTArrayModifier ) {
+                    (deecl as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                        .rawSignature.toInt()
+                } else { 0 }
+                )
             listOfDeclaration.add(declaration)
         }
     }
@@ -83,6 +92,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                 },
                                     parametersx.declSpecifier.rawSignature
                                     , parametersx.declarator.pointerOperators.size == 1, null
+                                ,
+                                    if (parametersx is CPPASTArrayModifier ) {
+                                        (parametersx as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                            .rawSignature.toInt()
+                                    } else { 0 }
                                 )
                                 typedefSt.add(declaratorTT)
                             }
@@ -95,7 +109,12 @@ class ASTVisitorOverride: ASTVisitor() {
                         },
                             declaration.declSpecifier.rawSignature,
                             data.pointerOperators.size == 1,
-                            null)
+                            null,
+                            if (data is CPPASTArrayModifier ) {
+                                (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                    .rawSignature.toInt()
+                            } else { 0 }
+                            )
                         typedefSt.initialization = decl
                     }
 
@@ -118,7 +137,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                     },
                                     ((declrS.parent as CPPASTSimpleDeclaration).declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature,
                                     null,
-                                    null
+                                    null,
+                                    if (declrS is CPPASTArrayModifier ) {
+                                        (declrS as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                            .rawSignature.toInt()
+                                    } else { 0 }
                                 )
                                 methodService.addDeclaration(method, declAfterTypedef)
                             }
@@ -139,8 +162,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                                 datax.name.rawSignature,
                                                 data.declSpecifier.rawSignature,
                                                 datax.pointerOperators.size == 1,
-                                                null
-                                            )
+                                                null,
+                                                if (datax is CPPASTArrayModifier ) {
+                                                        (datax as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                                            .rawSignature.toInt()
+                                                } else { 0 })
                                         )
                                     }
                                 }

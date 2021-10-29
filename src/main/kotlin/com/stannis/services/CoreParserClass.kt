@@ -17,7 +17,17 @@ class CoreParserClass {
 
         private fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method?) {
             simpleDeclaration.declarators.iterator().forEachRemaining { data ->
-                val decl = Declaration(data.name.rawSignature, simpleDeclaration.declSpecifier.rawSignature , data.pointerOperators.size == 1, null)
+                val decl = Declaration(
+                    data.name.rawSignature,
+                    simpleDeclaration.declSpecifier.rawSignature,
+                    data.pointerOperators.size == 1,
+                    null,
+                    if (data is CPPASTArrayModifier ) {
+                        (data as CPPASTArrayDeclarator).arrayModifiers
+                            .get(0).constantExpression
+                            .rawSignature.toInt()
+                    } else { 0 }
+                    )
                     functionCallsService.getFunctionCall(data, decl)
                 methodService.addDeclaration(method!!, decl)
             }
