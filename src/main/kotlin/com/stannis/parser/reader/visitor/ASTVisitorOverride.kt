@@ -124,6 +124,8 @@ class ASTVisitorOverride: ASTVisitor() {
                     // much more like int x = function(smth...)
                 }
                 is CPPASTCompositeTypeSpecifier -> {
+                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
+                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
                     val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
                     if(declaration.declarators.isNotEmpty()) {
                         declaration.declarators.iterator().forEachRemaining {
@@ -175,7 +177,7 @@ class ASTVisitorOverride: ASTVisitor() {
                     }
                 }
                 else -> {
-                    println("c++ class")
+                    println("Apel de functie data.ceva()")
                 }
             }
         }

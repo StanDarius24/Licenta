@@ -31,13 +31,17 @@ class ForBlockService {
     fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
         println(iterationExpression?.rawSignature)
         val initT = Initialization(null, null, null, null)
-        (iterationExpression as CPPASTExpressionList).expressions.iterator()
-            .forEachRemaining { expression ->
-                run {
-                    functionCallsService.getOperands(expression as CPPASTBinaryExpression, initT)
+        if(iterationExpression is CPPASTExpressionList) {
+            iterationExpression.expressions.iterator()
+                .forEachRemaining { expression ->
+                    run {
+                        functionCallsService.getOperands(expression as CPPASTBinaryExpression, initT)
+                    }
                 }
-            }
-        forT.addIteration(initT)
+            forT.addIteration(initT)
+        } else {
+            println("Error here in solveForIterationExpression") //TODO FIX THIS!
+        }
     }
 
     fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
@@ -49,13 +53,16 @@ class ForBlockService {
 
     fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
         println(initializerStatement)
-        ((initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators
-            .iterator().forEachRemaining {
-                    declarator ->
-                run {
-                    setInitializer(declarator, forT)
+        if(initializerStatement is CPPASTDeclarationStatement) {
+            (initializerStatement.declaration as CPPASTSimpleDeclaration).declarators
+                .iterator().forEachRemaining { declarator ->
+                    run {
+                        setInitializer(declarator, forT)
+                    }
                 }
-            }
+        } else {
+            println("we need a fix here: iuser=user.begin();")
+        }
     }
 
     private fun setInitializer(declarator: IASTDeclarator?, forT: For) { //TODO make this a general function for every state of For{}

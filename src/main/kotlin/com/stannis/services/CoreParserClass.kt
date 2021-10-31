@@ -46,7 +46,7 @@ class CoreParserClass {
                         is CPPASTBinaryExpression -> {
                             val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
                             functionCallsService.getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
-                            if(initialization.value!!.size > 1) {
+                            if(initialization.value != null && initialization.value!!.size > 1) {
                                 initialization.value!!.remove(initialization.value!![initialization.value!!.size - 1])
                             }
                             methodService.addStatement(method!!, initialization)
@@ -55,7 +55,7 @@ class CoreParserClass {
 
                             if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTFieldReference ) {
                                 println((data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature)
-                                var methodCall = CPPMethodCall(null, null)
+                                CPPMethodCall(null, null)
                             // method call with .
                             } else {
                                 val functcall = FunctionCall(
@@ -80,12 +80,18 @@ class CoreParserClass {
                     println("ifStatement")
                     val ifT = If(null, null, null, null, null)
                     methodService.addStatement(method!!, ifT)
-                    functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
+                    if(data.conditionExpression is CPPASTBinaryExpression) {
+                        functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
+                    } else {
+                        println("Error in COREPASRESCLASS") //TODO FIX THIS !
+                    }
                     val ifBlock = methodService.createMethod()
                     ifT.addIfBlock(ifBlock)
                     val elseBlock = methodService.createMethod()
                     ifT.addElseBlock(elseBlock)
+                    if(data.thenClause != null)
                     seeCPASTCompoundStatement(data.thenClause, ifBlock)
+                    if(data.elseClause != null)
                     seeCPASTCompoundStatement(data.elseClause, elseBlock)
                 }
                 is CPPASTWhileStatement -> {
@@ -94,7 +100,11 @@ class CoreParserClass {
                     methodService.addStatement(method!!, whileT)
                     val methodChild = Method(null, null, null, null, null)
                     whileT.addblock(methodChild)
-                    functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
+                    if(data.condition is CPPASTBinaryExpression) {
+                        functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
+                    } else {
+                        //TODO Fix here
+                    }
                     seeCPASTCompoundStatement(data.body, methodChild)
                 }
                 is CPPASTProblemStatement -> {
@@ -119,12 +129,12 @@ class CoreParserClass {
 
                 forBlockService.solveForBlock(data, method)
 
-                    ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature // ( int
-                    ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators // array of declarations = calculator(4) +dasda etc
-                    // declaratirs =>  name = i, initializer initializer Compound Statement fArguments (fOperand1; fOperand2)
-                    data.conditionDeclaration //????
-                    data.conditionExpression // declarations i < dadsa || dasdw test(x)
-                    data.iterationExpression // i = i + dadsawdsa
+//                    ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature // ( int
+//                    ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declarators // array of declarations = calculator(4) +dasda etc
+//                    // declaratirs =>  name = i, initializer initializer Compound Statement fArguments (fOperand1; fOperand2)
+//                    data.conditionDeclaration //????
+//                    data.conditionExpression // declarations i < dadsa || dasdw test(x)
+//                    data.iterationExpression // i = i + dadsawdsa
                     (data.body as CPPASTCompoundStatement).statements // body
                 }
             }
