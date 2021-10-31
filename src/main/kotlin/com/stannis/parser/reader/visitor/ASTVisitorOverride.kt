@@ -2,8 +2,6 @@ package com.stannis.parser.reader.visitor
 
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
-import com.stannis.dataModel.statementTypes.FunctionCall
-import com.stannis.dataModel.statementTypes.Initialization
 import com.stannis.dataModel.statementTypes.TypedefStructure
 import com.stannis.services.*
 import org.eclipse.cdt.core.dom.ast.*
@@ -14,10 +12,10 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
  //TODO REFACTORIIING
 class ASTVisitorOverride: ASTVisitor() {
-
+    private var switch = false
     private var unit = Unit(null, null)
     private var method = Method(null, null, null, null, null)
-    private var declaration = Declaration(null, null, null, null)
+    private var declaration = Declaration(null, null, null, null, 0)
 
 
     private val unitService = UnitService()
@@ -34,7 +32,16 @@ class ASTVisitorOverride: ASTVisitor() {
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
         if(deecl is CPPASTParameterDeclaration) {
-            declaration = Declaration(deecl.declarator.name.rawSignature, deecl.declSpecifier.rawSignature, deecl.declarator.pointerOperators.size == 1, null)
+            declaration = Declaration(
+                deecl.declarator.name.rawSignature,
+                deecl.declSpecifier.rawSignature,
+                deecl.declarator.pointerOperators.size == 1,
+                null,
+                if (deecl is CPPASTArrayModifier ) {
+                    (deecl as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                        .rawSignature.toInt()
+                } else { 0 }
+                )
             listOfDeclaration.add(declaration)
         }
     }
@@ -47,6 +54,21 @@ class ASTVisitorOverride: ASTVisitor() {
 
 
     override fun visit(declaration: IASTDeclaration): Int {
+        if(method.statements != null && method.statements!!.size > 0) {
+            method.statements!!.iterator().forEachRemaining { elements ->
+                run {
+                    if (elements is TypedefStructure) {
+                        if(declaration.parent is CPPASTCompositeTypeSpecifier && elements.name == (declaration.parent as CPPASTCompositeTypeSpecifier).name.rawSignature) {
+                            switch = true
+                        }
+                    }
+                }
+            }
+        }
+        if(switch) {
+            switch = false
+            return PROCESS_CONTINUE
+        }
         method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
@@ -70,6 +92,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                 },
                                     parametersx.declSpecifier.rawSignature
                                     , parametersx.declarator.pointerOperators.size == 1, null
+                                ,
+                                    if (parametersx is CPPASTArrayModifier ) {
+                                        (parametersx as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                            .rawSignature.toInt()
+                                    } else { 0 }
                                 )
                                 typedefSt.add(declaratorTT)
                             }
@@ -82,7 +109,12 @@ class ASTVisitorOverride: ASTVisitor() {
                         },
                             declaration.declSpecifier.rawSignature,
                             data.pointerOperators.size == 1,
-                            null)
+                            null,
+                            if (data is CPPASTArrayModifier ) {
+                                (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                    .rawSignature.toInt()
+                            } else { 0 }
+                            )
                         typedefSt.initialization = decl
                     }
 
@@ -92,8 +124,10 @@ class ASTVisitorOverride: ASTVisitor() {
                     // much more like int x = function(smth...)
                 }
                 is CPPASTCompositeTypeSpecifier -> {
+                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
+                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
                     val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
-                    if(declaration.declarators.size > 0) {
+                    if(declaration.declarators.isNotEmpty()) {
                         declaration.declarators.iterator().forEachRemaining {
                             declrS ->
                             run {
@@ -105,7 +139,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                     },
                                     ((declrS.parent as CPPASTSimpleDeclaration).declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature,
                                     null,
-                                    null
+                                    null,
+                                    if (declrS is CPPASTArrayModifier ) {
+                                        (declrS as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                            .rawSignature.toInt()
+                                    } else { 0 }
                                 )
                                 methodService.addDeclaration(method, declAfterTypedef)
                             }
@@ -126,8 +164,11 @@ class ASTVisitorOverride: ASTVisitor() {
                                                 datax.name.rawSignature,
                                                 data.declSpecifier.rawSignature,
                                                 datax.pointerOperators.size == 1,
-                                                null
-                                            )
+                                                null,
+                                                if (datax is CPPASTArrayModifier ) {
+                                                        (datax as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
+                                                            .rawSignature.toInt()
+                                                } else { 0 })
                                         )
                                     }
                                 }
@@ -136,7 +177,7 @@ class ASTVisitorOverride: ASTVisitor() {
                     }
                 }
                 else -> {
-                    println("c++ class")
+                    println("Apel de functie data.ceva()")
                 }
             }
         }

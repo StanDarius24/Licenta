@@ -79,9 +79,9 @@ class FunctionCallsService {
         val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
         getArgumentsType(functionCallExpression, functionCall)
         statement!!.add(functionCall)
-        (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
-        functionCallExpression.arguments // array of arguments
-        functionCallExpression.evaluation
+      //  (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
+       // functionCallExpression.arguments // array of arguments
+       // functionCallExpression.evaluation
     }
 
     private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
