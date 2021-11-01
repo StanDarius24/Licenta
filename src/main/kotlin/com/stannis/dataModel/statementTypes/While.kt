@@ -10,7 +10,7 @@ data class While(
     var methods: ArrayList<Method>?
 ): Statement {
 
-    override fun add(data: String) {
+    fun add(data: String) {
         if(operands == null) {
             operands = ArrayList()
         }
@@ -31,7 +31,7 @@ data class While(
         methods!!.add(block)
     }
 
-    override fun add(data: FunctionCall) {
+    fun add(data: FunctionCall) {
         if(functionCalls == null) {
             functionCalls = ArrayList()
         }

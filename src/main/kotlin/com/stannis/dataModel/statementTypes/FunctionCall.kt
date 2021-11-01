@@ -9,14 +9,14 @@ data class FunctionCall(
     var functionCalls: ArrayList<FunctionCall>?
 ): Statement
 {
-    override fun add(data: String) {
+    fun add(data: String) {
         if(parameters == null) {
             parameters = ArrayList()
         }
         parameters!!.add(data)
     }
 
-    override fun add(data: FunctionCall) {
+    fun add(data: FunctionCall) {
         if(functionCalls == null) {
             functionCalls = ArrayList()
         }

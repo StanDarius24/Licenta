@@ -41,7 +41,7 @@ class FunctionCallsService {
             run {
                 when (datax) {
                     is CPPASTLiteralExpression -> {
-                        statement!!.add(datax.rawSignature)
+                        StatementMapper.addNameDependingOnType(statement!!, datax.rawSignature)
                     }
                     is CPPASTFunctionCallExpression -> {
                         val list = ArrayList<String>()
@@ -58,7 +58,7 @@ class FunctionCallsService {
                         }
                     }
                     is CPPASTIdExpression -> {
-                        statement!!.add(datax.name.rawSignature)
+                        StatementMapper.addNameDependingOnType(statement!!, datax.name.rawSignature)
                     } // to add CppastBinaryExpression
                     is CPPASTBinaryExpression -> {
                         getOperands(datax, statement)
@@ -70,24 +70,19 @@ class FunctionCallsService {
 
     fun getArgumentsType(functionCall: CPPASTFunctionCallExpression, statement: Statement?) {
         declarationStatementForArgumentType(functionCall.arguments, statement)
-
     }
 
     private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
         println(functionCallExpression.rawSignature)
-
         val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
         getArgumentsType(functionCallExpression, functionCall)
-        statement!!.add(functionCall)
-      //  (functionCallExpression.functionNameExpression as CPPASTIdExpression).name.rawSignature //// function name
-       // functionCallExpression.arguments // array of arguments
-       // functionCallExpression.evaluation
+        StatementMapper.addFunctionCallDependingOnType(statement!!, functionCall)
     }
 
     private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
         if((binaryExpression is CPPASTIdExpression) || (binaryExpression is CPPASTLiteralExpression) || (binaryExpression is CPPASTUnaryExpression)) {
             println(binaryExpression.rawSignature)
-            statement!!.add(binaryExpression.rawSignature)
+            StatementMapper.addNameDependingOnType(statement!!, binaryExpression.rawSignature)
         } else if(binaryExpression is CPPASTFunctionCallExpression) {
             getFunctionArguments(binaryExpression, statement)
         }

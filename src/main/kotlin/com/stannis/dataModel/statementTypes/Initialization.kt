@@ -9,13 +9,13 @@ data class Initialization(
     var declaration: ArrayList<Declaration>?,
     var functionCalls: ArrayList<FunctionCall>?
 ): Statement {
-    override fun add(data: String) {
+    fun add(data: String) {
             if (value == null) {
                 value = ArrayList()
             }
         value!!.add(data)
     }
-    override fun add(data: FunctionCall) {
+    fun add(data: FunctionCall) {
         if (functionCalls == null) {
             functionCalls = ArrayList()
         }

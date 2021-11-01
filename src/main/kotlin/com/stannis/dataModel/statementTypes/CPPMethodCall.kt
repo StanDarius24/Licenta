@@ -6,11 +6,11 @@ data class CPPMethodCall(
     var name:String?,
     var functionCall: ArrayList<FunctionCall>?
 ): Statement {
-    override fun add(data: String) {
+    fun add(data: String) {
         name = data
     }
 
-    override fun add(data: FunctionCall) {
+    fun add(data: FunctionCall) {
         if(functionCall == null) {
             functionCall = ArrayList()
         }

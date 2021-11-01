@@ -17,14 +17,6 @@ data class For(
     var body: Method?
 ): Statement {
 
-    override fun add(data: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun add(data: FunctionCall) {
-        TODO("Not yet implemented")
-    }
-
     fun addInitializer(data: Initialization) {
         if(initializer == null) {
             initializer = ArrayList()
