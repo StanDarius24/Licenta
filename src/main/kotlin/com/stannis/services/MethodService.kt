@@ -6,7 +6,6 @@ import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 
 class MethodService {
-
     fun createMethod(): Method {
         return Method(null, null, null, null, null)
     }

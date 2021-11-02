@@ -28,7 +28,7 @@ class ForBlockService {
         }
     }
 
-    fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
+    private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
         println(iterationExpression?.rawSignature)
         val initT = Initialization(null, null, null, null)
         if(iterationExpression is CPPASTExpressionList) {
@@ -39,19 +39,19 @@ class ForBlockService {
                     }
                 }
             forT.addIteration(initT)
-        } else {
-            println("Error here in solveForIterationExpression") //TODO FIX THIS!
+        } else if(iterationExpression is CPPASTUnaryExpression) {
+            forT.addIteration(Initialization(iterationExpression.rawSignature, null ,null ,null))
         }
     }
 
-    fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
+    private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
         println(conditionExpression!!.rawSignature)
         val initT = Initialization(null, null, null, null)
         forT.addConditionExpression(initT)
             functionCallsService.getOperands(conditionExpression as CPPASTBinaryExpression, initT)
     }
 
-    fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
+    private fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
         println(initializerStatement)
         if(initializerStatement is CPPASTDeclarationStatement) {
             (initializerStatement.declaration as CPPASTSimpleDeclaration).declarators
@@ -60,8 +60,11 @@ class ForBlockService {
                         setInitializer(declarator, forT)
                     }
                 }
-        } else {
-            println("we need a fix here: iuser=user.begin();")
+        } else if (initializerStatement is CPPASTExpressionStatement){
+            val inits =Initialization(null, null, null, null)
+            val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
+            functionCallsService.getOperands(initializerStatement.expression as CPPASTBinaryExpression, inits) // new statement structure
+            println("we need a fix here: iuser=user.begin();") //TODO fix this
         }
     }
 

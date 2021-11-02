@@ -23,8 +23,7 @@ class CoreParserClass {
                     data.pointerOperators.size == 1,
                     null,
                     if (data is CPPASTArrayModifier ) {
-                        (data as CPPASTArrayDeclarator).arrayModifiers
-                            .get(0).constantExpression
+                        (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                             .rawSignature.toInt()
                     } else { 0 }
                     )
@@ -82,8 +81,8 @@ class CoreParserClass {
                     methodService.addStatement(method!!, ifT)
                     if(data.conditionExpression is CPPASTBinaryExpression) {
                         functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
-                    } else {
-                        println("Error in COREPASRESCLASS") //TODO FIX THIS !
+                    } else if (data.conditionExpression is CPPASTUnaryExpression){
+                        ifT.add(data.conditionExpression.rawSignature)
                     }
                     val ifBlock = methodService.createMethod()
                     ifT.addIfBlock(ifBlock)
@@ -102,8 +101,8 @@ class CoreParserClass {
                     whileT.addblock(methodChild)
                     if(data.condition is CPPASTBinaryExpression) {
                         functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
-                    } else {
-                        //TODO Fix here
+                    } else if (data.condition is CPPASTLiteralExpression){
+                        whileT.add(data.condition.rawSignature)
                     }
                     seeCPASTCompoundStatement(data.body, methodChild)
                 }

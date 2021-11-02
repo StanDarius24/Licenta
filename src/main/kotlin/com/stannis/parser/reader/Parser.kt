@@ -53,9 +53,9 @@ class Parser {
                     val builder = JsonBuilder()
                     val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
                     fileToWrite.bufferedWriter().use { out ->
-                        out.write(builder.createJson(astVisitorOverride.getUnit()))
+                        out.write(builder.createJson(ASTVisitorOverride.getUnit()))
                     }
-                    println(builder.createJson(astVisitorOverride.getUnit()))
+                    println(builder.createJson(ASTVisitorOverride.getUnit()))
             }
         }
     }

@@ -74,9 +74,19 @@ class FunctionCallsService {
 
     private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
         println(functionCallExpression.rawSignature)
+        if(functionCallExpression.functionNameExpression is CPPASTFieldReference) {
+            val ffcals = FunctionCall(null, (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature, null, null)
+            (statement as Initialization).name = (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
+            StatementMapper.addFunctionCallDependingOnType(statement!!, ffcals)
+//            var returntype: String?,
+//            var name: String?,
+//            var parameters: ArrayList<String>?,
+//            var functionCalls: ArrayList<FunctionCall>?
+        } else {
         val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
         getArgumentsType(functionCallExpression, functionCall)
-        StatementMapper.addFunctionCallDependingOnType(statement!!, functionCall)
+        StatementMapper.addFunctionCallDependingOnType(statement!!, functionCall) }
+
     }
 
     private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
