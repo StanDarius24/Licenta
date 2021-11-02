@@ -10,19 +10,25 @@ import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
- //TODO REFACTORIIING
+
 class ASTVisitorOverride: ASTVisitor() {
     private var switch = false
-    private var unit = Unit(null, null)
-    private var method = Method(null, null, null, null, null)
-    private var declaration = Declaration(null, null, null, null, 0)
-
-
     private val unitService = UnitService()
     private val methodService = MethodService()
 
-    fun getUnit() :Unit {
-        return this.unit
+    companion object{
+
+        private var method = Method(null, null, null, null, null)
+        private var declaration = Declaration(null, null, null, null, 0)
+        private var unit = Unit(null, null)
+
+        fun getUnit() :Unit {
+            return this.unit
+        }
+
+        fun getMethod() :Method {
+            return this.method
+        }
     }
 
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
@@ -125,6 +131,9 @@ class ASTVisitorOverride: ASTVisitor() {
                 }
                 is CPPASTCompositeTypeSpecifier -> {
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
+                    if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
+                        println("CLASS C++")
+                    }
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
                     val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
                     if(declaration.declarators.isNotEmpty()) {

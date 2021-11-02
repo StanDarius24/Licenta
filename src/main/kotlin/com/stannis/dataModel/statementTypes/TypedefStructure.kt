@@ -13,7 +13,7 @@ data class TypedefStructure(
         initialization = init
     }
 
-    override fun add(data: String) {
+    fun add(data: String) {
         name = data
     }
 
@@ -24,7 +24,4 @@ data class TypedefStructure(
         parameters!!.add(data)
     }
 
-    override fun add(data: FunctionCall) {
-        TODO("Not yet implemented")
-    }
 }

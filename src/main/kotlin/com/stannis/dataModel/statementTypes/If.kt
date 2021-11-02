@@ -9,14 +9,14 @@ data class If( var operands: ArrayList<String>?,
                var ifBlock: ArrayList<Method>?,
                var elseBlock: ArrayList<Method>?): Statement {
 
-    override fun add(data: String) {
+    fun add(data: String) {
         if(operands == null) {
             operands = ArrayList()
         }
         operands!!.add(data)
     }
 
-    override fun add(data: FunctionCall) {
+    fun add(data: FunctionCall) {
         if(functionCalls == null) {
             functionCalls = ArrayList()
         }
