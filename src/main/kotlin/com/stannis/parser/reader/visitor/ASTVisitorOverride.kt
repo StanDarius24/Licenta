@@ -12,14 +12,16 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
+
     private var switch = false
     private val unitService = UnitService()
     private val methodService = MethodService()
+    private val classService = ClassService()
+    private val funcDefService = FunctionDefinitionService()
 
     companion object{
 
         private var method = Method(null, null, null, null, null)
-        private var declaration = Declaration(null, null, null, null, 0)
         private var unit = Unit(null, null)
 
         fun getUnit() :Unit {
@@ -35,29 +37,6 @@ class ASTVisitorOverride: ASTVisitor() {
         println("Found a ICPPASTClassVirtSpecifier" + classVirtSpecifier?.rawSignature)
         return PROCESS_CONTINUE
     }
-
-    private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
-        if(deecl is CPPASTParameterDeclaration) {
-            declaration = Declaration(
-                deecl.declarator.name.rawSignature,
-                deecl.declSpecifier.rawSignature,
-                deecl.declarator.pointerOperators.size == 1,
-                null,
-                if (deecl is CPPASTArrayModifier ) {
-                    (deecl as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                        .rawSignature.toInt()
-                } else { 0 }
-                )
-            listOfDeclaration.add(declaration)
-        }
-    }
-
-    private fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration>{
-        val listOfDeclaration = ArrayList<Declaration>()
-        params.iterator().forEachRemaining { param: ICPPASTParameterDeclaration -> getTypes(param, listOfDeclaration)}
-        return listOfDeclaration
-    }
-
 
     override fun visit(declaration: IASTDeclaration): Int {
         if(method.statements != null && method.statements!!.size > 0) {
@@ -78,7 +57,7 @@ class ASTVisitorOverride: ASTVisitor() {
         method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
-            handleCPPASTFunctionDefinition(declaration, method)
+            funcDefService.handleCPPASTFunctionDefinition(declaration, method)
         } else if (declaration is CPPASTSimpleDeclaration) {
             // simple Declaration class Animal{...}
             println("class") // CPASTCompositeTypeSpecifier -> CLASS
@@ -132,6 +111,9 @@ class ASTVisitorOverride: ASTVisitor() {
                 is CPPASTCompositeTypeSpecifier -> {
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
                     if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
+                        val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null, null, null, null, null)
+                        (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
+                        classService.parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
                         println("CLASS C++")
                     }
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
@@ -193,20 +175,6 @@ class ASTVisitorOverride: ASTVisitor() {
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         unitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
-    }
-
-    private fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, method: Method) {
-        methodService.setAntet(method,
-            Antet(
-                declaration.declSpecifier.rawSignature,
-                declaration.declarator.name.rawSignature,
-                getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
-            )
-        )
-        (declaration.body as CPPASTCompoundStatement).statements
-            .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
-        // CPPASTCompoundStatement array
-        // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
     }
 
     override fun visit(initializer: IASTInitializer): Int {

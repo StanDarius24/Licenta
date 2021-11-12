@@ -11,33 +11,15 @@ class CoreParserClass {
 
         private val functionCallsService = FunctionCallsService()
         private val forBlockService = ForBlockService()
-
+        private val declStatementParser = DeclarationStatementParser()
         private val methodService = MethodService()
-
-
-        private fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method?) {
-            simpleDeclaration.declarators.iterator().forEachRemaining { data ->
-                val decl = Declaration(
-                    data.name.rawSignature,
-                    simpleDeclaration.declSpecifier.rawSignature,
-                    data.pointerOperators.size == 1,
-                    null,
-                    if (data is CPPASTArrayModifier ) {
-                        (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                            .rawSignature.toInt()
-                    } else { 0 }
-                    )
-                    functionCallsService.getFunctionCall(data, decl)
-                methodService.addDeclaration(method!!, decl)
-            }
-        }
 
         fun seeCPASTCompoundStatement(data: IASTStatement, method: Method?) {
             println("---------")
             println(data.rawSignature)
             when (data) {
                 is CPPASTDeclarationStatement -> {
-                    declStatement(data.declaration as CPPASTSimpleDeclaration, method)
+                    declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method)
                 }
                 is CPPASTExpressionStatement -> {
                     println("expr")
