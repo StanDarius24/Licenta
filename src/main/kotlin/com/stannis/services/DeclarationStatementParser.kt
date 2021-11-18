@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArrayDeclarator
@@ -9,10 +10,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 class DeclarationStatementParser {
 
     private val functionCallsService = FunctionCallsService()
-    private val forBlockService = ForBlockService()
     private val methodService = MethodService()
 
-    fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method?) {
+    fun declStatement(simpleDeclaration: CPPASTSimpleDeclaration, method: Method? , modifier: String?) {
         simpleDeclaration.declarators.iterator().forEachRemaining { data ->
             val decl = Declaration(
                 data.name.rawSignature,
@@ -22,7 +22,8 @@ class DeclarationStatementParser {
                 if (data is CPPASTArrayModifier ) {
                     (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                         .rawSignature.toInt()
-                } else { 0 }
+                } else { 0 },
+                modifier
             )
             functionCallsService.getFunctionCall(data, decl)
             methodService.addDeclaration(method!!, decl)

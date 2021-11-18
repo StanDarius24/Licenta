@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 class FunctionDefinitionService {
 
     private val methodService = MethodService()
-    private var declaration = Declaration(null, null, null, null, 0)
+    private var declaration = Declaration(null, null, null, null, 0, null)
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
             declaration = Declaration(
@@ -21,7 +21,8 @@ class FunctionDefinitionService {
                 if (deecl is CPPASTArrayModifier) {
                     (deecl as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                         .rawSignature.toInt()
-                } else { 0 }
+                } else { 0 },
+                null
             )
             listOfDeclaration.add(declaration)
     }
@@ -36,11 +37,9 @@ class FunctionDefinitionService {
         )
         (declaration.body as CPPASTCompoundStatement).statements
             .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
-        // CPPASTCompoundStatement array
-        // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
     }
 
-    private fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration>{
+    fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration> {
         val listOfDeclaration = ArrayList<Declaration>()
         params.iterator().forEachRemaining { param: ICPPASTParameterDeclaration -> getTypes(param, listOfDeclaration)}
         return listOfDeclaration

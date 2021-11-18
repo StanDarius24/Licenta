@@ -1,6 +1,5 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.*
 import org.eclipse.cdt.core.dom.ast.IASTStatement
@@ -19,7 +18,7 @@ class CoreParserClass {
             println(data.rawSignature)
             when (data) {
                 is CPPASTDeclarationStatement -> {
-                    declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method)
+                    declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
                 }
                 is CPPASTExpressionStatement -> {
                     println("expr")

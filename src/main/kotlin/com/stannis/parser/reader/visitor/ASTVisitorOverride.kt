@@ -22,7 +22,7 @@ class ASTVisitorOverride: ASTVisitor() {
     companion object{
 
         private var method = Method(null, null, null, null, null)
-        private var unit = Unit(null, null)
+        private var unit = Unit(null, null, null)
 
         fun getUnit() :Unit {
             return this.unit
@@ -82,6 +82,7 @@ class ASTVisitorOverride: ASTVisitor() {
                                         (parametersx as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                                             .rawSignature.toInt()
                                     } else { 0 }
+                                , null
                                 )
                                 typedefSt.add(declaratorTT)
                             }
@@ -98,7 +99,8 @@ class ASTVisitorOverride: ASTVisitor() {
                             if (data is CPPASTArrayModifier ) {
                                 (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                                     .rawSignature.toInt()
-                            } else { 0 }
+                            } else { 0 },
+                            null
                             )
                         typedefSt.initialization = decl
                     }
@@ -111,9 +113,11 @@ class ASTVisitorOverride: ASTVisitor() {
                 is CPPASTCompositeTypeSpecifier -> {
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
                     if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
-                        val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null, null, null, null, null)
+                        val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
+                        unitService.addClass(unit, classDeclaration)
                         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
                         classService.parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
+                        return PROCESS_CONTINUE
                         println("CLASS C++")
                     }
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
@@ -134,7 +138,8 @@ class ASTVisitorOverride: ASTVisitor() {
                                     if (declrS is CPPASTArrayModifier ) {
                                         (declrS as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                                             .rawSignature.toInt()
-                                    } else { 0 }
+                                    } else { 0 },
+                                    null
                                 )
                                 methodService.addDeclaration(method, declAfterTypedef)
                             }
@@ -159,7 +164,9 @@ class ASTVisitorOverride: ASTVisitor() {
                                                 if (datax is CPPASTArrayModifier ) {
                                                         (datax as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
                                                             .rawSignature.toInt()
-                                                } else { 0 })
+                                                } else { 0 },
+                                                null
+                                            )
                                         )
                                     }
                                 }
