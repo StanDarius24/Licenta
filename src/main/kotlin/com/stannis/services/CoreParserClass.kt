@@ -22,7 +22,6 @@ class CoreParserClass {
                     declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
                 }
                 is CPPASTExpressionStatement -> {
-                    println("expr")
                     when (data.expression) {
                         is CPPASTBinaryExpression -> {
                             val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
@@ -91,7 +90,6 @@ class CoreParserClass {
                     seeCPASTCompoundStatement(data.elseClause, elseBlock)
                 }
                 is CPPASTWhileStatement -> {
-                    println("while")
                     val whileT = While(null, null, null, null)
                     methodService.addStatement(method!!, whileT)
                     val methodChild = Method(null, null, null, null, null)
@@ -107,7 +105,6 @@ class CoreParserClass {
                     println("problStatement")
                 }
                 is CPPASTCompoundStatement -> {
-                    println("cmpStat")
                     data.statements.iterator()
                         .forEachRemaining { dataStatement: IASTStatement -> seeCPASTCompoundStatement(dataStatement, method) }
                 }
@@ -122,7 +119,6 @@ class CoreParserClass {
                     methodService.addStatement(method!!, returnT)
                 }
                 is CPPASTForStatement -> {
-
                 forBlockService.solveForBlock(data, method)
 
 //                    ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration).declSpecifier.rawSignature // ( int
