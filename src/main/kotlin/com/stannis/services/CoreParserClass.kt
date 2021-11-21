@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.*
 import org.eclipse.cdt.core.dom.ast.IASTStatement
@@ -32,11 +33,26 @@ class CoreParserClass {
                             methodService.addStatement(method!!, initialization)
                         }
                         is CPPASTFunctionCallExpression -> {
-
                             if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTFieldReference ) {
-                                println((data.expression as CPPASTFunctionCallExpression).functionNameExpression.rawSignature)
-                                CPPMethodCall(null, null)
-                            // method call with .
+                                var methodName = (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldOwner.rawSignature
+                                methodName = methodName + "->" + (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldName.rawSignature
+                                val cpastmethod = CPPMethodCall(methodName, null)
+                                val fcall = FunctionCall(
+                                    null,
+                                    ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
+                                    null,null
+                                )
+                                cpastmethod.add(fcall)
+                                (data.expression as CPPASTFunctionCallExpression).arguments.iterator()
+                                    .forEachRemaining { expression ->
+                                        run {
+                                            if (expression is CPPASTIdExpression) {
+                                                fcall.add(expression.name.rawSignature)
+
+                                            }
+                                        }
+                                    }
+                                method!!.addStatement(cpastmethod)
                             } else {
                                 val functcall = FunctionCall(
                                     null,

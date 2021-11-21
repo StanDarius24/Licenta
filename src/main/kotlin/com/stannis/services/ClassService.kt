@@ -14,13 +14,11 @@ class ClassService {
     private lateinit var defaulType: String
 
     fun parseDecl(classDeclaration: Class, declSpecifier: CPPASTCompositeTypeSpecifier) {
-        println(declSpecifier)
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
                 when (member) {
                     is CPPASTVisibilityLabel -> {
                         defaulType = member.rawSignature
-                        println(member.rawSignature)
                     }
                     is CPPASTSimpleDeclaration -> {
                         getDeclarationsForClass(member, classDeclaration)
@@ -31,7 +29,6 @@ class ClassService {
                 }
             }
         }
-        println("da")
     }
 
     private fun handleCPPASTFunctionDefinition(classDeclaration: Class, member: CPPASTFunctionDefinition) {
@@ -50,7 +47,6 @@ class ClassService {
     }
 
     private fun getDeclarationsForClass(member: CPPASTSimpleDeclaration, classDeclaration: Class) {
-        println(defaulType)
         member.declarators.iterator().forEachRemaining { data ->
             val decl = Declaration(
                 data.name.rawSignature,

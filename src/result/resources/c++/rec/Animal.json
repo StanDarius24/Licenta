@@ -1,248 +1,4 @@
 {
-  "methods": [
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "height",
-            "returnType": "double",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "weight",
-            "returnType": "double",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "numberOfAnimals",
-            "returnType": "static int",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    },
-    {
-      "antet": {
-        "returnType": "std::string",
-        "name": "GetName",
-        "declarations": []
-      },
-      "statements": [
-        {
-          "returnType": [
-            "name"
-          ]
-        }
-      ]
-    },
-    {
-      "antet": {
-        "returnType": "void",
-        "name": "SetName",
-        "declarations": [
-          {
-            "name": "name",
-            "returnType": "std::string",
-            "pointer": false,
-            "arraySize": 0
-          }
-        ]
-      }
-    },
-    {
-      "antet": {
-        "returnType": "double",
-        "name": "getHeight",
-        "declarations": []
-      },
-      "statements": [
-        {
-          "returnType": [
-            "this-\u003eheight"
-          ]
-        }
-      ]
-    },
-    {
-      "antet": {
-        "returnType": "void",
-        "name": "setHeight",
-        "declarations": [
-          {
-            "name": "height",
-            "returnType": "double",
-            "pointer": false,
-            "arraySize": 0
-          }
-        ]
-      },
-      "statements": [
-        {
-          "name": "this-\u003eheight",
-          "value": [
-            "height"
-          ]
-        }
-      ]
-    },
-    {
-      "antet": {
-        "returnType": "double",
-        "name": "getWeight",
-        "declarations": []
-      },
-      "statements": [
-        {
-          "returnType": [
-            "this-\u003eweight"
-          ]
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "setWeight",
-            "returnType": "void",
-            "pointer": false,
-            "arraySize": 0
-          },
-          "parameters": [
-            {
-              "name": "weight",
-              "returnType": "double",
-              "pointer": false,
-              "arraySize": 0
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "antet": {
-        "returnType": "static int",
-        "name": "getNumberOfAnimals",
-        "declarations": []
-      },
-      "statements": [
-        {
-          "returnType": [
-            "numberOfAnimals"
-          ]
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "toString",
-            "returnType": "void",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "setAnimals",
-            "returnType": "void",
-            "pointer": false,
-            "arraySize": 0
-          },
-          "parameters": [
-            {
-              "name": "name",
-              "returnType": "std::string",
-              "pointer": false,
-              "arraySize": 0
-            },
-            {
-              "name": "height",
-              "returnType": "double",
-              "pointer": false,
-              "arraySize": 0
-            },
-            {
-              "name": "weight",
-              "returnType": "double",
-              "pointer": false,
-              "arraySize": 0
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "setAnimals",
-            "returnType": "void",
-            "pointer": false,
-            "arraySize": 0
-          },
-          "parameters": [
-            {
-              "name": "name",
-              "returnType": "std::string",
-              "pointer": false,
-              "arraySize": 0
-            },
-            {
-              "name": "weight",
-              "returnType": "double",
-              "pointer": false,
-              "arraySize": 0
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "Animal",
-            "returnType": "",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    },
-    {
-      "statements": [
-        {
-          "initialization": {
-            "name": "~Animal",
-            "returnType": "",
-            "pointer": false,
-            "arraySize": 0
-          }
-        }
-      ]
-    }
-  ],
   "clas": {
     "name": "Animal",
     "declarations": [
@@ -322,7 +78,7 @@
         "antet": {
           "returnType": "std::string",
           "name": "GetName",
-          "declarations": []
+          "antetDeclarations": []
         },
         "statements": [
           {
@@ -336,7 +92,7 @@
         "antet": {
           "returnType": "void",
           "name": "SetName",
-          "declarations": [
+          "antetDeclarations": [
             {
               "name": "name",
               "returnType": "std::string",
@@ -344,13 +100,26 @@
               "arraySize": 0
             }
           ]
-        }
+        },
+        "statements": [
+          {
+            "name": "this-\u003ename",
+            "functionCall": [
+              {
+                "name": "assign",
+                "parameters": [
+                  "name"
+                ]
+              }
+            ]
+          }
+        ]
       },
       {
         "antet": {
           "returnType": "double",
           "name": "getHeight",
-          "declarations": []
+          "antetDeclarations": []
         },
         "statements": [
           {
@@ -364,7 +133,7 @@
         "antet": {
           "returnType": "void",
           "name": "setHeight",
-          "declarations": [
+          "antetDeclarations": [
             {
               "name": "height",
               "returnType": "double",
@@ -386,7 +155,7 @@
         "antet": {
           "returnType": "double",
           "name": "getWeight",
-          "declarations": []
+          "antetDeclarations": []
         },
         "statements": [
           {
@@ -400,7 +169,7 @@
         "antet": {
           "returnType": "static int",
           "name": "getNumberOfAnimals",
-          "declarations": []
+          "antetDeclarations": []
         },
         "statements": [
           {

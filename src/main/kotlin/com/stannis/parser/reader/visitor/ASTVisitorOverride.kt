@@ -117,8 +117,7 @@ class ASTVisitorOverride: ASTVisitor() {
                         unitService.addClass(unit, classDeclaration)
                         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
                         classService.parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
-                        return PROCESS_CONTINUE
-                        println("CLASS C++")
+                        return PROCESS_SKIP
                     }
                     (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
                     val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)

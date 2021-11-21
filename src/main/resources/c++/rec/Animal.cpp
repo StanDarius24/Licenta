@@ -8,18 +8,18 @@ private:
 	static int numberOfAnimals;
 
 public:
+	void setWeight(double weight); //
+    void toString(); //
+    void setAnimals(std::string name, double weight); //
+	void setAnimals(std::string name, double height, double weight); //
+    Animal(); //
+    ~Animal(); //
 	std::string GetName() {return name;}
 	void SetName(std::string name) {this->name.assign(name);}
 	double getHeight() {return this->height;}
 	void setHeight(double height) {this->height = height;}
 	double getWeight() {return this->weight;}
-	void setWeight(double weight);
 	static int getNumberOfAnimals() {return numberOfAnimals;}
-	void toString();
-	void setAnimals(std::string name, double height, double weight);
-    void setAnimals(std::string name, double weight);
-	Animal();
-	~Animal();
 };
 //
 //void Animal::setWeight(double weight){this->weight = weight;}
@@ -52,4 +52,4 @@ public:
 //	std::cout<< " name: " << this->name << " height: " << this->height <<
 //		" weight: " << this->weight << "\n";
 //}
-
+//

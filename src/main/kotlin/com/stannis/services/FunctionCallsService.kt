@@ -72,12 +72,12 @@ class FunctionCallsService {
         declarationStatementForArgumentType(functionCall.arguments, statement)
     }
 
-    private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
+    fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
         println(functionCallExpression.rawSignature)
         if(functionCallExpression.functionNameExpression is CPPASTFieldReference) {
             val ffcals = FunctionCall(null, (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature, null, null)
             (statement as Initialization).name = (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
-            StatementMapper.addFunctionCallDependingOnType(statement!!, ffcals)
+            StatementMapper.addFunctionCallDependingOnType(statement, ffcals)
 //            var returntype: String?,
 //            var name: String?,
 //            var parameters: ArrayList<String>?,
