@@ -3,6 +3,7 @@ package com.stannis.parser.reader.visitor
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
 import com.stannis.dataModel.statementTypes.TypedefStructure
+import com.stannis.declSpecifier.SimpleDeclSpecifierService
 import com.stannis.services.*
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -12,20 +13,20 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
+
     private var switch = false
-    private val unitService = UnitService()
-    private val methodService = MethodService()
+
 
     companion object{
-
-        private var method = Method(null, null, null, null, null)
-        private var declaration = Declaration(null, null, null, null, 0)
-        private var unit = Unit(null, null)
-
+        private val unitService = UnitService()
+        private val methodService = MethodService()
+        private val classService = ClassService()
+        private val funcDefService = FunctionDefinitionService()
+        private var method = methodService.createMethod()
+        private var unit = unitService.createUnit()
         fun getUnit() :Unit {
             return this.unit
         }
-
         fun getMethod() :Method {
             return this.method
         }
@@ -36,30 +37,8 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
-        if(deecl is CPPASTParameterDeclaration) {
-            declaration = Declaration(
-                deecl.declarator.name.rawSignature,
-                deecl.declSpecifier.rawSignature,
-                deecl.declarator.pointerOperators.size == 1,
-                null,
-                if (deecl is CPPASTArrayModifier ) {
-                    (deecl as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                        .rawSignature.toInt()
-                } else { 0 }
-                )
-            listOfDeclaration.add(declaration)
-        }
-    }
-
-    private fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration>{
-        val listOfDeclaration = ArrayList<Declaration>()
-        params.iterator().forEachRemaining { param: ICPPASTParameterDeclaration -> getTypes(param, listOfDeclaration)}
-        return listOfDeclaration
-    }
-
-
-    override fun visit(declaration: IASTDeclaration): Int {
+    private fun checkDecl(declaration: IASTDeclaration): Boolean {
+        switch = false
         if(method.statements != null && method.statements!!.size > 0) {
             method.statements!!.iterator().forEachRemaining { elements ->
                 run {
@@ -71,142 +50,28 @@ class ASTVisitorOverride: ASTVisitor() {
                 }
             }
         }
-        if(switch) {
-            switch = false
+        return switch
+    }
+
+    override fun visit(declaration: IASTDeclaration): Int {
+        if(checkDecl(declaration)) {
             return PROCESS_CONTINUE
         }
         method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         if(declaration is CPPASTFunctionDefinition) {
-            handleCPPASTFunctionDefinition(declaration, method)
+            funcDefService.handleCPPASTFunctionDefinition(declaration, method)
         } else if (declaration is CPPASTSimpleDeclaration) {
-            // simple Declaration class Animal{...}
-            println("class") // CPASTCompositeTypeSpecifier -> CLASS
-            // declSpecifier it s just a string in C
-            when (declaration.declSpecifier) {
-                is CPPASTSimpleDeclSpecifier -> {
-                    declaration.declarators.iterator().forEachRemaining { data ->
-                        val typedefSt  =TypedefStructure(null, null, null)
-                        methodService.addStatement(method, typedefSt)
-                        if(data is CPPASTFunctionDeclarator) {
-                            data.parameters.iterator().forEachRemaining { parametersx ->
-                                val declaratorTT = Declaration(
-                                    if(parametersx.declarator.nestedDeclarator != null) {
-                                        parametersx.declarator.nestedDeclarator.rawSignature
-                                    } else {
-                                        parametersx.declarator.name.rawSignature
-                                },
-                                    parametersx.declSpecifier.rawSignature
-                                    , parametersx.declarator.pointerOperators.size == 1, null
-                                ,
-                                    if (parametersx is CPPASTArrayModifier ) {
-                                        (parametersx as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                                            .rawSignature.toInt()
-                                    } else { 0 }
-                                )
-                                typedefSt.add(declaratorTT)
-                            }
-                        }
-                        val decl = Declaration(
-                            if(data.nestedDeclarator != null) {
-                            data.nestedDeclarator.rawSignature
-                        } else {
-                            data.name.rawSignature
-                        },
-                            declaration.declSpecifier.rawSignature,
-                            data.pointerOperators.size == 1,
-                            null,
-                            if (data is CPPASTArrayModifier ) {
-                                (data as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                                    .rawSignature.toInt()
-                            } else { 0 }
-                            )
-                        typedefSt.initialization = decl
-                    }
-
-                    println("simpl Declaration")
-                    declaration.declSpecifier.rawSignature // return type
-                    declaration.declarators // array of Declarators
-                    // much more like int x = function(smth...)
-                }
-                is CPPASTCompositeTypeSpecifier -> {
-                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
-                    if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
-                        println("CLASS C++")
-                    }
-                    (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
-                    val typedefT = TypedefStructure((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
-                    if(declaration.declarators.isNotEmpty()) {
-                        declaration.declarators.iterator().forEachRemaining {
-                            declrS ->
-                            run {
-                                val declAfterTypedef = Declaration(
-                                    if(declrS.nestedDeclarator != null) {
-                                        declrS.nestedDeclarator.rawSignature
-                                    } else {
-                                        declrS.name.rawSignature
-                                    },
-                                    ((declrS.parent as CPPASTSimpleDeclaration).declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature,
-                                    null,
-                                    null,
-                                    if (declrS is CPPASTArrayModifier ) {
-                                        (declrS as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                                            .rawSignature.toInt()
-                                    } else { 0 }
-                                )
-                                methodService.addDeclaration(method, declAfterTypedef)
-                            }
-                        }
-
-                    }
-                    methodService.addStatement(method, typedefT)
-                    declaration.declSpecifier.children.iterator().forEachRemaining {
-                        data ->
-                        run {
-                            if (data is CPPASTSimpleDeclaration) {
-                                println(data.rawSignature)
-                                data.declarators.iterator().forEachRemaining {
-                                    datax ->
-                                    run {
-                                        typedefT.add(
-                                            Declaration(
-                                                datax.name.rawSignature,
-                                                data.declSpecifier.rawSignature,
-                                                datax.pointerOperators.size == 1,
-                                                null,
-                                                if (datax is CPPASTArrayModifier ) {
-                                                        (datax as CPPASTArrayDeclarator).arrayModifiers[0].constantExpression
-                                                            .rawSignature.toInt()
-                                                } else { 0 })
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else -> {
-                    println("Apel de functie data.ceva()")
-                }
+            val simpleDeclSpecifierService = SimpleDeclSpecifierService()
+            if(!simpleDeclSpecifierService.solveDeclSpecifier(
+                declaration, method, unit, methodService, classService, unitService)
+            ) {
+                return PROCESS_CONTINUE
             }
         }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         unitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
-    }
-
-    private fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, method: Method) {
-        methodService.setAntet(method,
-            Antet(
-                declaration.declSpecifier.rawSignature,
-                declaration.declarator.name.rawSignature,
-                getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
-            )
-        )
-        (declaration.body as CPPASTCompoundStatement).statements
-            .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
-        // CPPASTCompoundStatement array
-        // WhileStatement, ExpressionStatement, ProblemStatement, Declaration, IfStatement, etc...
     }
 
     override fun visit(initializer: IASTInitializer): Int {
@@ -272,11 +137,6 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(iastStatement: IASTStatement): Int {
         println("Found an IASTStatement: " + iastStatement.rawSignature)
-//        if ( iastStatement is CPPASTCompoundStatement ) { //  CPPASTExpressionStatement)
-//            iastStatement.statements.iterator()
-//                .forEachRemaining { data: IASTStatement -> seeCPASTCompoundStatement(data, null) }
-//        }
-        // var x = EvalFunctionCall()
         return PROCESS_CONTINUE
     }
 

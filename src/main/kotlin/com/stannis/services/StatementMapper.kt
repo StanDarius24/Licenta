@@ -27,9 +27,6 @@ class StatementMapper {
 
         fun addFunctionCallDependingOnType(stats: Statement, fc: FunctionCall) {
             when (stats) {
-                is CPPMethodCall -> {
-                    stats.add(fc)
-                }
                 is FunctionCall -> {
                     stats.add(fc)
                 }

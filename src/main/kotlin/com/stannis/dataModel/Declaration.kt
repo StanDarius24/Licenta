@@ -7,5 +7,6 @@ data class Declaration(
     var returnType: String?,
     var pointer: Boolean?,
     var function: FunctionCall?,
-    var arraySize: Int?
+    var arraySize: Int?,
+    var modifier: String?
 )

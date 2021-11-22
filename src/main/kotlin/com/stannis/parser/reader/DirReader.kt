@@ -12,7 +12,7 @@ class DirReader {
         fun getAllFilesInResources(): ArrayList<String> {
             val list = ArrayList<String>()
             val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
-            val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources")
+            val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources/c++/rec")
             Files.walk(resourcesPath)
                 .filter { item -> Files.isRegularFile(item) }
                 .forEach { item -> list.add(item.toString())}
