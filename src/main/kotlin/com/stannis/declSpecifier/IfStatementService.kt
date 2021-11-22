@@ -1,0 +1,31 @@
+package com.stannis.declSpecifier
+
+import com.stannis.dataModel.Method
+import com.stannis.dataModel.statementTypes.If
+import com.stannis.services.CoreParserClass
+import com.stannis.services.FunctionCallsService
+import com.stannis.services.MethodService
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBinaryExpression
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIfStatement
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression
+
+class IfStatementService {
+    fun solveIfStatement(data: CPPASTIfStatement,  method: Method?, methodService: MethodService, functionCallsService: FunctionCallsService) {
+        println("ifStatement")
+        val ifT = If(null, null, null, null, null)
+        methodService.addStatement(method!!, ifT)
+        if(data.conditionExpression is CPPASTBinaryExpression) {
+            functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
+        } else if (data.conditionExpression is CPPASTUnaryExpression){
+            ifT.add(data.conditionExpression.rawSignature)
+        }
+        val ifBlock = methodService.createMethod()
+        ifT.addIfBlock(ifBlock)
+        val elseBlock = methodService.createMethod()
+        ifT.addElseBlock(elseBlock)
+        if(data.thenClause != null)
+            CoreParserClass.seeCPASTCompoundStatement(data.thenClause, ifBlock)
+        if(data.elseClause != null)
+            CoreParserClass.seeCPASTCompoundStatement(data.elseClause, elseBlock)
+    }
+}

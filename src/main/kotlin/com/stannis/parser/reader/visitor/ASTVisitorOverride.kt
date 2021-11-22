@@ -21,14 +21,11 @@ class ASTVisitorOverride: ASTVisitor() {
     private val funcDefService = FunctionDefinitionService()
 
     companion object{
-
         private var method = Method(null, null, null, null, null)
         private var unit = Unit(null, null, null)
-
         fun getUnit() :Unit {
             return this.unit
         }
-
         fun getMethod() :Method {
             return this.method
         }
@@ -39,7 +36,8 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    override fun visit(declaration: IASTDeclaration): Int {
+    private fun checkDecl(declaration: IASTDeclaration): Boolean {
+        switch = false
         if(method.statements != null && method.statements!!.size > 0) {
             method.statements!!.iterator().forEachRemaining { elements ->
                 run {
@@ -51,8 +49,11 @@ class ASTVisitorOverride: ASTVisitor() {
                 }
             }
         }
-        if(switch) {
-            switch = false
+        return switch
+    }
+
+    override fun visit(declaration: IASTDeclaration): Int {
+        if(checkDecl(declaration)) {
             return PROCESS_CONTINUE
         }
         method = methodService.createMethod()
@@ -62,8 +63,8 @@ class ASTVisitorOverride: ASTVisitor() {
         } else if (declaration is CPPASTSimpleDeclaration) {
             val simpleDeclSpecifierService = SimpleDeclSpecifierService()
             if(!simpleDeclSpecifierService.solveDeclSpecifier(
-                declaration, method, unit, methodService, classService, unitService
-            )) {
+                declaration, method, unit, methodService, classService, unitService)
+            ) {
                 return PROCESS_CONTINUE
             }
         }
