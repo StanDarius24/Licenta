@@ -14,6 +14,14 @@ class ClassService {
     private lateinit var defaulType: String
 
     fun parseDecl(classDeclaration: Class, declSpecifier: CPPASTCompositeTypeSpecifier) {
+        if(declSpecifier.baseSpecifiers != null) {
+            declSpecifier.baseSpecifiers.iterator().forEachRemaining {
+                inher ->
+                run {
+                    classDeclaration.addInheritance(inher.nameSpecifier.rawSignature)
+                }
+            }
+        }
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
                 when (member) {
@@ -41,7 +49,7 @@ class ClassService {
                 functionDefService.getParametersDeclarationArray((member.declarator as CPPASTFunctionDeclarator).parameters)
                 )
         )
-
+        method.modifier = defaulType
         (member.body as CPPASTCompoundStatement).statements
             .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
     }

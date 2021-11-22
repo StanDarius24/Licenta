@@ -14,7 +14,7 @@ class WhileStatementService {
     fun solveWhileStatement(data: CPPASTWhileStatement, method: Method?, methodService: MethodService, functionCallsService: FunctionCallsService) {
         val whileT = While(null, null, null, null)
         methodService.addStatement(method!!, whileT)
-        val methodChild = Method(null, null, null, null, null)
+        val methodChild = methodService.createMethod()
         whileT.addblock(methodChild)
         if(data.condition is CPPASTBinaryExpression) {
             functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)

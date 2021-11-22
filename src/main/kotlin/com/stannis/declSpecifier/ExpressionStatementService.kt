@@ -20,25 +20,44 @@ class ExpressionStatementService {
     }
 
     private fun fieldReferenceSolver(data: CPPASTExpressionStatement, method: Method?) {
-        var methodName = (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldOwner.rawSignature
-        methodName = methodName + "->" + (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldName.rawSignature
-        val cpastmethod = CPPMethodCall(methodName, null)
-        val fcall = FunctionCall(
-            null,
-            ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
-            null,null
-        )
-        cpastmethod.add(fcall)
-        (data.expression as CPPASTFunctionCallExpression).arguments.iterator()
-            .forEachRemaining { expression ->
-                run {
-                    if (expression is CPPASTIdExpression) {
-                        fcall.add(expression.name.rawSignature)
-
+        if(((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner is CPPASTFieldReference) {
+            var methodName =
+                (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldOwner.rawSignature
+            methodName =
+                methodName + "->" + (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference).fieldName.rawSignature
+            val cpastmethod = CPPMethodCall(methodName, null)
+            val fcall = FunctionCall(
+                null,
+                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
+                null, null
+            )
+            cpastmethod.add(fcall)
+            (data.expression as CPPASTFunctionCallExpression).arguments.iterator()
+                .forEachRemaining { expression ->
+                    run {
+                        if (expression is CPPASTIdExpression) {
+                            fcall.add(expression.name.rawSignature)
+                        }
                     }
                 }
+            method!!.addStatement(cpastmethod)
+        } else if(((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner is CPPASTIdExpression) {
+            val fcall = FunctionCall(
+                null,
+                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
+                null,
+                null
+            )
+            (data.expression as CPPASTFunctionCallExpression).arguments.iterator().forEachRemaining {
+                parameter ->
+                run {
+                    fcall.addParameters(parameter.rawSignature) //TODO fix for other method call and make it general line 35
+                }
             }
-        method!!.addStatement(cpastmethod)
+            val cpastmethod = CPPMethodCall(((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature, null)
+            cpastmethod.add(fcall)
+            method!!.addStatement(cpastmethod)
+        }
     }
 
     private fun funcCallSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {

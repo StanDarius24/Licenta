@@ -15,14 +15,15 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 class ASTVisitorOverride: ASTVisitor() {
 
     private var switch = false
-    private val unitService = UnitService()
-    private val methodService = MethodService()
-    private val classService = ClassService()
-    private val funcDefService = FunctionDefinitionService()
+
 
     companion object{
-        private var method = Method(null, null, null, null, null)
-        private var unit = Unit(null, null, null)
+        private val unitService = UnitService()
+        private val methodService = MethodService()
+        private val classService = ClassService()
+        private val funcDefService = FunctionDefinitionService()
+        private var method = methodService.createMethod()
+        private var unit = unitService.createUnit()
         fun getUnit() :Unit {
             return this.unit
         }

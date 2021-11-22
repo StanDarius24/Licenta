@@ -1,7 +1,7 @@
 package com.stannis.dataModel
 
 data class Unit(
-    var methods: ArrayList<Method>?,
+    var clas: Class?,
     var declarations: ArrayList<Declaration>?,
-    var clas: Class?
+    var methods: ArrayList<Method>?
 )
