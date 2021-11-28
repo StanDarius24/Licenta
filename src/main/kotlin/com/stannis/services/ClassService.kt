@@ -11,7 +11,7 @@ class ClassService {
     private var functionCallsService = FunctionCallsService()
     private var methodService = MethodService()
     private var functionDefService = FunctionDefinitionService()
-    private lateinit var defaulType: String
+    private var defaulType = "public:"
 
     fun parseDecl(classDeclaration: Class, declSpecifier: CPPASTCompositeTypeSpecifier) {
         if(declSpecifier.baseSpecifiers != null) {
@@ -34,6 +34,7 @@ class ClassService {
                     is CPPASTFunctionDefinition -> {
                         handleCPPASTFunctionDefinition(classDeclaration, member)
                     }
+                    else -> { throw Exception() }
                 }
             }
         }

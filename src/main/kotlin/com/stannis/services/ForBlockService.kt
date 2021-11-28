@@ -24,47 +24,74 @@ class ForBlockService {
             val meth = methodService.createMethod()
             forT.addMethod(meth)
                 CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
-
         }
     }
 
     private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
-        println(iterationExpression?.rawSignature)
-        val initT = Initialization(null, null, null, null)
-        if(iterationExpression is CPPASTExpressionList) {
-            iterationExpression.expressions.iterator()
-                .forEachRemaining { expression ->
-                    run {
-                        functionCallsService.getOperands(expression as CPPASTBinaryExpression, initT)
-                    }
+        if( iterationExpression != null) {
+            println(iterationExpression.rawSignature)
+            val initT = Initialization(null, null, null, null)
+            when (iterationExpression) {
+                is CPPASTExpressionList -> {
+                    iterationExpression.expressions.iterator()
+                        .forEachRemaining { expression ->
+                            run {
+                                when (expression) {
+                                    is CPPASTBinaryExpression -> {
+                                        functionCallsService.getOperands(expression, initT)
+                                    }
+                                    is CPPASTUnaryExpression -> {
+                                        initT.add(expression.rawSignature)
+                                    }
+                                    else -> {
+                                        throw Exception()
+                                    }
+                                }
+                            }
+                        }
+                    forT.addIteration(initT)
                 }
-            forT.addIteration(initT)
-        } else if(iterationExpression is CPPASTUnaryExpression) {
-            forT.addIteration(Initialization(iterationExpression.rawSignature, null ,null ,null))
+                is CPPASTUnaryExpression -> {
+                    forT.addIteration(Initialization(iterationExpression.rawSignature, null, null, null))
+                }
+                is CPPASTBinaryExpression -> {
+                    println("itr") //TODO
+                }
+                else -> {
+                    throw Exception()
+                }
+            }
         }
     }
 
     private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
-        println(conditionExpression!!.rawSignature)
         val initT = Initialization(null, null, null, null)
         forT.addConditionExpression(initT)
+        if(conditionExpression!= null) {
             functionCallsService.getOperands(conditionExpression as CPPASTBinaryExpression, initT)
+        }
     }
 
     private fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
         println(initializerStatement)
-        if(initializerStatement is CPPASTDeclarationStatement) {
-            (initializerStatement.declaration as CPPASTSimpleDeclaration).declarators
-                .iterator().forEachRemaining { declarator ->
-                    run {
-                        setInitializer(declarator, forT)
+        when (initializerStatement) {
+            is CPPASTDeclarationStatement -> {
+                (initializerStatement.declaration as CPPASTSimpleDeclaration).declarators
+                    .iterator().forEachRemaining { declarator ->
+                        run {
+                            setInitializer(declarator, forT)
+                        }
                     }
-                }
-        } else if (initializerStatement is CPPASTExpressionStatement){
-            val inits =Initialization(null, null, null, null)
-            val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
-            functionCallsService.getOperands(initializerStatement.expression as CPPASTBinaryExpression, inits) // new statement structure
-            println("we need a fix here: iuser=user.begin();") //TODO fix this
+            }
+            is CPPASTExpressionStatement -> {
+                val inits =Initialization(null, null, null, null)
+                val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
+                functionCallsService.getOperands(initializerStatement.expression as CPPASTBinaryExpression, inits) // new statement structure
+                println("we need a fix here: iuser=user.begin();") //TODO fix this
+            }
+            else -> {
+                throw Exception()
+            }
         }
     }
 
@@ -72,10 +99,19 @@ class ForBlockService {
         val initT = Initialization(declarator!!.name.rawSignature, null, null, null)
         forT.addInitializer(initT)
         (declarator.initializer as CPPASTEqualsInitializer).initializerClause // fOperand1, fOperand2
-        if ((declarator.initializer as CPPASTEqualsInitializer).initializerClause is CPPASTBinaryExpression) {
-            functionCallsService.getOperands((declarator.initializer as CPPASTEqualsInitializer).initializerClause as CPPASTBinaryExpression, initT)
-        } else if((declarator.initializer as CPPASTEqualsInitializer).initializerClause is CPPASTLiteralExpression) {
-            initT.add((declarator.initializer as CPPASTEqualsInitializer).initializerClause.rawSignature)
+        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {
+            is CPPASTBinaryExpression -> {
+                functionCallsService.getOperands((declarator.initializer as CPPASTEqualsInitializer).initializerClause as CPPASTBinaryExpression, initT)
+            }
+            is CPPASTLiteralExpression -> {
+                initT.add((declarator.initializer as CPPASTEqualsInitializer).initializerClause.rawSignature)
+            }
+            is CPPASTIdExpression -> {
+                println("initr") //TODO
+            }
+            else -> {
+                throw Exception()
+            }
         }
     }
 

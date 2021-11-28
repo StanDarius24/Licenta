@@ -20,7 +20,7 @@ class WhileStatementService {
             functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
         } else if (data.condition is CPPASTLiteralExpression){
             whileT.add(data.condition.rawSignature)
-        }
+        } else { throw Exception() }
         CoreParserClass.seeCPASTCompoundStatement(data.body, methodChild)
     }
 }
