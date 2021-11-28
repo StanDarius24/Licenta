@@ -19,38 +19,62 @@ class CoreParserClass {
         private val ifStatementService = IfStatementService()
         private val whileStatementService = WhileStatementService()
         private val returnStatementService = ReturnStatementService()
+        private val switchStatementService = SwitchStatementService()
 
         fun seeCPASTCompoundStatement(data: IASTStatement, method: Method?) {
-            println("---------")
-            println(data.rawSignature)
-            when (data) {
-                is CPPASTDeclarationStatement -> {
-                    declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
+                println("---------")
+                println(data.rawSignature)
+                when (data) {
+                    is CPPASTDeclarationStatement -> {
+                        declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
+                    }
+                    is CPPASTExpressionStatement -> {
+                        expressionStatementService.solveExpressionStatement(
+                            data,
+                            method,
+                            functionCallsService,
+                            methodService
+                        )
+                    }
+                    is CPPASTIfStatement -> {
+                        ifStatementService.solveIfStatement(data, method, methodService, functionCallsService)
+                    }
+                    is CPPASTWhileStatement -> {
+                        whileStatementService.solveWhileStatement(data, method, methodService, functionCallsService)
+                    }
+                    is CPPASTProblemStatement -> {
+                        println("problStatement")
+                    }
+                    is CPPASTCompoundStatement -> {
+                        data.statements.iterator()
+                            .forEachRemaining { dataStatement: IASTStatement ->
+                                seeCPASTCompoundStatement(
+                                    dataStatement,
+                                    method
+                                )
+                            }
+                    }
+                    is CPPASTReturnStatement -> {
+                        returnStatementService.solveReturnStatement(data, method, functionCallsService, methodService)
+                    }
+                    is CPPASTForStatement -> {
+                        forBlockService.solveForBlock(data, method)
+                    }
+                    is CPPASTSwitchStatement -> {
+                        switchStatementService.solveSwitchStatement(data, method)
+                    }
+                    is CPPASTDoStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTContinueStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTBreakStatement -> {
+                        println(data) //TODO
+                    }
+                    else -> { throw Exception() }
                 }
-                is CPPASTExpressionStatement -> {
-                    expressionStatementService.solveExpressionStatement(data, method, functionCallsService, methodService)
-                }
-                is CPPASTIfStatement -> {
-                    ifStatementService.solveIfStatement(data, method, methodService, functionCallsService)
-                }
-                is CPPASTWhileStatement -> {
-                    whileStatementService.solveWhileStatement(data, method, methodService, functionCallsService)
-                }
-                is CPPASTProblemStatement -> {
-                    println("problStatement")
-                }
-                is CPPASTCompoundStatement -> {
-                    data.statements.iterator()
-                        .forEachRemaining { dataStatement: IASTStatement -> seeCPASTCompoundStatement(dataStatement, method) }
-                }
-                is CPPASTReturnStatement -> {
-                    returnStatementService.solveReturnStatement(data, method, functionCallsService, methodService)
-                }
-                is CPPASTForStatement -> {
-                forBlockService.solveForBlock(data, method)
-                }
-            }
-            println()
+                println()
         }
 
     }

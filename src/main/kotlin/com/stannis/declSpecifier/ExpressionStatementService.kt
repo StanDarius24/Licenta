@@ -57,20 +57,37 @@ class ExpressionStatementService {
             val cpastmethod = CPPMethodCall(((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature, null)
             cpastmethod.add(fcall)
             method!!.addStatement(cpastmethod)
+        } else {
+            throw Exception()
         }
     }
 
     private fun funcCallSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
-        val functcall = FunctionCall(
-            null,
-            ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
-            null, null
-        )
-        functionCallsService.getArgumentsType(
-            data.expression as CPPASTFunctionCallExpression,
-            functcall
-        )
-        methodService.addStatement(method!!, functcall)
+        if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTUnaryExpression) {
+            val functcall = FunctionCall(
+                null,
+                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTUnaryExpression).operand.rawSignature,
+                null,null
+            )
+            functionCallsService.getArgumentsType(
+                data.expression as CPPASTFunctionCallExpression,
+                functcall
+            )
+            methodService.addStatement(method!!, functcall) //TODO refactor this
+        } else if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTIdExpression) {
+            val functcall = FunctionCall(
+                null,
+                ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
+                null, null
+            )
+            functionCallsService.getArgumentsType(
+                data.expression as CPPASTFunctionCallExpression,
+                functcall
+            )
+            methodService.addStatement(method!!, functcall)
+        } else {
+            throw Exception()
+        }
     }
 
     private fun functionCallExprSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
@@ -93,6 +110,7 @@ class ExpressionStatementService {
                 val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null)
                 methodService.addStatement(method!!, initT)
             }
+            else -> throw Exception()
         } // Operator 9 is ++
     }
 }

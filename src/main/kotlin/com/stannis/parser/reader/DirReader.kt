@@ -14,9 +14,15 @@ class DirReader {
             val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
             val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources/c++/rec")
             Files.walk(resourcesPath)
-                .filter { item -> Files.isRegularFile(item) }
+                .filter { item -> Files.isRegularFile(item) && isCOrCppFileRelated(item.fileName.toString()) }
                 .forEach { item -> list.add(item.toString())}
             return list
+        }
+
+        private fun isCOrCppFileRelated(text: String): Boolean{
+            return text.endsWith(".cpp") || text.endsWith(".cc") || text.endsWith(".c") ||
+                    text.endsWith(".cxx") || text.endsWith(".h") || text.endsWith(".hh") ||
+                    text.endsWith(".hpp") || text.endsWith(".inl") || text.endsWith(".tcc")
         }
 
         fun makedir(path: String) {

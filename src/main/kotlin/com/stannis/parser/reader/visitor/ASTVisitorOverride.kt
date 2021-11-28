@@ -59,15 +59,28 @@ class ASTVisitorOverride: ASTVisitor() {
         }
         method = methodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
-        if(declaration is CPPASTFunctionDefinition) {
-            funcDefService.handleCPPASTFunctionDefinition(declaration, method)
-        } else if (declaration is CPPASTSimpleDeclaration) {
-            val simpleDeclSpecifierService = SimpleDeclSpecifierService()
-            if(!simpleDeclSpecifierService.solveDeclSpecifier(
-                declaration, method, unit, methodService, classService, unitService)
-            ) {
-                return PROCESS_CONTINUE
+        when (declaration) {
+            is CPPASTFunctionDefinition -> {
+                funcDefService.handleCPPASTFunctionDefinition(declaration, method)
             }
+            is CPPASTSimpleDeclaration -> {
+                val simpleDeclSpecifierService = SimpleDeclSpecifierService()
+                if(!simpleDeclSpecifierService.solveDeclSpecifier(
+                        declaration, method, unit, methodService, classService, unitService)
+                ) {
+                    return PROCESS_CONTINUE
+                }
+            }
+            is CPPASTProblemDeclaration -> {
+                println("Declaration problem")
+            }
+            is CPPASTLinkageSpecification -> {
+                println(declaration) //TODO
+            }
+            is CPPASTVisibilityLabel -> {
+                println(declaration) //TODO
+            }
+            else -> { throw Exception() }
         }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         unitService.addNewMethod(unit, method)
