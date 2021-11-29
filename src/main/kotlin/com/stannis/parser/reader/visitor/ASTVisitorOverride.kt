@@ -80,6 +80,27 @@ class ASTVisitorOverride: ASTVisitor() {
             is CPPASTVisibilityLabel -> {
                 println(declaration) //TODO
             }
+            is CPPASTTemplateDeclaration -> {
+                println(declaration) // TODO
+            }
+            is CPPASTStaticAssertionDeclaration -> {
+                println(declaration) //TODO
+            }
+            is CPPASTTemplateSpecialization -> {
+                println(declaration) //TODO
+            }
+            is CPPASTAliasDeclaration -> {
+                println(declaration) //TODO
+            }
+            is CPPASTUsingDirective -> {
+                println(declaration) //TODO
+            }
+            is CPPASTUsingDeclaration -> {
+                println(declaration) //TODO
+            }
+            is CPPASTNamespaceAlias -> {
+                println(declaration) //TODO
+            }
             else -> { throw Exception() }
         }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)

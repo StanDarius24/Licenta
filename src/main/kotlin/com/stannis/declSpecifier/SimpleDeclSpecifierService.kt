@@ -136,6 +136,7 @@ class SimpleDeclSpecifierService {
             }
             is CPPASTNamedTypeSpecifier -> {} //TODO
             is CPPASTEnumerationSpecifier -> {} //TODO
+            is CPPASTElaboratedTypeSpecifier -> {} //TODO
             else -> {
                 println("Apel de functie data.ceva()")
             }

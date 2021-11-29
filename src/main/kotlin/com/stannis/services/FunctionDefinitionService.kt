@@ -35,8 +35,22 @@ class FunctionDefinitionService {
                 getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
             )
         )
-        (declaration.body as CPPASTCompoundStatement).statements
-            .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
+        if(declaration.body != null) {
+            if (declaration.body is CPPASTCompoundStatement) {
+                if ((declaration.body as CPPASTCompoundStatement).statements != null) {
+                    (declaration.body as CPPASTCompoundStatement).statements
+                        .iterator()
+                        .forEachRemaining { data: IASTStatement ->
+                            CoreParserClass.seeCPASTCompoundStatement(
+                                data,
+                                method
+                            )
+                        }
+                }
+            } else {
+                throw Exception()
+            }
+        }
     }
 
     fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration> {
