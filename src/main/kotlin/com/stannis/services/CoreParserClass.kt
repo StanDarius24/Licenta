@@ -26,7 +26,26 @@ class CoreParserClass {
                 println(data.rawSignature)
                 when (data) {
                     is CPPASTDeclarationStatement -> {
-                        declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
+                        when (data.declaration) {
+                            is CPPASTSimpleDeclaration -> {
+                                declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
+                            }
+                            is CPPASTStaticAssertionDeclaration -> {
+                                //TODO
+                            }
+                            is CPPASTAliasDeclaration -> {
+                                //TODO
+                            }
+                            is CPPASTUsingDirective -> {
+                                //TODO
+                            }
+                            is CPPASTUsingDeclaration -> {
+                                //TODO
+                            }
+                            else -> {
+                                throw Exception()
+                            }
+                        }
                     }
                     is CPPASTExpressionStatement -> {
                         expressionStatementService.solveExpressionStatement(
@@ -70,6 +89,21 @@ class CoreParserClass {
                         println(data) //TODO
                     }
                     is CPPASTBreakStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTRangeBasedForStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTGotoStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTLabelStatement -> {
+                        println(data)
+                    }
+                    is CPPASTNullStatement -> {
+                        println(data) //TODO
+                    }
+                    is CPPASTTryBlockStatement -> {
                         println(data) //TODO
                     }
                     else -> { throw Exception() }

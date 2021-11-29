@@ -12,20 +12,33 @@ class IfStatementService {
         println("ifStatement")
         val ifT = If(null, null, null, null, null)
         methodService.addStatement(method!!, ifT)
-        when (data.conditionExpression) {
-            is CPPASTBinaryExpression -> {
-                functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
+        if(data.conditionExpression != null) {
+            when (data.conditionExpression) {
+                is CPPASTBinaryExpression -> {
+                    functionCallsService.getOperands(data.conditionExpression as CPPASTBinaryExpression, ifT)
+                }
+                is CPPASTUnaryExpression -> {
+                    ifT.add(data.conditionExpression.rawSignature)
+                }
+                is CPPASTFunctionCallExpression -> {
+                    println(data.conditionExpression) //TODO
+                }
+                is CPPASTIdExpression -> {
+                    println(data.conditionExpression) //TODO
+                }
+                is CPPASTFieldReference -> {
+                    println(data.conditionExpression) //TODO
+                }
+                is CPPASTLiteralExpression -> {
+                    println(data.conditionExpression) //TODO
+                }
+                is CPPASTArraySubscriptExpression -> {
+                    println(data.conditionExpression) //TODO
+                }
+                else -> {
+                    throw Exception()
+                }
             }
-            is CPPASTUnaryExpression -> {
-                ifT.add(data.conditionExpression.rawSignature)
-            }
-            is CPPASTFunctionCallExpression -> {
-                println(data.conditionExpression) //TODO
-            }
-            is CPPASTIdExpression -> {
-                println(data.conditionExpression) //TODO
-            }
-            else -> { throw Exception() }
         }
         val ifBlock = methodService.createMethod()
         ifT.addIfBlock(ifBlock)

@@ -34,6 +34,18 @@ class ClassService {
                     is CPPASTFunctionDefinition -> {
                         handleCPPASTFunctionDefinition(classDeclaration, member)
                     }
+                    is CPPASTTemplateDeclaration -> {
+                        //TODO
+                    }
+                    is CPPASTProblemDeclaration -> {
+                        //TODO
+                    }
+                    is CPPASTStaticAssertionDeclaration -> {
+                        //TODO
+                    }
+                    is CPPASTAliasDeclaration -> {
+                        //TODO
+                    }
                     else -> { throw Exception() }
                 }
             }
@@ -51,8 +63,22 @@ class ClassService {
                 )
         )
         method.modifier = defaulType
-        (member.body as CPPASTCompoundStatement).statements
-            .iterator().forEachRemaining { data: IASTStatement -> CoreParserClass.seeCPASTCompoundStatement(data, method) }
+        if(member.body != null) {
+            if (member.body is CPPASTCompoundStatement) {
+                if ((member.body as CPPASTCompoundStatement).statements != null) {
+                    (member.body as CPPASTCompoundStatement).statements
+                        .iterator()
+                        .forEachRemaining { data: IASTStatement ->
+                            CoreParserClass.seeCPASTCompoundStatement(
+                                data,
+                                method
+                            )
+                        }
+                }
+            } else {
+                throw Exception()
+            }
+        }
     }
 
     private fun getDeclarationsForClass(member: CPPASTSimpleDeclaration, classDeclaration: Class) {

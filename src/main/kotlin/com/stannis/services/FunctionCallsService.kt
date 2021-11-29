@@ -79,6 +79,18 @@ class FunctionCallsService {
                     is CPPASTTypeIdExpression -> {
                         println(datax) //TODO
                     }
+                    is CPPASTConditionalExpression -> {
+                        println(datax) //TODO
+                    }
+                    is CPPASTLambdaExpression -> {
+                        println(datax) //TODO
+                    }
+                    is CPPASTPackExpansionExpression -> {
+                        println(datax) //TODO
+                    }
+                    is CPPASTNewExpression -> {
+                        println(datax) //TODO
+                    }
                     else -> { throw Exception() }
                 }
             }
@@ -92,13 +104,24 @@ class FunctionCallsService {
     private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
         println(functionCallExpression.rawSignature)
         if(functionCallExpression.functionNameExpression is CPPASTFieldReference) {
-            val ffcals = FunctionCall(null, (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature, null, null)
-            (statement as Initialization).name = (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
-            StatementMapper.addFunctionCallDependingOnType(statement, ffcals)
+            val ffcals = FunctionCall(
+                null,
+                (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
+                null,
+                null
+            )
+            if (statement is Initialization) {
+                statement.name =
+                    (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
+
+                StatementMapper.addFunctionCallDependingOnType(statement, ffcals)
 //            var returntype: String?,
 //            var name: String?,
 //            var parameters: ArrayList<String>?,
 //            var functionCalls: ArrayList<FunctionCall>?
+            } else {
+                //TODO
+            }
         } else {
         val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null)
         getArgumentsType(functionCallExpression, functionCall)
@@ -130,6 +153,15 @@ class FunctionCallsService {
             is CPPASTTypeIdExpression -> {
                 println(binaryExpression) //TODO
             }
+            is CPPASTNewExpression -> {
+                println(binaryExpression) //TODO
+            }
+            is CPPASTSimpleTypeConstructorExpression -> {
+                println(binaryExpression) //TODO
+            }
+            is CPPASTConditionalExpression -> {
+                println(binaryExpression) //TODO
+            }
             else -> { throw Exception() }
         }
     }
@@ -147,38 +179,51 @@ class FunctionCallsService {
             }
             break
         }
-        handleOperands(binaryExpression.operand1, statement)
-        handleOperands(binaryExpression.operand2, statement)
+        if(binaryExpression.operand1 != null) {
+            handleOperands(binaryExpression.operand1, statement)
+        }
+        if(binaryExpression.operand2 != null) {
+            handleOperands(binaryExpression.operand2, statement)
+        }
     }
 
     fun getOperandsAsFunctionCall(cppastFunctionCallExpression: CPPASTFunctionCallExpression, returnT: Return) {
         println(cppastFunctionCallExpression)
-        if(cppastFunctionCallExpression.functionNameExpression is CPPASTIdExpression) {
-            val funcCall = FunctionCall(
-                null,
-                cppastFunctionCallExpression.functionNameExpression.rawSignature,
-                null, null
-            )
-            declarationStatementForArgumentType(cppastFunctionCallExpression.arguments, funcCall)
-            returnT.add(funcCall)
-        } else {
-            val functCall = FunctionCall(
-                null,
-                (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature,
-                null, null
-            )
-            cppastFunctionCallExpression.arguments.iterator().forEachRemaining { expressions ->
-                run {
-                    handleOperands(expressions as IASTExpression, functCall)
-                }
+        when (cppastFunctionCallExpression.functionNameExpression) {
+            is CPPASTIdExpression -> {
+                val funcCall = FunctionCall(
+                    null,
+                    cppastFunctionCallExpression.functionNameExpression.rawSignature,
+                    null, null
+                )
+                declarationStatementForArgumentType(cppastFunctionCallExpression.arguments, funcCall)
+                returnT.add(funcCall)
             }
-            val funcCall2 = FunctionCall(
-                null,
-                (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
-                null, null
-            )
-            functCall.add(funcCall2)
-            returnT.add(functCall)
+            is CPPASTFieldReference -> {
+                val functCall = FunctionCall(
+                    null,
+                    (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature,
+                    null, null
+                )
+                cppastFunctionCallExpression.arguments.iterator().forEachRemaining { expressions ->
+                    run {
+                        handleOperands(expressions as IASTExpression, functCall)
+                    }
+                }
+                val funcCall2 = FunctionCall(
+                    null,
+                    (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
+                    null, null
+                )
+                functCall.add(funcCall2)
+                returnT.add(functCall)
+            }
+            is CPPASTUnaryExpression -> {
+                //TODO
+            }
+            else -> {
+                throw Exception()
+            }
         }
     }
 

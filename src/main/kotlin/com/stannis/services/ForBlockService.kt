@@ -86,8 +86,24 @@ class ForBlockService {
             is CPPASTExpressionStatement -> {
                 val inits =Initialization(null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
-                functionCallsService.getOperands(initializerStatement.expression as CPPASTBinaryExpression, inits) // new statement structure
+                when (initializerStatement.expression) {
+                    is CPPASTBinaryExpression -> {
+                        functionCallsService.getOperands(
+                            initializerStatement.expression as CPPASTBinaryExpression,
+                            inits
+                        ) // new statement structure
+                    }
+                    is CPPASTUnaryExpression -> {
+                        //TODO
+                    }
+                    else -> {
+                        throw Exception()
+                    }
+                }
                 println("we need a fix here: iuser=user.begin();") //TODO fix this
+            }
+            is CPPASTNullStatement -> {
+                //TODO
             }
             else -> {
                 throw Exception()
@@ -108,6 +124,15 @@ class ForBlockService {
             }
             is CPPASTIdExpression -> {
                 println("initr") //TODO
+            }
+            is CPPASTInitializerList -> {
+                //TODO
+            }
+            is CPPASTFunctionCallExpression -> {
+                //TODO
+            }
+            is CPPASTCastExpression -> {
+                //TODO
             }
             else -> {
                 throw Exception()

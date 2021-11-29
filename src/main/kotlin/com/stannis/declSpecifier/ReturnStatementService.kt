@@ -15,15 +15,37 @@ class ReturnStatementService {
                 returnT.add(data.returnValue.rawSignature)
                 println(data.returnValue.rawSignature)
             } else {
-                if (data.returnValue is CPPASTBinaryExpression) {
-                    functionCallsService.getOperands(data.returnValue as CPPASTBinaryExpression, returnT)
-                } else if (data.returnValue is CPPASTFunctionCallExpression) {
-                    functionCallsService.getOperandsAsFunctionCall(
-                        data.returnValue as CPPASTFunctionCallExpression,
-                        returnT
-                    )
-                } else {
-                    throw Exception()
+                when (data.returnValue) {
+                    is CPPASTBinaryExpression -> {
+                        functionCallsService.getOperands(data.returnValue as CPPASTBinaryExpression, returnT)
+                    }
+                    is CPPASTFunctionCallExpression -> {
+                        functionCallsService.getOperandsAsFunctionCall(
+                            data.returnValue as CPPASTFunctionCallExpression,
+                            returnT
+                        )
+                    }
+                    is CPPASTConditionalExpression -> {
+                        //TODO
+                    }
+                    is CPPASTNewExpression -> {
+                        //TODO
+                    }
+                    is CPPASTSimpleTypeConstructorExpression -> {
+                        //TODO
+                    }
+                    is CPPASTCastExpression -> {
+                        //TODO
+                    }
+                    is CPPASTArraySubscriptExpression -> {
+                        //TODO
+                    }
+                    is CPPASTLambdaExpression -> {
+                        //TODO
+                    }
+                    else -> {
+                        throw Exception()
+                    }
                 }
             }
         }
