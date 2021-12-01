@@ -4,11 +4,17 @@ import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.CPPMethodCall
 import com.stannis.dataModel.statementTypes.FunctionCall
 import com.stannis.dataModel.statementTypes.Initialization
-import com.stannis.services.FunctionCallsService
-import com.stannis.services.MethodService
+import com.stannis.services.*
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ExpressionStatementService {
+
+    private var unaryExpressionService = UnaryExpressionService()
+    private var fieldReferenceService = FieldReferenceService()
+    private var deleteExpressionService = DeleteExpressionService()
+    private var castExpressionService = CastExpressionService()
+    private var literalExpressionService = LiteralExpressionService()
+    private var arraySubscriptExpressionService = ArraySubscriptExpressionService()
 
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
         val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
@@ -19,7 +25,7 @@ class ExpressionStatementService {
         methodService.addStatement(method!!, initialization)
     }
 
-    private fun fieldReferenceSolver(data: CPPASTExpressionStatement, method: Method?) {
+    private fun fieldReferenceSolver(data: CPPASTExpressionStatement, method: Method?, methodService: MethodService) {
         when (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner) {
             is CPPASTFieldReference -> {
                 var methodName =
@@ -60,6 +66,11 @@ class ExpressionStatementService {
                 method!!.addStatement(cpastmethod)
             }
             is CPPASTArraySubscriptExpression -> {
+                arraySubscriptExpressionService.solveArraySubscript(
+                    ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTArraySubscriptExpression,
+                    method,
+                    methodService
+                    )
                 //TODO
             }
             is CPPASTFunctionCallExpression -> {
@@ -105,7 +116,7 @@ class ExpressionStatementService {
 
     private fun functionCallExprSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
         if((data.expression as CPPASTFunctionCallExpression).functionNameExpression is CPPASTFieldReference) {
-            fieldReferenceSolver(data, method)
+            fieldReferenceSolver(data, method, methodService)
         } else {
             funcCallSolver(data, method, functionCallsService, methodService)
         }
@@ -120,20 +131,19 @@ class ExpressionStatementService {
                 functionCallExprSolver(data, method, functionCallsService, methodService)
             }
             is CPPASTUnaryExpression -> {
-                val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null)
-                methodService.addStatement(method!!, initT)
+                unaryExpressionService.solveUneryExpression(data, method, methodService)
             }
             is CPPASTFieldReference -> {
-                //TODO
+                fieldReferenceService.solveFieldReference(data.expression as CPPASTFieldReference, method, methodService)
             }
             is CPPASTDeleteExpression -> {
-                //TODO
+                deleteExpressionService.solveDeleteExpression(data.expression as CPPASTDeleteExpression, method, methodService)
             }
             is CPPASTCastExpression -> {
-                //TODO
+                castExpressionService.solveCastExpression(data.expression as CPPASTCastExpression, method, methodService)
             }
             is CPPASTLiteralExpression -> {
-                //TODO
+                literalExpressionService.solveLiteralExpression(data.expression as CPPASTLiteralExpression, method, methodService)
             }
             else -> throw Exception()
         } // Operator 9 is ++
