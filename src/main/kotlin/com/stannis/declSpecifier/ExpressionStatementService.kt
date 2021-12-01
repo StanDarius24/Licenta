@@ -15,6 +15,7 @@ class ExpressionStatementService {
     private var castExpressionService = CastExpressionService()
     private var literalExpressionService = LiteralExpressionService()
     private var arraySubscriptExpressionService = ArraySubscriptExpressionService()
+    private var functionCallService = FunctionCallsService()
 
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
         val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
@@ -36,7 +37,7 @@ class ExpressionStatementService {
                 val fcall = FunctionCall(
                     null,
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
-                    null, null
+                    null, null, null
                 )
                 cpastmethod.add(fcall)
                 (data.expression as CPPASTFunctionCallExpression).arguments.iterator()
@@ -54,6 +55,7 @@ class ExpressionStatementService {
                     null,
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
                     null,
+                    null,
                     null
                 )
                 (data.expression as CPPASTFunctionCallExpression).arguments.iterator().forEachRemaining { parameter ->
@@ -68,13 +70,11 @@ class ExpressionStatementService {
             is CPPASTArraySubscriptExpression -> {
                 arraySubscriptExpressionService.solveArraySubscript(
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTArraySubscriptExpression,
-                    method,
-                    methodService
+                    method!!
                     )
-                //TODO
             }
             is CPPASTFunctionCallExpression -> {
-                //TODO
+                funcCallSolver(data, method, functionCallService, methodService)
             }
             else -> {
                 throw Exception()
@@ -88,7 +88,7 @@ class ExpressionStatementService {
                 val functcall = FunctionCall(
                     null,
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTUnaryExpression).operand.rawSignature,
-                    null,null
+                    null,null, null
                 )
                 functionCallsService.getArgumentsType(
                     data.expression as CPPASTFunctionCallExpression,
@@ -100,13 +100,16 @@ class ExpressionStatementService {
                 val functcall = FunctionCall(
                     null,
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
-                    null, null
+                    null, null, null
                 )
                 functionCallsService.getArgumentsType(
                     data.expression as CPPASTFunctionCallExpression,
                     functcall
                 )
                 methodService.addStatement(method!!, functcall)
+            }
+            is CPPASTFieldReference -> {
+                fieldReferenceService.solveFieldReference((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference, method, methodService)
             }
             else -> {
                 throw Exception()
@@ -140,7 +143,7 @@ class ExpressionStatementService {
                 deleteExpressionService.solveDeleteExpression(data.expression as CPPASTDeleteExpression, method, methodService)
             }
             is CPPASTCastExpression -> {
-                castExpressionService.solveCastExpression(data.expression as CPPASTCastExpression, method, methodService)
+                castExpressionService.solveCastExpression(data.expression as CPPASTCastExpression, method!!)
             }
             is CPPASTLiteralExpression -> {
                 literalExpressionService.solveLiteralExpression(data.expression as CPPASTLiteralExpression, method, methodService)

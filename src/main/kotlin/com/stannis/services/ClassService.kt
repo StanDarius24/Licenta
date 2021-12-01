@@ -35,6 +35,7 @@ class ClassService {
                         handleCPPASTFunctionDefinition(classDeclaration, member)
                     }
                     is CPPASTTemplateDeclaration -> {
+                        println(member)
                         //TODO
                     }
                     is CPPASTProblemDeclaration -> {
