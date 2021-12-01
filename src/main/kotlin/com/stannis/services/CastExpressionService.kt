@@ -1,15 +1,15 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Method
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.CastExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression
 
 class CastExpressionService {
-    fun solveCastExpression(cppastCastExpression: CPPASTCastExpression, method: Method?, methodService: MethodService) {
+    fun solveCastExpression(cppastCastExpression: CPPASTCastExpression, statement: Statement) {
         val castExpr = CastExpression(
             cppastCastExpression.typeId.rawSignature,
             cppastCastExpression.operand.rawSignature
         )
-        methodService.addStatement(method!!, castExpr)
+        StatementMapper.addStatementToStatement(statement, castExpr)
     }
 }

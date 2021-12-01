@@ -9,7 +9,7 @@ data class Method(
     var methods: ArrayList<Method>?,
     var initialz: ArrayList<Initialization>?,
     var modifier: String?
-) {
+): Statement {
     fun addInitialz(initialization: Initialization) {
         if(initialz == null) {
             initialz = ArrayList()

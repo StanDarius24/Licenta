@@ -1,10 +1,12 @@
 package com.stannis.services
 
+import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 
 class StatementMapper {
     companion object {
+
         fun addNameDependingOnType(stats: Statement, name: String) {
             when (stats) {
                 is While -> {
@@ -44,5 +46,20 @@ class StatementMapper {
                 }
             }
         }
+
+        fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
+            when(statementParent) {
+                is Method -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is FunctionCall -> {
+                    statementParent.addComplexParameters(statementChild)
+                }
+                else -> {
+                    throw Exception()
+                }
+            }
+        }
+
     }
 }

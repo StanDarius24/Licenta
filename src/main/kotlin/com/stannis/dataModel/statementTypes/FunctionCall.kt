@@ -6,9 +6,17 @@ data class FunctionCall(
     var returntype: String?,
     var name: String?,
     var parameters: ArrayList<String>?,
+    var complexParameters: ArrayList<Statement>?,
     var functionCalls: ArrayList<FunctionCall>?
 ): Statement
 {
+    fun addComplexParameters(statement: Statement) {
+        if(complexParameters == null) {
+            complexParameters = ArrayList()
+        }
+        complexParameters!!.add(statement)
+    }
+
     fun add(data: String) {
         if(parameters == null) {
             parameters = ArrayList()

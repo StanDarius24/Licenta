@@ -21,6 +21,7 @@ class IfStatementService {
                     ifT.add(data.conditionExpression.rawSignature)
                 }
                 is CPPASTFunctionCallExpression -> {
+                    functionCallsService.setFunctionCallExpression(data.conditionExpression as CPPASTFunctionCallExpression, ifT)
                     println(data.conditionExpression) //TODO
                 }
                 is CPPASTIdExpression -> {
