@@ -1,10 +1,9 @@
 package com.stannis.declSpecifier
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.Return
-import com.stannis.services.ConditionalExpressionService
+import com.stannis.services.astNodes.ConditionalExpressionService
 import com.stannis.services.FunctionCallsService
 import com.stannis.services.MethodService
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*

@@ -9,7 +9,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ClassService {
 
-    private var functionCallsService = FunctionCallsService()
     private var methodService = MethodService()
     private var functionDefService = FunctionDefinitionService()
     private var defaulType = "public:"
@@ -29,7 +28,7 @@ class ClassService {
                     is CPPASTVisibilityLabel -> {
                         defaulType = member.rawSignature
                     }
-                    is CPPASTSimpleDeclaration -> {
+                    is CPPASTSimpleDeclaration -> { // ASTAttributeOwner //TODO IMPORTANT different class
                         getDeclarationsForClass(member, classDeclaration)
                     }
                     is CPPASTFunctionDefinition -> {
@@ -99,7 +98,7 @@ class ClassService {
                 } else { 0 },
                 defaulType
             )
-            functionCallsService.getFunctionCall(data, decl)
+            FunctionCallsService.getInstance().getFunctionCall(data, decl)
             classDeclaration.addDeclaration(decl)
         }
     }

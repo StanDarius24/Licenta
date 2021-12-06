@@ -26,7 +26,7 @@ class CoreParserClass {
                 println("---------")
                 println(data.rawSignature)
                 when (data) {
-                    is CPPASTDeclarationStatement -> {
+                    is CPPASTDeclarationStatement -> { // ASTAttributeOwner // ASTNode TODO 2 type of classes that handle types REFACTORING NEEDED ASAP
                         when (data.declaration) {
                             is CPPASTSimpleDeclaration -> {
                                 declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)

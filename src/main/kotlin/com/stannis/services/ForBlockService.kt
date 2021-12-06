@@ -38,7 +38,7 @@ class ForBlockService {
                         .forEachRemaining { expression ->
                             run {
                                 when (expression) {
-                                    is CPPASTBinaryExpression -> {
+                                    is CPPASTBinaryExpression -> { // TODO HANDLE ASTNODESERVICE!
                                         functionCallsService.getOperands(expression, initT)
                                     }
                                     is CPPASTUnaryExpression -> {
@@ -88,7 +88,7 @@ class ForBlockService {
                 val inits =Initialization(null, null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
                 when (initializerStatement.expression) {
-                    is CPPASTBinaryExpression -> {
+                    is CPPASTBinaryExpression -> { // TODO
                         functionCallsService.getOperands(
                             initializerStatement.expression as CPPASTBinaryExpression,
                             inits
@@ -116,7 +116,7 @@ class ForBlockService {
         val initT = Initialization(declarator!!.name.rawSignature, null, null, null, null)
         forT.addInitializer(initT)
         (declarator.initializer as CPPASTEqualsInitializer).initializerClause // fOperand1, fOperand2
-        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {
+        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {  // TODO HANDLE ASTNODESERVICE!
             is CPPASTBinaryExpression -> {
                 functionCallsService.getOperands((declarator.initializer as CPPASTEqualsInitializer).initializerClause as CPPASTBinaryExpression, initT)
             }

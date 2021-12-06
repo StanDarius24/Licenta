@@ -1,9 +1,10 @@
 package com.stannis.services
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
+import com.stannis.services.astNodes.*
+import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator
 import org.eclipse.cdt.core.dom.ast.IASTExpression
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause
@@ -11,6 +12,18 @@ import org.eclipse.cdt.core.dom.ast.IASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class FunctionCallsService {
+
+    companion object {
+
+        private lateinit var functionCall: FunctionCallsService
+
+        fun getInstance(): FunctionCallsService {
+            if (!::functionCall.isInitialized) {
+                functionCall = FunctionCallsService()
+            }
+            return functionCall
+        }
+    }
 
     private var fieldReferenceService = FieldReferenceService() //CDI here
     private var methodService = MethodService()
@@ -66,7 +79,7 @@ class FunctionCallsService {
                 datax: IASTInitializerClause ->
             run {
                 when (datax) {
-                    is CPPASTLiteralExpression -> {
+                    is CPPASTLiteralExpression -> { // TODO HANDLE ASTNODESERVICE!
                         StatementMapper.addNameDependingOnType(statement!!, datax.rawSignature)
                     }
                     is CPPASTFunctionCallExpression -> {
@@ -189,7 +202,7 @@ class FunctionCallsService {
                 println(binaryExpression.rawSignature)
                 StatementMapper.addNameDependingOnType(statement!!, binaryExpression.rawSignature)
             }
-            is CPPASTFunctionCallExpression -> {
+            is CPPASTFunctionCallExpression -> { // TODO HANDLE ASTNODESERVICE!
                 getFunctionArguments(binaryExpression, statement)
             }
             is CPPASTFieldReference -> {
@@ -225,8 +238,7 @@ class FunctionCallsService {
             is CPPASTSimpleTypeConstructorExpression -> {
                 simpleTypeConstructorExpressionService.solveTypeConstructorExpre(
                     binaryExpression,
-                    statement!!,
-                    this
+                    statement!!
                 )
             }
             is CPPASTConditionalExpression -> {

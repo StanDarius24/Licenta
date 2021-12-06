@@ -1,4 +1,4 @@
-package com.stannis.services
+package com.stannis.services.mapper
 
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
