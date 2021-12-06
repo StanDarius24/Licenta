@@ -6,6 +6,18 @@ import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 
 class MethodService {
+
+    companion object{
+        private lateinit var methodService: MethodService
+
+        fun getInstance(): MethodService {
+            if(!::methodService.isInitialized) {
+                methodService = MethodService()
+            }
+            return methodService
+        }
+    }
+
     fun createMethod(): Method {
         return Method(null, null, null, null, null, null)
     }

@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.declSpecifier.ExpressionStatementService
 import com.stannis.declSpecifier.IfStatementService
@@ -25,21 +26,25 @@ class CoreParserClass {
                 println("---------")
                 println(data.rawSignature)
                 when (data) {
-                    is CPPASTDeclarationStatement -> {
+                    is CPPASTDeclarationStatement -> { // ASTAttributeOwner // ASTNode TODO 2 type of classes that handle types REFACTORING NEEDED ASAP
                         when (data.declaration) {
                             is CPPASTSimpleDeclaration -> {
                                 declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
                             }
                             is CPPASTStaticAssertionDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTAliasDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTUsingDirective -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTUsingDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             else -> {
@@ -50,13 +55,11 @@ class CoreParserClass {
                     is CPPASTExpressionStatement -> {
                         expressionStatementService.solveExpressionStatement(
                             data,
-                            method,
-                            functionCallsService,
-                            methodService
+                            method
                         )
                     }
                     is CPPASTIfStatement -> {
-                        ifStatementService.solveIfStatement(data, method, methodService, functionCallsService)
+                        ifStatementService.solveIfStatement(data, method)
                     }
                     is CPPASTWhileStatement -> {
                         whileStatementService.solveWhileStatement(data, method, methodService, functionCallsService)
@@ -74,7 +77,7 @@ class CoreParserClass {
                             }
                     }
                     is CPPASTReturnStatement -> {
-                        returnStatementService.solveReturnStatement(data, method, functionCallsService, methodService)
+                        returnStatementService.solveReturnStatement(data, method)
                     }
                     is CPPASTForStatement -> {
                         forBlockService.solveForBlock(data, method)

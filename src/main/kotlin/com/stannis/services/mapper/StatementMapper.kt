@@ -1,4 +1,4 @@
-package com.stannis.services
+package com.stannis.services.mapper
 
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
@@ -54,6 +54,21 @@ class StatementMapper {
                 }
                 is FunctionCall -> {
                     statementParent.addComplexParameters(statementChild)
+                }
+                is If -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is Initialization -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is Return -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is SimpleTypeConstructorExpression -> {
+                    statementParent.addParameter(statementChild)
+                }
+                is AnonimStatement -> {
+                    statementParent.statement = statementChild
                 }
                 else -> {
                     throw Exception()

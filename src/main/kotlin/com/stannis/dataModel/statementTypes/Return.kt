@@ -4,9 +4,13 @@ import com.stannis.dataModel.Statement
 
 data class Return(
     var returnType: ArrayList<String>?,
-    var functionCalls: ArrayList<FunctionCall>?
+    var functionCalls: ArrayList<FunctionCall>?,
+    var statement: Statement?
 ): Statement
 {
+    fun addStatement(statement: Statement?) {
+        this.statement = statement
+    }
     fun add(data: String) {
         if(returnType == null) {
             returnType = ArrayList()

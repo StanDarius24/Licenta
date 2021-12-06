@@ -7,7 +7,8 @@ data class Initialization(
     var name: String?,
     var value: ArrayList<String>?,
     var declaration: ArrayList<Declaration>?,
-    var functionCalls: ArrayList<FunctionCall>?
+    var functionCalls: ArrayList<FunctionCall>?,
+    var statement: ArrayList<Statement>?
 ): Statement {
     fun add(data: String) {
             if (value == null) {
@@ -26,5 +27,11 @@ data class Initialization(
             declaration = ArrayList()
         }
         declaration!!.add(data)
+    }
+    fun addStatement(statement: Statement) {
+        if(this.statement == null) {
+            this.statement = ArrayList()
+        }
+        this.statement!!.add(statement)
     }
 }
