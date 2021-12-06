@@ -55,6 +55,18 @@ class StatementMapper {
                 is FunctionCall -> {
                     statementParent.addComplexParameters(statementChild)
                 }
+                is If -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is Initialization -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is Return -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is SimpleTypeConstructorExpression -> {
+                    statementParent.addParameter(statementChild)
+                }
                 else -> {
                     throw Exception()
                 }

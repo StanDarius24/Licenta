@@ -1,12 +1,12 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Method
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.LiteralExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
 
 class LiteralExpressionService {
-    fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, method: Method?, methodService: MethodService) {
+    fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, statement: Statement) {
         val literalExpr = LiteralExpression(cppastLiteralExpression.rawSignature)
-        methodService.addStatement(method!!, literalExpr)
+        StatementMapper.addStatementToStatement(statement, literalExpr)
     }
 }

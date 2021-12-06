@@ -1,5 +1,6 @@
 package com.stannis.declSpecifier
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method

@@ -1,6 +1,7 @@
 package com.stannis.declSpecifier
 
 import com.stannis.dataModel.Method
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.CPPMethodCall
 import com.stannis.dataModel.statementTypes.FunctionCall
 import com.stannis.dataModel.statementTypes.Initialization
@@ -18,7 +19,7 @@ class ExpressionStatementService {
     private var functionCallService = FunctionCallsService()
 
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?, functionCallsService: FunctionCallsService, methodService: MethodService) {
-        val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null)
+        val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null, null)
         functionCallsService.getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
         if(initialization.value != null && initialization.value!!.size > 1) {
             initialization.value!!.remove(initialization.value!![initialization.value!!.size - 1])
@@ -109,7 +110,7 @@ class ExpressionStatementService {
                 methodService.addStatement(method!!, functcall)
             }
             is CPPASTFieldReference -> {
-                fieldReferenceService.solveFieldReference((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference, method, methodService)
+                fieldReferenceService.solveFieldReference((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference, method)
             }
             else -> {
                 throw Exception()
@@ -134,19 +135,19 @@ class ExpressionStatementService {
                 functionCallExprSolver(data, method, functionCallsService, methodService)
             }
             is CPPASTUnaryExpression -> {
-                unaryExpressionService.solveUneryExpression(data, method, methodService)
+                unaryExpressionService.solveUneryExpression(data, method)
             }
             is CPPASTFieldReference -> {
-                fieldReferenceService.solveFieldReference(data.expression as CPPASTFieldReference, method, methodService)
+                fieldReferenceService.solveFieldReference(data.expression as CPPASTFieldReference, method)
             }
             is CPPASTDeleteExpression -> {
-                deleteExpressionService.solveDeleteExpression(data.expression as CPPASTDeleteExpression, method, methodService)
+                deleteExpressionService.solveDeleteExpression(data.expression as CPPASTDeleteExpression, method as Statement)
             }
             is CPPASTCastExpression -> {
                 castExpressionService.solveCastExpression(data.expression as CPPASTCastExpression, method!!)
             }
             is CPPASTLiteralExpression -> {
-                literalExpressionService.solveLiteralExpression(data.expression as CPPASTLiteralExpression, method, methodService)
+                literalExpressionService.solveLiteralExpression(data.expression as CPPASTLiteralExpression, method as Statement)
             }
             else -> throw Exception()
         } // Operator 9 is ++

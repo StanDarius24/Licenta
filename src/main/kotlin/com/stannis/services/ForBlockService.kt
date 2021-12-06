@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.For
 import com.stannis.dataModel.statementTypes.Initialization
@@ -30,7 +31,7 @@ class ForBlockService {
     private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
         if( iterationExpression != null) {
             println(iterationExpression.rawSignature)
-            val initT = Initialization(null, null, null, null)
+            val initT = Initialization(null, null, null, null, null)
             when (iterationExpression) {
                 is CPPASTExpressionList -> {
                     iterationExpression.expressions.iterator()
@@ -52,7 +53,7 @@ class ForBlockService {
                     forT.addIteration(initT)
                 }
                 is CPPASTUnaryExpression -> {
-                    forT.addIteration(Initialization(iterationExpression.rawSignature, null, null, null))
+                    forT.addIteration(Initialization(iterationExpression.rawSignature, null, null, null, null))
                 }
                 is CPPASTBinaryExpression -> {
                     println("itr") //TODO
@@ -65,7 +66,7 @@ class ForBlockService {
     }
 
     private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
-        val initT = Initialization(null, null, null, null)
+        val initT = Initialization(null, null, null, null, null)
         forT.addConditionExpression(initT)
         if(conditionExpression!= null) {
             functionCallsService.getOperands(conditionExpression as CPPASTBinaryExpression, initT)
@@ -84,7 +85,7 @@ class ForBlockService {
                     }
             }
             is CPPASTExpressionStatement -> {
-                val inits =Initialization(null, null, null, null)
+                val inits =Initialization(null, null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
                 when (initializerStatement.expression) {
                     is CPPASTBinaryExpression -> {
@@ -112,7 +113,7 @@ class ForBlockService {
     }
 
     private fun setInitializer(declarator: IASTDeclarator?, forT: For) { //TODO make this a general function for every state of For{}
-        val initT = Initialization(declarator!!.name.rawSignature, null, null, null)
+        val initT = Initialization(declarator!!.name.rawSignature, null, null, null, null)
         forT.addInitializer(initT)
         (declarator.initializer as CPPASTEqualsInitializer).initializerClause // fOperand1, fOperand2
         when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {
@@ -126,13 +127,13 @@ class ForBlockService {
                 println("initr") //TODO
             }
             is CPPASTInitializerList -> {
-                //TODO
+                println("initr") //TODO
             }
             is CPPASTFunctionCallExpression -> {
-                //TODO
+                println("initr")//TODO
             }
             is CPPASTCastExpression -> {
-                //TODO
+                println("initr")//TODO
             }
             else -> {
                 throw Exception()

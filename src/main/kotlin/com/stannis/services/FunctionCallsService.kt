@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
@@ -17,6 +18,7 @@ class FunctionCallsService {
     private var castExpressionService = CastExpressionService()
     private var arraySubscriptExpressionService = ArraySubscriptExpressionService()
     private var conditionalExpressionService = ConditionalExpressionService()
+    private var simpleTypeConstructorExpressionService = SimpleTypeConstructorExpressionService()
 
     fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
         if( data != null) {
@@ -59,7 +61,7 @@ class FunctionCallsService {
         }
     }
 
-    private fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
+    fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
         data!!.iterator().forEachRemaining {
                 datax: IASTInitializerClause ->
             run {
@@ -83,7 +85,7 @@ class FunctionCallsService {
                     }
                     is CPPASTIdExpression -> {
                         StatementMapper.addNameDependingOnType(statement!!, datax.name.rawSignature)
-                    } // to add CppastBinaryExpression
+                    }
                     is CPPASTBinaryExpression -> {
                         getOperands(datax, statement)
                     }
@@ -101,8 +103,7 @@ class FunctionCallsService {
                     is CPPASTFieldReference -> {
                         fieldReferenceService.solveFieldReference(
                             datax,
-                            statement,
-                            methodService
+                            statement
                         )
                     }
                     is CPPASTCastExpression -> {
@@ -122,6 +123,7 @@ class FunctionCallsService {
                             datax,
                             statement!!
                         )
+
                         println(datax) //TODO
                     }
                     is CPPASTLambdaExpression -> {
@@ -191,13 +193,19 @@ class FunctionCallsService {
                 getFunctionArguments(binaryExpression, statement)
             }
             is CPPASTFieldReference -> {
-                println(binaryExpression) //TODO
+                fieldReferenceService.solveFieldReference(
+                    binaryExpression,
+                    statement
+                )
             }
             is CPPASTBinaryExpression -> {
-                println(binaryExpression) //TODO
+                getOperands(binaryExpression, statement)
             }
             is CPPASTCastExpression -> {
-                println(binaryExpression) //TODO
+                castExpressionService.solveCastExpression(
+                    binaryExpression,
+                    statement!!
+                )
             }
             is CPPASTArraySubscriptExpression -> {
                 println(binaryExpression) //TODO
@@ -206,10 +214,20 @@ class FunctionCallsService {
                 println(binaryExpression) //TODO
             }
             is CPPASTNewExpression -> {
-                println(binaryExpression) //TODO
+                val funcCall = FunctionCall(
+                    null,
+                    (binaryExpression.typeId.declSpecifier as CPPASTNamedTypeSpecifier).name.rawSignature,
+                    null,null,null
+                )
+                declarationStatementForArgumentType((binaryExpression.initializer as CPPASTConstructorInitializer).arguments, funcCall)
+                StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
             }
             is CPPASTSimpleTypeConstructorExpression -> {
-                println(binaryExpression) //TODO
+                simpleTypeConstructorExpressionService.solveTypeConstructorExpre(
+                    binaryExpression,
+                    statement!!,
+                    this
+                )
             }
             is CPPASTConditionalExpression -> {
                 println(binaryExpression) //TODO
@@ -271,12 +289,17 @@ class FunctionCallsService {
                 returnT.add(functCall)
             }
             is CPPASTUnaryExpression -> {
+                println(cppastFunctionCallExpression.functionNameExpression)
                 //TODO
             }
             else -> {
                 throw Exception()
             }
         }
+    }
+
+    fun solve(node: CPPASTFunctionCallExpression, statement: Statement) {
+        println(node)
     }
 
 }

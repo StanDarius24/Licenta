@@ -1,5 +1,6 @@
 package com.stannis.declSpecifier
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.While
 import com.stannis.services.CoreParserClass
@@ -25,6 +26,7 @@ class WhileStatementService {
                 whileT.add(data.condition.rawSignature)
             }
             is CPPASTFunctionCallExpression -> {
+                println(data.condition)
                 //TODO
             }
             else -> { throw Exception() }

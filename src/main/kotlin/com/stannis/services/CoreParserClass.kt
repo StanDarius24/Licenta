@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.declSpecifier.ExpressionStatementService
 import com.stannis.declSpecifier.IfStatementService
@@ -31,15 +32,19 @@ class CoreParserClass {
                                 declStatementParser.declStatement(data.declaration as CPPASTSimpleDeclaration, method, null)
                             }
                             is CPPASTStaticAssertionDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTAliasDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTUsingDirective -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             is CPPASTUsingDeclaration -> {
+                                println(data.declaration)
                                 //TODO
                             }
                             else -> {

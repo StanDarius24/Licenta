@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Antet
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
@@ -39,12 +40,15 @@ class ClassService {
                         //TODO
                     }
                     is CPPASTProblemDeclaration -> {
+                        println(member)
                         //TODO
                     }
                     is CPPASTStaticAssertionDeclaration -> {
+                        println(member)
                         //TODO
                     }
                     is CPPASTAliasDeclaration -> {
+                        println(member)
                         //TODO
                     }
                     else -> { throw Exception() }

@@ -1,5 +1,6 @@
 package com.stannis.services
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Antet
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
@@ -7,7 +8,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTParameterDeclaration
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class FunctionDefinitionService {
+class FunctionDefinitionService  {
 
     private val methodService = MethodService()
     private var declaration = Declaration(null, null, null, null, 0, null)

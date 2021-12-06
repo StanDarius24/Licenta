@@ -1,5 +1,6 @@
 package com.stannis.declSpecifier
 
+import com.google.inject.Inject
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.statementTypes.If
 import com.stannis.services.CoreParserClass
@@ -22,7 +23,6 @@ class IfStatementService {
                 }
                 is CPPASTFunctionCallExpression -> {
                     functionCallsService.setFunctionCallExpression(data.conditionExpression as CPPASTFunctionCallExpression, ifT)
-                    println(data.conditionExpression) //TODO
                 }
                 is CPPASTIdExpression -> {
                     println(data.conditionExpression) //TODO

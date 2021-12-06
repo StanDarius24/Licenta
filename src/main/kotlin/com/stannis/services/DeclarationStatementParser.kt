@@ -1,6 +1,6 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Class
+import com.google.inject.Inject
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArrayDeclarator

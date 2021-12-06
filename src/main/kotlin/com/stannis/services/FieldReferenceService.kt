@@ -5,7 +5,7 @@ import com.stannis.dataModel.statementTypes.FieldReference
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference
 
 class FieldReferenceService {
-    fun solveFieldReference(expression: CPPASTFieldReference, statement: Statement?, methodService: MethodService) {
+    fun solveFieldReference(expression: CPPASTFieldReference, statement: Statement?) {
         val fieldRefetence = FieldReference(
             expression.fieldOwner.rawSignature,
             expression.fieldName.rawSignature
