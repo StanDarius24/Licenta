@@ -67,6 +67,9 @@ class StatementMapper {
                 is SimpleTypeConstructorExpression -> {
                     statementParent.addParameter(statementChild)
                 }
+                is AnonimStatement -> {
+                    statementParent.statement = statementChild
+                }
                 else -> {
                     throw Exception()
                 }

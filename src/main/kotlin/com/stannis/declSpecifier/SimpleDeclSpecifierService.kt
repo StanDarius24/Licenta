@@ -1,6 +1,5 @@
 package com.stannis.declSpecifier
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
@@ -127,7 +126,7 @@ class SimpleDeclSpecifierService {
 
     fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, method: Method, unit: Unit, methodService: MethodService, classService: ClassService, unitService: UnitService): Boolean {
         when (declaration.declSpecifier) {
-            is CPPASTSimpleDeclSpecifier -> {
+            is CPPASTSimpleDeclSpecifier -> {   //CPPASTBaseDeclSpecifier //TODO
                 simpleDeclSpec(declaration, method, methodService)
             }
             is CPPASTCompositeTypeSpecifier -> {
@@ -139,7 +138,7 @@ class SimpleDeclSpecifierService {
             is CPPASTEnumerationSpecifier -> {} //TODO
             is CPPASTElaboratedTypeSpecifier -> {} //TODO
             else -> {
-                println("Apel de functie data.ceva()")
+                throw Exception()
             }
         }
         return true

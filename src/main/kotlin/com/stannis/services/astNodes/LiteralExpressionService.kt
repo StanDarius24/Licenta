@@ -18,8 +18,8 @@ class LiteralExpressionService {
         }
     }
 
-    fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, statement: Statement) {
+    fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, statement: Statement?) {
         val literalExpr = LiteralExpression(cppastLiteralExpression.rawSignature)
-        StatementMapper.addStatementToStatement(statement, literalExpr)
+        StatementMapper.addStatementToStatement(statement!!, literalExpr)
     }
 }

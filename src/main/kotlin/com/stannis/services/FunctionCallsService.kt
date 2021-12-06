@@ -57,7 +57,7 @@ class FunctionCallsService {
         }
     }
 
-    fun setFunctionCallExpression(cppastFunctionCallExpression: CPPASTFunctionCallExpression, ifT: Statement) {
+    fun setFunctionCallExpression(cppastFunctionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
         println(cppastFunctionCallExpression)
         val functionCall = FunctionCall(
             null,
@@ -67,11 +67,7 @@ class FunctionCallsService {
             null
         )
         declarationStatementForArgumentType(cppastFunctionCallExpression.arguments, functionCall)
-        if(ifT is If) {
-            ifT.add(functionCall)
-        } else {
-            throw Exception()
-        }
+        StatementMapper.addStatementToStatement(statement!!, functionCall)
     }
 
     fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {

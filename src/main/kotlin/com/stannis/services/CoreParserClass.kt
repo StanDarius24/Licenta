@@ -55,13 +55,11 @@ class CoreParserClass {
                     is CPPASTExpressionStatement -> {
                         expressionStatementService.solveExpressionStatement(
                             data,
-                            method,
-                            functionCallsService,
-                            methodService
+                            method
                         )
                     }
                     is CPPASTIfStatement -> {
-                        ifStatementService.solveIfStatement(data, method, methodService, functionCallsService)
+                        ifStatementService.solveIfStatement(data, method)
                     }
                     is CPPASTWhileStatement -> {
                         whileStatementService.solveWhileStatement(data, method, methodService, functionCallsService)
@@ -79,7 +77,7 @@ class CoreParserClass {
                             }
                     }
                     is CPPASTReturnStatement -> {
-                        returnStatementService.solveReturnStatement(data, method, functionCallsService, methodService)
+                        returnStatementService.solveReturnStatement(data, method)
                     }
                     is CPPASTForStatement -> {
                         forBlockService.solveForBlock(data, method)

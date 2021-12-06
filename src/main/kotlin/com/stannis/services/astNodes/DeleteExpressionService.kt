@@ -11,15 +11,15 @@ class DeleteExpressionService {
         private lateinit var deleteExpressionService: DeleteExpressionService
 
         fun getInstance(): DeleteExpressionService{
-            if(::deleteExpressionService.isInitialized) {
+            if(!::deleteExpressionService.isInitialized) {
                 deleteExpressionService = DeleteExpressionService()
             }
             return deleteExpressionService
         }
     }
 
-    fun solveDeleteExpression(cppastDeleteExpression: CPPASTDeleteExpression, statement: Statement) {
+    fun solveDeleteExpression(cppastDeleteExpression: CPPASTDeleteExpression, statement: Statement?) {
         val delExpression = DeleteExpression(cppastDeleteExpression.operand.rawSignature)
-        StatementMapper.addStatementToStatement(statement, delExpression)
+        StatementMapper.addStatementToStatement(statement!!, delExpression)
     }
 }
