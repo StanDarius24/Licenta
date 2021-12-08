@@ -1,21 +1,30 @@
 package com.stannis.declSpecifier
 
-import com.stannis.dataModel.Class
-import com.stannis.dataModel.Declaration
-import com.stannis.dataModel.Method
+import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
 import com.stannis.dataModel.statementTypes.TypedefStructure
 import com.stannis.services.ClassService
-import com.stannis.services.MethodService
 import com.stannis.services.UnitService
+import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class SimpleDeclSpecifierService {
 
-    private fun simpleDeclSpec(declaration: CPPASTSimpleDeclaration, method: Method, methodService: MethodService) {
+    companion object{
+        private lateinit var simpleDeclSpecifierService: SimpleDeclSpecifierService
+
+        fun getInstance(): SimpleDeclSpecifierService{
+            if(!::simpleDeclSpecifierService.isInitialized){
+                simpleDeclSpecifierService = SimpleDeclSpecifierService()
+            }
+            return simpleDeclSpecifierService
+        }
+    }
+
+    private fun simpleDeclSpec(declaration: CPPASTSimpleDeclaration, statement: Statement) {
         declaration.declarators.iterator().forEachRemaining { data ->
             val typedefSt  =TypedefStructure(null, null, null)
-            methodService.addStatement(method, typedefSt)
+            StatementMapper.addStatementToStatement(statement, typedefSt)
             if(data is CPPASTFunctionDeclarator) {
                 data.parameters.iterator().forEachRemaining { parametersx ->
                     val declaratorTT = Declaration(
@@ -60,13 +69,13 @@ class SimpleDeclSpecifierService {
         // much more like int x = function(smth...)
     }
 
-    private fun compositeTypeSpecifier(declaration: CPPASTSimpleDeclaration, method: Method, unit: Unit, methodService: MethodService, classService: ClassService, unitService: UnitService): Boolean{
+    private fun compositeTypeSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement, unit: Unit): Boolean{
         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
         if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
             val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null, null)
-            unitService.addClass(unit, classDeclaration)
+             UnitService.getInstance().addClass(unit, classDeclaration)
             (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
-            classService.parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
+            ClassService.getInstance().parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
             return false
         }
         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members
@@ -90,11 +99,11 @@ class SimpleDeclSpecifierService {
                         } else { 0 },
                         null
                     )
-                    methodService.addDeclaration(method, declAfterTypedef)
+                    StatementMapper.addStatementToStatement(statement, declAfterTypedef)
                 }
             }
         }
-        methodService.addStatement(method, typedefT)
+        StatementMapper.addStatementToStatement(statement, typedefT)
         declaration.declSpecifier.children.iterator().forEachRemaining {
                 data ->
             run {
@@ -124,13 +133,13 @@ class SimpleDeclSpecifierService {
         return true
     }
 
-    fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, method: Method, unit: Unit, methodService: MethodService, classService: ClassService, unitService: UnitService): Boolean {
+    fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement, unit: Unit): Boolean {
         when (declaration.declSpecifier) {
             is CPPASTSimpleDeclSpecifier -> {   //CPPASTBaseDeclSpecifier //TODO
-                simpleDeclSpec(declaration, method, methodService)
+                simpleDeclSpec(declaration, statement)
             }
             is CPPASTCompositeTypeSpecifier -> {
-                if(!compositeTypeSpecifier(declaration, method, unit, methodService, classService, unitService)) {
+                if(!compositeTypeSpecifier(declaration, statement, unit)) {
                     return false
                 }
             }

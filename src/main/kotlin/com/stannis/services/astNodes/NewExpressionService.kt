@@ -30,11 +30,13 @@ class NewExpressionService {
             null,null,null
         )
         newExpression.addNewExpression(funcCall)
-        FunctionCallsService.getInstance()
-            .declarationStatementForArgumentType(
-                (node.initializer as CPPASTConstructorInitializer).arguments,
-                funcCall
-            )
+        if(node.initializer != null) {
+            FunctionCallsService.getInstance()
+                .declarationStatementForArgumentType(
+                    (node.initializer as CPPASTConstructorInitializer).arguments,
+                    funcCall
+                )
+        }
         StatementMapper.addStatementToStatement(statement, newExpression)
     }
 }

@@ -14,6 +14,17 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ExpressionStatementService {
 
+    companion object{
+        private lateinit var expressionStatementService: ExpressionStatementService
+
+        fun getInstance(): ExpressionStatementService{
+            if(!::expressionStatementService.isInitialized) {
+                expressionStatementService = ExpressionStatementService()
+            }
+            return expressionStatementService
+        }
+    }
+
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?) {
         val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null, null)
         FunctionCallsService.getInstance()
@@ -104,11 +115,11 @@ class ExpressionStatementService {
         }
     }
 
-    fun solveExpressionStatement(data: CPPASTExpressionStatement, method: Method?) {
+    fun solveExpressionStatement(data: CPPASTExpressionStatement, statement: Statement?) {
             ASTNodeService.getInstance()
                 .solveASTNode(
                     data.expression as ASTNode,
-                    method as Statement
+                    statement
                 )
 
     }
