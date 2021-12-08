@@ -5,7 +5,7 @@ data class Class(
     var inheritance: ArrayList<String>?,
     var declarations: ArrayList<Declaration?>?,
     var methods: ArrayList<Method?>?
-    ) {
+    ): Statement {
 
     fun addDeclaration(decl: Declaration) {
         if(declarations == null) {

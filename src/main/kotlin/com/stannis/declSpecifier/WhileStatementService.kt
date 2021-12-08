@@ -1,36 +1,39 @@
 package com.stannis.declSpecifier
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Method
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.While
 import com.stannis.services.CoreParserClass
-import com.stannis.services.FunctionCallsService
 import com.stannis.services.MethodService
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBinaryExpression
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
+import com.stannis.services.cppastService.ASTNodeService
+import com.stannis.services.mapper.StatementMapper
+import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement
 
 class WhileStatementService {
 
-    fun solveWhileStatement(data: CPPASTWhileStatement, method: Method?, methodService: MethodService, functionCallsService: FunctionCallsService) {
-        val whileT = While(null, null, null, null)
-        methodService.addStatement(method!!, whileT)
-        val methodChild = methodService.createMethod()
-        whileT.addblock(methodChild)
-        when (data.condition) {
-            is CPPASTBinaryExpression -> {
-                functionCallsService.getOperands(data.condition as CPPASTBinaryExpression, whileT)
+    companion object{
+        private lateinit var whileStatementService: WhileStatementService
+
+        fun getInstance(): WhileStatementService{
+            if(!::whileStatementService.isInitialized) {
+                whileStatementService = WhileStatementService()
             }
-            is CPPASTLiteralExpression -> {
-                whileT.add(data.condition.rawSignature)
-            }
-            is CPPASTFunctionCallExpression -> {
-                println(data.condition)
-                //TODO
-            }
-            else -> { throw Exception() }
+            return whileStatementService
         }
+    }
+
+    fun solveWhileStatement(data: CPPASTWhileStatement, statement: Statement?) {
+        val whileT = While(null, null, null, null)
+        StatementMapper.addStatementToStatement(
+            statement!!, whileT
+        )
+        val methodChild = MethodService.getInstance().createMethod()
+        whileT.addblock(methodChild)
+
+        ASTNodeService.getInstance()
+            .solveASTNode(data.condition as ASTNode, statement)
+
         CoreParserClass.seeCPASTCompoundStatement(data.body, methodChild)
     }
 }

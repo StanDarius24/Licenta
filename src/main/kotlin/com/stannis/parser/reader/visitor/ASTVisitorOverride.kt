@@ -18,12 +18,9 @@ class ASTVisitorOverride: ASTVisitor() {
 
 
     companion object{
-        private val unitService = UnitService()
-        private val methodService = MethodService()
-        private val classService = ClassService()
-        private val funcDefService = FunctionDefinitionService()
-        private var method = methodService.createMethod()
-        private var unit = unitService.createUnit()
+
+        private var method = MethodService.getInstance().createMethod()
+        private var unit = UnitService.getInstance().createUnit()
         fun getUnit() :Unit {
             return this.unit
         }
@@ -57,16 +54,16 @@ class ASTVisitorOverride: ASTVisitor() {
         if(checkDecl(declaration)) {
             return PROCESS_CONTINUE
         }
-        method = methodService.createMethod()
+        method = MethodService.getInstance().createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         when (declaration) {
-            is CPPASTFunctionDefinition -> {
-                funcDefService.handleCPPASTFunctionDefinition(declaration, method)
+            is CPPASTFunctionDefinition -> { // ASTAttributeOwner TODO
+                FunctionDefinitionService.getInstance().handleCPPASTFunctionDefinition(declaration, method)
             }
             is CPPASTSimpleDeclaration -> {
                 val simpleDeclSpecifierService = SimpleDeclSpecifierService()
                 if(!simpleDeclSpecifierService.solveDeclSpecifier(
-                        declaration, method, unit, methodService, classService, unitService)
+                        declaration, method, unit)
                 ) {
                     return PROCESS_CONTINUE
                 }
@@ -104,7 +101,7 @@ class ASTVisitorOverride: ASTVisitor() {
             else -> { throw Exception() }
         }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
-        unitService.addNewMethod(unit, method)
+        UnitService.getInstance().addNewMethod(unit, method)
         return PROCESS_CONTINUE
     }
 
@@ -115,7 +112,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
-        unit = unitService.createUnit()
+        unit = UnitService.getInstance().createUnit()
         return PROCESS_CONTINUE
     }
 

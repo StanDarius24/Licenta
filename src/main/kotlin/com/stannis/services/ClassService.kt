@@ -1,16 +1,26 @@
 package com.stannis.services
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Antet
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
+import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.IASTStatement
+import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ClassService {
 
-    private var methodService = MethodService()
-    private var functionDefService = FunctionDefinitionService()
+    companion object{
+        private lateinit var classService: ClassService
+
+        fun getInstance(): ClassService{
+            if(!::classService.isInitialized) {
+                classService = ClassService()
+            }
+            return classService
+        }
+    }
+
     private var defaulType = "public:"
 
     fun parseDecl(classDeclaration: Class, declSpecifier: CPPASTCompositeTypeSpecifier) {
@@ -24,46 +34,50 @@ class ClassService {
         }
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
-                when (member) {
-                    is CPPASTVisibilityLabel -> {
-                        defaulType = member.rawSignature
-                    }
-                    is CPPASTSimpleDeclaration -> { // ASTAttributeOwner //TODO IMPORTANT different class
-                        getDeclarationsForClass(member, classDeclaration)
-                    }
-                    is CPPASTFunctionDefinition -> {
-                        handleCPPASTFunctionDefinition(classDeclaration, member)
-                    }
-                    is CPPASTTemplateDeclaration -> {
-                        println(member)
-                        //TODO
-                    }
-                    is CPPASTProblemDeclaration -> {
-                        println(member)
-                        //TODO
-                    }
-                    is CPPASTStaticAssertionDeclaration -> {
-                        println(member)
-                        //TODO
-                    }
-                    is CPPASTAliasDeclaration -> {
-                        println(member)
-                        //TODO
-                    }
-                    else -> { throw Exception() }
-                }
+
+                ASTNodeService.getInstance()
+                    .solveASTNode(member as ASTNode, classDeclaration)
+//                when (member) {
+//                    is CPPASTVisibilityLabel -> {
+//                        defaulType = member.rawSignature
+//                    }
+//                    is CPPASTSimpleDeclaration -> { // ASTAttributeOwner //TODO IMPORTANT different class
+//                        getDeclarationsForClass(member, classDeclaration)
+//                    }
+//                    is CPPASTFunctionDefinition -> {
+//                        handleCPPASTFunctionDefinition(classDeclaration, member)
+//                    }
+//                    is CPPASTTemplateDeclaration -> {
+//                        println(member)
+//                        //TODO
+//                    }
+//                    is CPPASTProblemDeclaration -> {
+//                        println(member)
+//                        //TODO
+//                    }
+//                    is CPPASTStaticAssertionDeclaration -> {
+//                        println(member)
+//                        //TODO
+//                    }
+//                    is CPPASTAliasDeclaration -> {
+//                        println(member)
+//                        //TODO
+//                    }
+//                    else -> { throw Exception() }
+//                }
             }
         }
     }
 
     private fun handleCPPASTFunctionDefinition(classDeclaration: Class, member: CPPASTFunctionDefinition) {
-        val method = methodService.createMethod()
+        val method = MethodService.getInstance().createMethod()
         classDeclaration.addMethod(method)
-        methodService.setAntet(method,
+        MethodService.getInstance().setAntet(method,
         Antet(
                 member.declSpecifier.rawSignature,
                 member.declarator.name.rawSignature,
-                functionDefService.getParametersDeclarationArray((member.declarator as CPPASTFunctionDeclarator).parameters)
+                FunctionDefinitionService.getInstance()
+                    .getParametersDeclarationArray((member.declarator as CPPASTFunctionDeclarator).parameters)
                 )
         )
         method.modifier = defaulType

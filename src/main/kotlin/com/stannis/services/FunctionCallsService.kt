@@ -25,14 +25,6 @@ class FunctionCallsService {
         }
     }
 
-    private var fieldReferenceService = FieldReferenceService() //CDI here
-    private var methodService = MethodService()
-    private var typeIdExpressionService = TypeIdExpressionService()
-    private var castExpressionService = CastExpressionService()
-    private var arraySubscriptExpressionService = ArraySubscriptExpressionService()
-    private var conditionalExpressionService = ConditionalExpressionService()
-    private var simpleTypeConstructorExpressionService = SimpleTypeConstructorExpressionService()
-
     fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
         if( data != null) {
             if( data.initializer != null) {
@@ -104,31 +96,31 @@ class FunctionCallsService {
                         }
                     }
                     is CPPASTArraySubscriptExpression -> {
-                        arraySubscriptExpressionService.solveArraySubscript(
+                        ArraySubscriptExpressionService.getInstance().solveArraySubscript(
                             datax,
                             statement!!
                         )
                     }
                     is CPPASTFieldReference -> {
-                        fieldReferenceService.solveFieldReference(
+                        FieldReferenceService.getInstance().solveFieldReference(
                             datax,
                             statement
                         )
                     }
                     is CPPASTCastExpression -> {
-                        castExpressionService.solveCastExpression(
+                        CastExpressionService.getInstance().solveCastExpression(
                             datax,
                             statement!!
                         )
                     }
                     is CPPASTTypeIdExpression -> {
-                        typeIdExpressionService.solveTypeIdExpression(
+                        TypeIdExpressionService.getInstance().solveTypeIdExpression(
                             statement!!,
                             datax
                             )
                     }
                     is CPPASTConditionalExpression -> {
-                        conditionalExpressionService.solveConditionalExpression(
+                        ConditionalExpressionService.getInstance().solveConditionalExpression(
                             datax,
                             statement!!
                         )
@@ -202,7 +194,7 @@ class FunctionCallsService {
                 getFunctionArguments(binaryExpression, statement)
             }
             is CPPASTFieldReference -> {
-                fieldReferenceService.solveFieldReference(
+                FieldReferenceService.getInstance().solveFieldReference(
                     binaryExpression,
                     statement
                 )
@@ -211,7 +203,7 @@ class FunctionCallsService {
                 getOperands(binaryExpression, statement)
             }
             is CPPASTCastExpression -> {
-                castExpressionService.solveCastExpression(
+                CastExpressionService.getInstance().solveCastExpression(
                     binaryExpression,
                     statement!!
                 )
@@ -232,7 +224,7 @@ class FunctionCallsService {
                 StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
             }
             is CPPASTSimpleTypeConstructorExpression -> {
-                simpleTypeConstructorExpressionService.solveTypeConstructorExpre(
+                SimpleTypeConstructorExpressionService.getInstance().solveTypeConstructorExpre(
                     binaryExpression,
                     statement!!
                 )

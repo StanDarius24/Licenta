@@ -1,5 +1,6 @@
 package com.stannis.services.mapper
 
+import com.stannis.dataModel.Class
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
@@ -69,6 +70,15 @@ class StatementMapper {
                 }
                 is AnonimStatement -> {
                     statementParent.statement = statementChild
+                }
+                is For -> {
+
+                }
+                is ExpressionList -> {
+
+                }
+                is Class -> {
+
                 }
                 else -> {
                     throw Exception()

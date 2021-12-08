@@ -13,13 +13,24 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ReturnStatementService {
 
-    fun solveReturnStatement(data: CPPASTReturnStatement, method: Method?) {
+    companion object{
+        private lateinit var returnStatementService: ReturnStatementService
+
+        fun getInstance(): ReturnStatementService{
+            if(!::returnStatementService.isInitialized) {
+                returnStatementService = ReturnStatementService()
+            }
+            return returnStatementService
+        }
+    }
+
+    fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
         val returnT = Return(null, null, null)
         if(data.returnValue != null) {
             ASTNodeService.getInstance()
                 .solveASTNode(data.returnValue as ASTNode,
                 returnT)
         }
-        StatementMapper.addStatementToStatement(method as Statement, returnT)
+        StatementMapper.addStatementToStatement(statement!!, returnT)
     }
 }

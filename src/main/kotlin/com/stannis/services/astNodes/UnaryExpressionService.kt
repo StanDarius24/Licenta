@@ -19,11 +19,6 @@ class UnaryExpressionService {
         }
     }
 
-    fun solveUneryExpression(data: CPPASTExpressionStatement, statement: Statement?) {
-        val initT = Initialization((data.expression as CPPASTUnaryExpression).operand.rawSignature , arrayListOf ((data.expression as CPPASTUnaryExpression).operator.toString()), null, null, null)
-        StatementMapper.addStatementToStatement(statement!!, initT)
-    }
-
     fun solveUneryExpression(data: CPPASTUnaryExpression, statement: Statement?) {
         val initT = Initialization(data.operand.rawSignature , arrayListOf (data.operator.toString()), null, null, null)
         StatementMapper.addStatementToStatement(statement!!, initT)

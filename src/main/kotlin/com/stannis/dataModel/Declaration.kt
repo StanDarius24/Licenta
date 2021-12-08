@@ -9,4 +9,4 @@ data class Declaration(
     var function: FunctionCall?,
     var arraySize: Int?,
     var modifier: String?
-)
+): Statement
