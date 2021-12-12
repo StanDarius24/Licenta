@@ -10,35 +10,35 @@ import com.stannis.dataModel.Statement
 //data.body // compound statement
 
 data class For(
-    var initializer: ArrayList<Initialization>?,
-    var conditionExpr: ArrayList<Initialization>?,
-    var conditionDecl: ArrayList<Initialization>?,
-    var iteration: ArrayList<Initialization>?,
+    var initializer: ArrayList<Statement>?,
+    var conditionExpr: ArrayList<Statement>?,
+    var conditionDecl: ArrayList<Statement>?,
+    var iteration: ArrayList<Statement>?,
     var body: Method?
 ): Statement {
 
-    fun addInitializer(data: Initialization) {
+    fun addInitializer(data: Statement) {
         if(initializer == null) {
             initializer = ArrayList()
         }
         initializer!!.add(data)
     }
 
-    fun addConditionExpression(data: Initialization) {
+    fun addConditionExpression(data: Statement) {
         if(conditionExpr == null) {
             conditionExpr = ArrayList()
         }
         conditionExpr!!.add(data)
     }
 
-    fun addConditionDeclaration(data: Initialization) {
+    fun addConditionDeclaration(data: Statement) {
         if(conditionDecl == null) {
             conditionExpr = ArrayList()
         }
         conditionExpr!!.add(data)
     }
 
-    fun addIteration(data: Initialization) {
+    fun addIteration(data: Statement) {
         if(iteration == null) {
             iteration = ArrayList()
         }

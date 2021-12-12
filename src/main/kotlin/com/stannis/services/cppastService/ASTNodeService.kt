@@ -1,15 +1,12 @@
 package com.stannis.services.cppastService
 
 import com.stannis.dataModel.Statement
-import com.stannis.dataModel.statementTypes.FunctionCall
-import com.stannis.dataModel.statementTypes.IdExpression
-import com.stannis.dataModel.statementTypes.NewExpression
+import com.stannis.dataModel.statementTypes.*
 import com.stannis.declSpecifier.*
 import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import com.stannis.services.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.mapper.StatementMapper
-import org.eclipse.cdt.core.dom.ast.ASTVisitor
 import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
@@ -131,14 +128,16 @@ class ASTNodeService {
                     .solveSwitchStatement(node, statement)
             }
             is CPPASTProblemStatement -> {
-                //TODO
+                ProblemStatementService.getInstance()
+                    .solveProblemStatement(node, statement)
             }
             is CPPASTReturnStatement -> {
                 ReturnStatementService.getInstance()
                     .solveReturnStatement(node, statement)
             }
             is CPPASTDoStatement -> {
-                //TODO
+                DoStatementService.getInstance()
+                    .solveDoStatement(node, statement)
             }
             is CPPASTVisibilityLabel -> {
                 modifier = node.rawSignature
@@ -155,59 +154,81 @@ class ASTNodeService {
                     .handleCPPASTFunctionDefinition(node, statement)
             }
             is CPPASTForStatement -> {
-                ForBlockService.getInstance().solveForBlock(node, statement!!)
+                ForBlockService.getInstance().solveForBlock(node, statement)
             }
             is CPPASTDeclarator -> {
-                //TODO
+                DeclaratorService.getInstance()
+                    .solveDeclaratorService(node, statement)
             }
             is CPPASTBreakStatement -> {
-                //TODO
+                val breaks = BreakStatement(node.rawSignature)
+                StatementMapper.addStatementToStatement(statement!!, breaks)
             }
             is CPPASTWhileStatement -> {
                 WhileStatementService.getInstance()
                     .solveWhileStatement(node, statement)
             }
             is CPPASTConstructorInitializer -> {
+                ConstructorInitializerService.getInstance()
+                    .solveConstructorInitializer(node, statement)
+                println(node)
                 //TODO
             }
             is CPPASTContinueStatement -> {
-                //TODO
+                val continueStat =ContinueStatement(node.rawSignature)
+                StatementMapper.addStatementToStatement(statement!!, continueStat)
             }
             is CPPASTRangeBasedForStatement -> {
-                //TODO
+                RangeBaseForStatementService.getInstance()
+                    .solveRangeBaseForStatement(node, statement)
             }
             is CPPASTGotoStatement -> {
-                //TODO
+                val goto = GotoStatement(node.name.rawSignature)
+                StatementMapper.addStatementToStatement(statement!!, goto)
             }
             is CPPASTLabelStatement -> {
-                //TODO
+                LabelStatementService.getInstance()
+                    .solveLabelStatement(node, statement)
             }
             is CPPASTNullStatement -> {
+                println(node)
                 //TODO
             }
             is CPPASTTemplateDeclaration -> {
+                println(node)
                 //TODO
             }
             is CPPASTProblemDeclaration -> {
+                println(node)
                 //TODO
             }
             is CPPASTStaticAssertionDeclaration -> {
+                println(node)
                 //TODO
             }
             is CPPASTAliasDeclaration -> {
+                println(node)
                 //TODO
             }
             is CPPASTInitializerList -> {
+                println(node)
                 //TODO
             }
             is CPPASTTryBlockStatement -> {
+                println(node)
                 //TODO
             }
             is CPPASTUsingDirective -> {
+                println(node)
                 //TODO
             }
             is CPPASTUsingDeclaration -> {
+                println(node)
                 //TODO
+            }
+            is CPPASTEqualsInitializer -> {
+                val equals = EqualsInitializer(node.rawSignature, null)
+                StatementMapper.addStatementToStatement(statement!!, equals)
             }
             else -> throw Exception()
         }

@@ -1,10 +1,8 @@
 package com.stannis.declSpecifier
 
 import com.stannis.dataModel.Method
-import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.CPPMethodCall
 import com.stannis.dataModel.statementTypes.FunctionCall
-import com.stannis.dataModel.statementTypes.Initialization
 import com.stannis.services.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.cppastService.ASTNodeService
@@ -26,7 +24,7 @@ class ExpressionStatementService {
     }
 
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?) {
-        val initialization = Initialization(data.expression.children[0].rawSignature, null, null, null, null)
+        val initialization = com.stannis.dataModel.statementTypes.Statement(data.expression.children[0].rawSignature, null, null, null, null)
         FunctionCallsService.getInstance()
             .getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
         if(initialization.value != null && initialization.value!!.size > 1) {
@@ -115,7 +113,7 @@ class ExpressionStatementService {
         }
     }
 
-    fun solveExpressionStatement(data: CPPASTExpressionStatement, statement: Statement?) {
+    fun solveExpressionStatement(data: CPPASTExpressionStatement, statement: com.stannis.dataModel.Statement?) {
             ASTNodeService.getInstance()
                 .solveASTNode(
                     data.expression as ASTNode,

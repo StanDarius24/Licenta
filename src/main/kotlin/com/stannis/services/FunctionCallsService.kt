@@ -80,7 +80,7 @@ class FunctionCallsService {
                         )
                         if( statement is FunctionCall) {
                             statement.add(func)
-                        } else if(statement is Initialization){
+                        } else if(statement is com.stannis.dataModel.statementTypes.Statement){
                             statement.add(func)
                         }
                     }
@@ -156,7 +156,7 @@ class FunctionCallsService {
                 null, null
             )
             when (statement) {
-                is Initialization -> {
+                is com.stannis.dataModel.statementTypes.Statement -> {
                     statement.name =
                         (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
 

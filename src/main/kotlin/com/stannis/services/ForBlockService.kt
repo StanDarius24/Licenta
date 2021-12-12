@@ -1,9 +1,6 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Method
-import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.For
-import com.stannis.dataModel.statementTypes.Initialization
 import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -26,10 +23,10 @@ class ForBlockService {
         }
     }
 
-    fun solveForBlock(data: CPPASTForStatement, statement: Statement) {
+    fun solveForBlock(data: CPPASTForStatement, statement: com.stannis.dataModel.Statement?) {
         val forT = For(null, null, null, null, null)
         StatementMapper.addStatementToStatement(
-            statement, forT
+            statement!!, forT
         )
         solveForInitialization(data.initializerStatement, forT)
         solveForConditionExpression(data.conditionExpression, forT)
@@ -51,7 +48,7 @@ class ForBlockService {
 
 
     private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
-        val initT = Initialization(null, null, null, null, null)
+        val initT = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
         forT.addConditionExpression(initT)
         if(conditionExpression != null) {
             ASTNodeService.getInstance()
@@ -70,7 +67,7 @@ class ForBlockService {
                     }
             }
             is CPPASTExpressionStatement -> {
-                val inits =Initialization(null, null, null, null, null)
+                val inits = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
                 ASTNodeService.getInstance()
                     .solveASTNode(initializerStatement.expression as ASTNode, inits)
@@ -100,7 +97,8 @@ class ForBlockService {
     }
 
     private fun setInitializer(declarator: IASTDeclarator?, forT: For) { //TODO make this a general function for every state of For{}
-        val initT = Initialization(declarator!!.name.rawSignature, null, null, null, null)
+        val initT =
+            com.stannis.dataModel.statementTypes.Statement(declarator!!.name.rawSignature, null, null, null, null)
         forT.addInitializer(initT)
 
         ASTNodeService.getInstance()

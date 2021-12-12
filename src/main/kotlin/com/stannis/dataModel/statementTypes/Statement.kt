@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 
-data class Initialization(
+data class Statement(
     var name: String?,
     var value: ArrayList<String>?,
     var declaration: ArrayList<Declaration>?,

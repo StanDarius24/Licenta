@@ -6,4 +6,4 @@ data class ConditionalExpression(
     var condition: Statement?,
     var positiveResult: Statement?,
     var negativeResult: Statement?
-) :Statement
+) : Statement
