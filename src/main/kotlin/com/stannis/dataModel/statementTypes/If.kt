@@ -3,11 +3,11 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 
-data class If( var operands: ArrayList<String>?,
-               var Compounds: ArrayList<Statement>?,
-               var functionCalls: ArrayList<FunctionCall>?,
-               var ifBlock: ArrayList<Method>?,
-               var elseBlock: ArrayList<Method>?): Statement {
+data class If(var operands: ArrayList<String>?,
+              var Compounds: ArrayList<Statement>?,
+              var functionCalls: ArrayList<FunctionCall>?,
+              var ifBlock: ArrayList<Method>?,
+              var elseBlock: ArrayList<Method>?): Statement {
 
     fun add(data: String) {
         if(operands == null) {
