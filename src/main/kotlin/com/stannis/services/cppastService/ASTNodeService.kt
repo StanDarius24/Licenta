@@ -191,20 +191,17 @@ class ASTNodeService {
                     .solveLabelStatement(node, statement)
             }
             is CPPASTNullStatement -> {
-                println(node)
-                //TODO
+                StatementMapper.addStatementToStatement(statement!!, NullStatement(node.rawSignature))
             }
             is CPPASTTemplateDeclaration -> {
-                println(node)
-                //TODO
+                TemplateDeclarationService.solveTemplateDeclaration(node, statement)
             }
             is CPPASTProblemDeclaration -> {
                 println(node)
                 //TODO
             }
             is CPPASTStaticAssertionDeclaration -> {
-                println(node)
-                //TODO
+                StaticAssertionDeclarationService.solveStaticAssertionDeclaration(node, statement!!)
             }
             is CPPASTAliasDeclaration -> {
                 println(node)
@@ -229,6 +226,14 @@ class ASTNodeService {
             is CPPASTEqualsInitializer -> {
                 val equals = EqualsInitializer(node.rawSignature, null)
                 StatementMapper.addStatementToStatement(statement!!, equals)
+            }
+            is CPPASTSimpleTypeTemplateParameter -> {
+                val simpleType = SimpleTypeTemplateParameter(node.name.rawSignature)
+                StatementMapper.addStatementToStatement(statement!!, simpleType)
+            }
+            is CPPASTParameterDeclaration -> {
+                println(node)
+                //TODO
             }
             else -> throw Exception()
         }

@@ -72,7 +72,7 @@ class SimpleDeclSpecifierService {
     private fun compositeTypeSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement, unit: Unit): Boolean{
         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
         if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
-            val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null, null)
+            val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
              UnitService.getInstance().addClass(unit, classDeclaration)
             (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
             ClassService.getInstance().parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))

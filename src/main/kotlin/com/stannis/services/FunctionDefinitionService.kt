@@ -1,11 +1,11 @@
 package com.stannis.services
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Antet
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
+import com.stannis.dataModel.statementTypes.AnonimStatement
 import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTParameterDeclaration
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
@@ -68,8 +68,10 @@ class FunctionDefinitionService  {
                 }
             }
         } else if (statement is Class) {
+            println(statement)  //TODO
+        } else if(statement is AnonimStatement) {
             println(statement)
-        } else {
+        } else{
             throw Exception()
         }
     }

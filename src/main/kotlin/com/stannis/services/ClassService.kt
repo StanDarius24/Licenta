@@ -71,7 +71,7 @@ class ClassService {
 
     private fun handleCPPASTFunctionDefinition(classDeclaration: Class, member: CPPASTFunctionDefinition) {
         val method = MethodService.getInstance().createMethod()
-        classDeclaration.addMethod(method)
+        classDeclaration.addStatement(method)
         MethodService.getInstance().setAntet(method,
         Antet(
                 member.declSpecifier.rawSignature,
@@ -113,7 +113,7 @@ class ClassService {
                 defaulType
             )
             FunctionCallsService.getInstance().getFunctionCall(data, decl)
-            classDeclaration.addDeclaration(decl)
+            classDeclaration.addStatement(decl)
         }
     }
 
