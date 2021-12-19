@@ -24,8 +24,7 @@ object ClassService {
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
 
-                ASTNodeService.getInstance()
-                    .solveASTNode(member as ASTNode, classDeclaration)
+                ASTNodeService.solveASTNode(member as ASTNode, classDeclaration)
 //                when (member) {
 //                    is CPPASTVisibilityLabel -> {
 //                        defaulType = member.rawSignature

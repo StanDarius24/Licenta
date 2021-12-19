@@ -16,8 +16,7 @@ object ReturnStatementService {
     fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
         val returnT = Return(null, null, null)
         if(data.returnValue != null) {
-            ASTNodeService.getInstance()
-                .solveASTNode(data.returnValue as ASTNode,
+            ASTNodeService.solveASTNode(data.returnValue as ASTNode,
                 returnT)
         }
         StatementMapper.addStatementToStatement(statement!!, returnT)

@@ -20,8 +20,7 @@ object WhileStatementService {
         val methodChild = MethodService.createMethod()
         whileT.addblock(methodChild)
 
-        ASTNodeService.getInstance()
-            .solveASTNode(data.condition as ASTNode, statement)
+        ASTNodeService.solveASTNode(data.condition as ASTNode, statement)
 
         CoreParserClass.seeCPASTCompoundStatement(data.body, methodChild)
     }

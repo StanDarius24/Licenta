@@ -30,8 +30,7 @@ object ForBlockService {
     private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
         if( iterationExpression != null) {
             println(iterationExpression.rawSignature)
-            ASTNodeService.getInstance()
-                .solveASTNode(iterationExpression as ASTNode, forT)
+            ASTNodeService.solveASTNode(iterationExpression as ASTNode, forT)
         }
     }
 
@@ -40,8 +39,7 @@ object ForBlockService {
         val initT = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
         forT.addConditionExpression(initT)
         if(conditionExpression != null) {
-            ASTNodeService.getInstance()
-                .solveASTNode(conditionExpression as ASTNode, initT)
+            ASTNodeService.solveASTNode(conditionExpression as ASTNode, initT)
         }
     }
 
@@ -58,8 +56,7 @@ object ForBlockService {
             is CPPASTExpressionStatement -> {
                 val inits = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
-                ASTNodeService.getInstance()
-                    .solveASTNode(initializerStatement.expression as ASTNode, inits)
+                ASTNodeService.solveASTNode(initializerStatement.expression as ASTNode, inits)
 
                     when (initializerStatement.expression) {
                         is CPPASTBinaryExpression -> { // TODO
@@ -69,6 +66,7 @@ object ForBlockService {
                             ) // new statement structure
                         }
                         is CPPASTUnaryExpression -> {
+                            println(initializerStatement.expression)
                             //TODO
                         }
                         else -> {
@@ -90,8 +88,7 @@ object ForBlockService {
             com.stannis.dataModel.statementTypes.Statement(declarator!!.name.rawSignature, null, null, null, null)
         forT.addInitializer(initT)
 
-        ASTNodeService.getInstance()
-            .solveASTNode(declarator as ASTNode, initT)
+        ASTNodeService.solveASTNode(declarator as ASTNode, initT)
 
 //        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {  // TODO HANDLE ASTNODESERVICE!
 //            is CPPASTBinaryExpression -> {

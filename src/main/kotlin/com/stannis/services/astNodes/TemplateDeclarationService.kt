@@ -13,8 +13,7 @@ object TemplateDeclarationService {
     fun solveTemplateDeclaration(templateDecl: CPPASTTemplateDeclaration, statement: Statement?) {
         val template = TemplateDeclaration(null, null, null)
         val anonimDecl = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(templateDecl.declaration as ASTNode, anonimDecl)
+        ASTNodeService.solveASTNode(templateDecl.declaration as ASTNode, anonimDecl)
         template.addDeclaration(anonimDecl)
         val templateScope = AnonimStatement(null)
 //        ASTNodeService.getInstance() CPPTemplateScope it s not ASTNODE
@@ -23,8 +22,7 @@ object TemplateDeclarationService {
             .forEachRemaining { parameter ->
                 run {
                     val anonim = AnonimStatement(null)
-                    ASTNodeService.getInstance()
-                        .solveASTNode(parameter as ASTNode, anonim)
+                    ASTNodeService.solveASTNode(parameter as ASTNode, anonim)
                     template.addParameters(anonim)
                 }
             }

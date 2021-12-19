@@ -17,8 +17,7 @@ object ExpressionListService {
         expression.expressions.iterator()
             .forEachRemaining { expression ->
                 run {
-                    ASTNodeService.getInstance()
-                        .solveASTNode(expression as ASTNode, expressionList)
+                    ASTNodeService.solveASTNode(expression as ASTNode, expressionList)
                 }
             }
         StatementMapper.addStatementToStatement(statement, expressionList)

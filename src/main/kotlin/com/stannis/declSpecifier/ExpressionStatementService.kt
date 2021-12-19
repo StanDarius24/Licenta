@@ -103,8 +103,7 @@ object ExpressionStatementService {
     }
 
     fun solveExpressionStatement(data: CPPASTExpressionStatement, statement: com.stannis.dataModel.Statement?) {
-            ASTNodeService.getInstance()
-                .solveASTNode(
+            ASTNodeService.solveASTNode(
                     data.expression as ASTNode,
                     statement
                 )

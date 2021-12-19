@@ -14,13 +14,11 @@ object DoStatementService {
     fun solveDoStatement(doStatement: CPPASTDoStatement, statement: Statement?) {
         val doStm = DoStatement(null, null)
         val anonimStm = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(doStatement.condition as ASTNode, doStm)
+        ASTNodeService.solveASTNode(doStatement.condition as ASTNode, doStm)
         (doStatement.body as CPPASTCompoundStatement).statements
             .iterator().forEachRemaining { iastStatement ->
                 run {
-                    ASTNodeService.getInstance()
-                        .solveASTNode(iastStatement as ASTNode, anonimStm)
+                    ASTNodeService.solveASTNode(iastStatement as ASTNode, anonimStm)
                     doStm.addToBody(anonimStm)
                 }
             }

@@ -12,7 +12,7 @@ object ConditionalExpressionService {
 
     private fun solveparameter(node: ASTNode?, statement: Statement?) {
         if(node != null) {
-            ASTNodeService.getInstance().solveASTNode(
+            ASTNodeService.solveASTNode(
                 node,
                 statement
             )

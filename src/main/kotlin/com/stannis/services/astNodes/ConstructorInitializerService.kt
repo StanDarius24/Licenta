@@ -14,8 +14,7 @@ object ConstructorInitializerService {
         constructorInitializer.arguments
             .iterator().forEachRemaining { arg ->
                 run {
-                    ASTNodeService.getInstance()
-                        .solveASTNode(arg as ASTNode, constrInit)
+                    ASTNodeService.solveASTNode(arg as ASTNode, constrInit)
                 }
             }
         StatementMapper.addStatementToStatement(statement!!, constrInit)

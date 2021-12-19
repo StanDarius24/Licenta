@@ -17,8 +17,7 @@ object IfStatementService {
         val ifT = If(null, null, null, null, null)
         StatementMapper.addStatementToStatement(statement!!, ifT)
         if (data.conditionExpression != null) {
-            ASTNodeService.getInstance()
-                .solveASTNode(
+            ASTNodeService.solveASTNode(
                     data.conditionExpression as ASTNode,
                     ifT
                 )

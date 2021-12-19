@@ -13,8 +13,7 @@ object LabelStatementService {
     fun solveLabelStatement(labelCppast: CPPASTLabelStatement, statement: Statement?) {
         val labelStatement = LabelStatement(labelCppast.name.rawSignature, null)
         val anonimStatement = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(labelCppast.nestedStatement as ASTNode, anonimStatement)
+        ASTNodeService.solveASTNode(labelCppast.nestedStatement as ASTNode, anonimStatement)
         labelStatement.addExpression(anonimStatement)
         StatementMapper.addStatementToStatement(statement!!, labelStatement)
     }

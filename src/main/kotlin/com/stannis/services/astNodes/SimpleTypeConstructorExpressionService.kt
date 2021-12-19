@@ -13,8 +13,7 @@ object SimpleTypeConstructorExpressionService {
         val simpleTypeConstr = SimpleTypeConstructorExpression(
             expression.declSpecifier.rawSignature, null
         )
-        ASTNodeService.getInstance()
-            .solveASTNode(expression.initializer as ASTNode, simpleTypeConstr)
+        ASTNodeService.solveASTNode(expression.initializer as ASTNode, simpleTypeConstr)
         StatementMapper.addStatementToStatement(statement, simpleTypeConstr)
     }
 }

@@ -12,11 +12,9 @@ object StaticAssertionDeclarationService {
     fun solveStaticAssertionDeclaration(staticAssertioncppast: CPPASTStaticAssertionDeclaration, statement: Statement?) {
         val staticAssertion = StaticAssertionDeclaration(null, null)
         val anonimStatement1 = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(staticAssertioncppast.condition as ASTNode, anonimStatement1)
+        ASTNodeService.solveASTNode(staticAssertioncppast.condition as ASTNode, anonimStatement1)
         val anonimStatement2 = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(staticAssertioncppast.message as ASTNode, anonimStatement2)
+        ASTNodeService.solveASTNode(staticAssertioncppast.message as ASTNode, anonimStatement2)
         staticAssertion.addCondition(anonimStatement1)
         staticAssertion.addMessage(anonimStatement2)
         StatementMapper.addStatementToStatement(statement!!, staticAssertion)

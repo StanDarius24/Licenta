@@ -11,20 +11,9 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ASTNodeService {
+object ASTNodeService {
 
     private var modifier = "public"
-
-    companion object{
-        private lateinit var astNodeService: ASTNodeService
-
-        fun getInstance(): ASTNodeService {
-            if(!::astNodeService.isInitialized) {
-                astNodeService = ASTNodeService()
-            }
-            return astNodeService
-        }
-    }
 
     fun solveASTNode(node: ASTNode, statement: Statement?) {
         when (node) {
@@ -194,8 +183,7 @@ class ASTNodeService {
                 TemplateDeclarationService.solveTemplateDeclaration(node, statement)
             }
             is CPPASTProblemDeclaration -> {
-                println(node)
-                //TODO
+                ProblemDeclarationService.solveProblemDeclaration(node, statement)
             }
             is CPPASTStaticAssertionDeclaration -> {
                 StaticAssertionDeclarationService.solveStaticAssertionDeclaration(node, statement!!)
@@ -213,8 +201,7 @@ class ASTNodeService {
                 //TODO
             }
             is CPPASTUsingDirective -> {
-                println(node)
-                //TODO
+                UsingDeclarationService.solveUnitDeclaration(node, statement)
             }
             is CPPASTUsingDeclaration -> {
                 println(node)
@@ -231,6 +218,12 @@ class ASTNodeService {
             is CPPASTParameterDeclaration -> {
                 println(node)
                 //TODO
+            }
+            is CPPASTCaseStatement -> {
+                CaseStatementService.solveCaseStatement(node, statement)
+            }
+            is CPPASTDefaultStatement -> {
+                DefaultStatementService.solveDefaultStatement(node, statement)
             }
             else -> throw Exception()
         }

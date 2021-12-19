@@ -11,8 +11,7 @@ object CoreParserClass {
         fun seeCPASTCompoundStatement(data: IASTStatement, statement: Statement?) {
                 println("---------")
                 println(data.rawSignature)
-                ASTNodeService.getInstance()
-                    .solveASTNode(data as ASTNode, statement)
+                ASTNodeService.solveASTNode(data as ASTNode, statement)
 //                when (data) {
 //                    is CPPASTDeclarationStatement -> { // ASTAttributeOwner // ASTNode TODO 2 type of classes that handle types REFACTORING NEEDED ASAP
 //                        when (data.declaration) {

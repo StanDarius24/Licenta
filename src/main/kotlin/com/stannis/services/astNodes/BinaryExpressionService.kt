@@ -14,8 +14,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
 object BinaryExpressionService {
 
     private fun handreOperands(node: ASTNode, statement: Statement) {
-       ASTNodeService.getInstance()
-           .solveASTNode(node, statement)
+       ASTNodeService.solveASTNode(node, statement)
     }
 
     fun solveBinaryExpressionService(expression: CPPASTBinaryExpression, statement: Statement?) {
