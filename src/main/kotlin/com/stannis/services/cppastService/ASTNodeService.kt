@@ -29,25 +29,25 @@ class ASTNodeService {
     fun solveASTNode(node: ASTNode, statement: Statement?) {
         when (node) {
             is CPPASTBinaryExpression -> {
-                BinaryExpressionService.getInstance().solveBinaryExpressionService(node, statement)
+                BinaryExpressionService.solveBinaryExpressionService(node, statement)
             }
             is CPPASTFunctionCallExpression -> {
-                FunctionCallsService.getInstance().setFunctionCallExpression(node, statement)
+                FunctionCallsService.setFunctionCallExpression(node, statement)
             }
             is CPPASTUnaryExpression -> {
-                UnaryExpressionService.getInstance().solveUneryExpression(node, statement)
+                UnaryExpressionService.solveUneryExpression(node, statement)
             }
             is CPPASTFieldReference -> {
-                FieldReferenceService.getInstance().solveFieldReference(node, statement)
+                FieldReferenceService.solveFieldReference(node, statement)
             }
             is CPPASTDeleteExpression -> {
-                DeleteExpressionService.getInstance().solveDeleteExpression(node, statement)
+                DeleteExpressionService.solveDeleteExpression(node, statement)
             }
             is CPPASTCastExpression -> {
-                CastExpressionService.getInstance().solveCastExpression(node, statement)
+                CastExpressionService.solveCastExpression(node, statement)
             }
             is CPPASTLiteralExpression -> {
-                LiteralExpressionService.getInstance().solveLiteralExpression(node, statement)
+                LiteralExpressionService.solveLiteralExpression(node, statement)
             }
             is CPPASTIdExpression -> {
                 StatementMapper.addStatementToStatement(
@@ -56,35 +56,35 @@ class ASTNodeService {
                 )
             }
             is CPPASTNewExpression -> {
-                NewExpressionService.getInstance()
+                NewExpressionService
                     .solveNewExpression(node, statement!!)
             }
             is CPPASTConditionalExpression -> {
-                ConditionalExpressionService.getInstance()
+                ConditionalExpressionService
                     .solveConditionalExpression(node, statement!!)
             }
             is CPPASTArraySubscriptExpression -> {
-                ArraySubscriptExpressionService.getInstance()
+                ArraySubscriptExpressionService
                     .solveArraySubscript(node, statement!!)
             }
             is CPPASTExpressionList -> {
-                ExpressionListService.getInstance()
+                ExpressionListService
                     .solveExpressionList(node, statement!!)
             }
             is CPPASTTypeIdExpression -> {
-                TypeIdExpressionService.getInstance().solveTypeIdExpression(
+                TypeIdExpressionService.solveTypeIdExpression(
                     statement!!,
                     node
                 )
             }
             is CPPASTSimpleTypeConstructorExpression -> {
-                SimpleTypeConstructorExpressionService.getInstance().solveTypeConstructorExpre(
+                SimpleTypeConstructorExpressionService.solveTypeConstructorExpre(
                     node,
                     statement!!
                 )
             }
             is CPPASTIfStatement -> {
-                IfStatementService.getInstance()
+                IfStatementService
                     .solveIfStatement(node, statement)
             }
             is CPPASTCompoundStatement -> {
@@ -102,7 +102,7 @@ class ASTNodeService {
 
 //                when (node.declaration) {
 //                    is CPPASTSimpleDeclaration -> {
-//                        DeclarationStatementParser.getInstance()
+//                        DeclarationStatementParser
 //                            .declStatement(node.declaration as CPPASTSimpleDeclaration, statement, modifier)
 //                    }
 //                    is CPPASTStaticAssertionDeclaration -> {
@@ -120,44 +120,43 @@ class ASTNodeService {
 //                }
             }
             is CPPASTExpressionStatement -> {
-                ExpressionStatementService.getInstance()
+                ExpressionStatementService
                     .solveExpressionStatement(node,statement)
             }
             is CPPASTSwitchStatement -> {
-                SwitchStatementService.getInstance()
+                SwitchStatementService
                     .solveSwitchStatement(node, statement)
             }
             is CPPASTProblemStatement -> {
-                ProblemStatementService.getInstance()
+                ProblemStatementService
                     .solveProblemStatement(node, statement)
             }
             is CPPASTReturnStatement -> {
-                ReturnStatementService.getInstance()
+                ReturnStatementService
                     .solveReturnStatement(node, statement)
             }
             is CPPASTDoStatement -> {
-                DoStatementService.getInstance()
+                DoStatementService
                     .solveDoStatement(node, statement)
             }
             is CPPASTVisibilityLabel -> {
                 modifier = node.rawSignature
             }
             is CPPASTSimpleDeclaration -> {
-                val simpleDeclSpecifierService = SimpleDeclSpecifierService()
-                if(!simpleDeclSpecifierService.solveDeclSpecifier(
+                if(!SimpleDeclSpecifierService.solveDeclSpecifier(
                         node, statement!!, ASTVisitorOverride.getUnit())) {
 
                 }
             }
             is CPPASTFunctionDefinition -> {
-                FunctionDefinitionService.getInstance()
+                FunctionDefinitionService
                     .handleCPPASTFunctionDefinition(node, statement)
             }
             is CPPASTForStatement -> {
-                ForBlockService.getInstance().solveForBlock(node, statement)
+                ForBlockService.solveForBlock(node, statement)
             }
             is CPPASTDeclarator -> {
-                DeclaratorService.getInstance()
+                DeclaratorService
                     .solveDeclaratorService(node, statement)
             }
             is CPPASTBreakStatement -> {
@@ -165,21 +164,19 @@ class ASTNodeService {
                 StatementMapper.addStatementToStatement(statement!!, breaks)
             }
             is CPPASTWhileStatement -> {
-                WhileStatementService.getInstance()
+                WhileStatementService
                     .solveWhileStatement(node, statement)
             }
             is CPPASTConstructorInitializer -> {
-                ConstructorInitializerService.getInstance()
+                ConstructorInitializerService
                     .solveConstructorInitializer(node, statement)
-                println(node)
-                //TODO
             }
             is CPPASTContinueStatement -> {
                 val continueStat =ContinueStatement(node.rawSignature)
                 StatementMapper.addStatementToStatement(statement!!, continueStat)
             }
             is CPPASTRangeBasedForStatement -> {
-                RangeBaseForStatementService.getInstance()
+                RangeBaseForStatementService
                     .solveRangeBaseForStatement(node, statement)
             }
             is CPPASTGotoStatement -> {
@@ -187,7 +184,7 @@ class ASTNodeService {
                 StatementMapper.addStatementToStatement(statement!!, goto)
             }
             is CPPASTLabelStatement -> {
-                LabelStatementService.getInstance()
+                LabelStatementService
                     .solveLabelStatement(node, statement)
             }
             is CPPASTNullStatement -> {

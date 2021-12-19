@@ -11,19 +11,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBinaryExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
 
-class BinaryExpressionService {
-
-    companion object{
-        private lateinit var binaryExpression: BinaryExpressionService
-
-        fun getInstance(): BinaryExpressionService {
-            if(!Companion::binaryExpression.isInitialized) {
-                binaryExpression = BinaryExpressionService()
-            }
-            return binaryExpression
-        }
-    }
-
+object BinaryExpressionService {
 
     private fun handreOperands(node: ASTNode, statement: Statement) {
        ASTNodeService.getInstance()

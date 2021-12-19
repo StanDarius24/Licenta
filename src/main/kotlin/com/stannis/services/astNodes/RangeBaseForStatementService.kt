@@ -8,18 +8,7 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTRangeBasedForStatement
 
-class RangeBaseForStatementService {
-
-    companion object{
-        private lateinit var rangeBaseForStatementService: RangeBaseForStatementService
-
-        fun getInstance(): RangeBaseForStatementService{
-            if(!::rangeBaseForStatementService.isInitialized) {
-                rangeBaseForStatementService = RangeBaseForStatementService()
-            }
-            return rangeBaseForStatementService
-        }
-    }
+object RangeBaseForStatementService {
 
     fun solveRangeBaseForStatement(rangebase: CPPASTRangeBasedForStatement, statement: Statement?) {
         val range = RangeBasedForStatement(null, null, null)

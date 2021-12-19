@@ -10,18 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ForBlockService {
-
-    companion object{
-        private lateinit var forBlockService: ForBlockService
-
-        fun getInstance(): ForBlockService {
-            if(!::forBlockService.isInitialized) {
-                forBlockService = ForBlockService()
-            }
-            return forBlockService
-        }
-    }
+object ForBlockService {
 
     fun solveForBlock(data: CPPASTForStatement, statement: com.stannis.dataModel.Statement?) {
         val forT = For(null, null, null, null, null)
@@ -32,7 +21,7 @@ class ForBlockService {
         solveForConditionExpression(data.conditionExpression, forT)
         solveForIterationExpression(data.iterationExpression, forT)
         if(data.body != null) {
-            val meth = MethodService.getInstance().createMethod()
+            val meth = MethodService.createMethod()
             forT.addMethod(meth)
                 CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
         }
@@ -74,7 +63,7 @@ class ForBlockService {
 
                     when (initializerStatement.expression) {
                         is CPPASTBinaryExpression -> { // TODO
-                            FunctionCallsService.getInstance().getOperands(
+                            FunctionCallsService.getOperands(
                                 initializerStatement.expression as CPPASTBinaryExpression,
                                 inits
                             ) // new statement structure

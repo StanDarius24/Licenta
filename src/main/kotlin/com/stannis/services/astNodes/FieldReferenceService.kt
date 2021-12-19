@@ -5,18 +5,7 @@ import com.stannis.dataModel.statementTypes.FieldReference
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference
 
-class FieldReferenceService {
-
-    companion object {
-        private lateinit var fieldReferenceService: FieldReferenceService
-
-        fun getInstance(): FieldReferenceService {
-            if(!::fieldReferenceService.isInitialized) {
-                fieldReferenceService = FieldReferenceService()
-            }
-            return fieldReferenceService
-        }
-    }
+object FieldReferenceService {
 
     fun solveFieldReference(expression: CPPASTFieldReference, statement: Statement?) {
         val fieldRefetence = FieldReference(

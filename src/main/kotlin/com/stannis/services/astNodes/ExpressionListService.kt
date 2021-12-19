@@ -10,18 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBinaryExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionList
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression
 
-class ExpressionListService {
-
-    companion object{
-        private lateinit var expressionListService: ExpressionListService
-
-        fun getInstance(): ExpressionListService{
-            if(!::expressionListService.isInitialized) {
-                expressionListService = ExpressionListService()
-            }
-            return expressionListService
-        }
-    }
+object ExpressionListService {
 
     fun solveExpressionList(expression: CPPASTExpressionList, statement: Statement) {
         val expressionList = ExpressionList(null)

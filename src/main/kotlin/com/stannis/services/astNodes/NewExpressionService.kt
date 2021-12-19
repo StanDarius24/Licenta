@@ -9,18 +9,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression
 
-class NewExpressionService {
-
-    companion object{
-        private lateinit var newExpressionService: NewExpressionService
-
-        fun getInstance(): NewExpressionService {
-            if(!::newExpressionService.isInitialized) {
-                newExpressionService = NewExpressionService()
-            }
-            return newExpressionService
-        }
-    }
+object NewExpressionService {
 
     fun solveNewExpression(node: CPPASTNewExpression, statement: Statement) {
         val newExpression = NewExpression(null)
@@ -31,7 +20,7 @@ class NewExpressionService {
         )
         newExpression.addNewExpression(funcCall)
         if(node.initializer != null) {
-            FunctionCallsService.getInstance()
+            FunctionCallsService
                 .declarationStatementForArgumentType(
                     (node.initializer as CPPASTConstructorInitializer).arguments,
                     funcCall

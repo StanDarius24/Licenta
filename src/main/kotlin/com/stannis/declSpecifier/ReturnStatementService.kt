@@ -11,18 +11,7 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ReturnStatementService {
-
-    companion object{
-        private lateinit var returnStatementService: ReturnStatementService
-
-        fun getInstance(): ReturnStatementService{
-            if(!::returnStatementService.isInitialized) {
-                returnStatementService = ReturnStatementService()
-            }
-            return returnStatementService
-        }
-    }
+object ReturnStatementService {
 
     fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
         val returnT = Return(null, null, null)

@@ -9,18 +9,7 @@ import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDoStatement
 
-class DoStatementService {
-
-    companion object{
-        private lateinit var doStatementService: DoStatementService
-
-        fun getInstance(): DoStatementService{
-            if(!::doStatementService.isInitialized) {
-                doStatementService = DoStatementService()
-            }
-            return doStatementService
-        }
-    }
+object DoStatementService {
 
     fun solveDoStatement(doStatement: CPPASTDoStatement, statement: Statement?) {
         val doStm = DoStatement(null, null)

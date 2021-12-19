@@ -8,18 +8,7 @@ import com.stannis.services.UnitService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class SimpleDeclSpecifierService {
-
-    companion object{
-        private lateinit var simpleDeclSpecifierService: SimpleDeclSpecifierService
-
-        fun getInstance(): SimpleDeclSpecifierService{
-            if(!::simpleDeclSpecifierService.isInitialized){
-                simpleDeclSpecifierService = SimpleDeclSpecifierService()
-            }
-            return simpleDeclSpecifierService
-        }
-    }
+object SimpleDeclSpecifierService {
 
     private fun simpleDeclSpec(declaration: CPPASTSimpleDeclaration, statement: Statement) {
         declaration.declarators.iterator().forEachRemaining { data ->
@@ -73,9 +62,9 @@ class SimpleDeclSpecifierService {
         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).storageClass // fkey 1 struct fkey 3 class
         if((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).key == 3) {
             val classDeclaration = Class((declaration.declSpecifier as CPPASTCompositeTypeSpecifier).name.rawSignature, null, null)
-             UnitService.getInstance().addClass(unit, classDeclaration)
+             UnitService.addClass(unit, classDeclaration)
             (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members // array of members
-            ClassService.getInstance().parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
+            ClassService.parseDecl(classDeclaration, (declaration.declSpecifier as CPPASTCompositeTypeSpecifier))
             return false
         }
         (declaration.declSpecifier as CPPASTCompositeTypeSpecifier).members

@@ -19,8 +19,8 @@ class ASTVisitorOverride: ASTVisitor() {
 
     companion object{
 
-        private var method = MethodService.getInstance().createMethod()
-        private var unit = UnitService.getInstance().createUnit()
+        private var method = MethodService.createMethod()
+        private var unit = UnitService.createUnit()
         fun getUnit() :Unit {
             return this.unit
         }
@@ -54,15 +54,14 @@ class ASTVisitorOverride: ASTVisitor() {
         if(checkDecl(declaration)) {
             return PROCESS_CONTINUE
         }
-        method = MethodService.getInstance().createMethod()
+        method = MethodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
         when (declaration) {
             is CPPASTFunctionDefinition -> { // ASTAttributeOwner TODO
-                FunctionDefinitionService.getInstance().handleCPPASTFunctionDefinition(declaration, method)
+                FunctionDefinitionService.handleCPPASTFunctionDefinition(declaration, method)
             }
             is CPPASTSimpleDeclaration -> {
-                val simpleDeclSpecifierService = SimpleDeclSpecifierService()
-                if(!simpleDeclSpecifierService.solveDeclSpecifier(
+                if(!SimpleDeclSpecifierService.solveDeclSpecifier(
                         declaration, method, unit)
                 ) {
                     return PROCESS_CONTINUE
@@ -101,7 +100,7 @@ class ASTVisitorOverride: ASTVisitor() {
             else -> { throw Exception() }
         }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
-        UnitService.getInstance().addNewMethod(unit, method)
+        UnitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
     }
 
@@ -112,7 +111,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
-        unit = UnitService.getInstance().createUnit()
+        unit = UnitService.createUnit()
         return PROCESS_CONTINUE
     }
 

@@ -2,18 +2,11 @@ package com.stannis.services
 
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
-import com.stannis.declSpecifier.ExpressionStatementService
-import com.stannis.declSpecifier.IfStatementService
-import com.stannis.declSpecifier.ReturnStatementService
-import com.stannis.declSpecifier.WhileStatementService
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class CoreParserClass {
-    companion object {
-
+object CoreParserClass {
 
         fun seeCPASTCompoundStatement(data: IASTStatement, statement: Statement?) {
                 println("---------")
@@ -108,5 +101,4 @@ class CoreParserClass {
 //                }
         }
 
-    }
 }

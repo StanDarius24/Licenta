@@ -7,18 +7,7 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorExpression
 
-class SimpleTypeConstructorExpressionService {
-
-    companion object{
-        private lateinit var simpleTypeConstructorExpression: SimpleTypeConstructorExpressionService
-
-        fun getInstance(): SimpleTypeConstructorExpressionService{
-            if(!::simpleTypeConstructorExpression.isInitialized) {
-                simpleTypeConstructorExpression = SimpleTypeConstructorExpressionService()
-            }
-            return simpleTypeConstructorExpression
-        }
-    }
+object SimpleTypeConstructorExpressionService {
 
     fun solveTypeConstructorExpre(expression: CPPASTSimpleTypeConstructorExpression, statement: Statement) {
         val simpleTypeConstr = SimpleTypeConstructorExpression(

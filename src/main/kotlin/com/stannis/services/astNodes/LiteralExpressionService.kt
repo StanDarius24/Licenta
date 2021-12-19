@@ -5,18 +5,7 @@ import com.stannis.dataModel.statementTypes.LiteralExpression
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
 
-class LiteralExpressionService {
-
-    companion object{
-        private lateinit var literalExpressionService: LiteralExpressionService
-
-        fun getInstance(): LiteralExpressionService {
-            if(!::literalExpressionService.isInitialized) {
-                literalExpressionService = LiteralExpressionService()
-            }
-            return literalExpressionService
-        }
-    }
+object LiteralExpressionService {
 
     fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, statement: Statement?) {
         val literalExpr = LiteralExpression(cppastLiteralExpression.rawSignature)

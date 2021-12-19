@@ -11,19 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializerClause
 import org.eclipse.cdt.core.dom.ast.IASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class FunctionCallsService {
-
-    companion object {
-
-        private lateinit var functionCall: FunctionCallsService
-
-        fun getInstance(): FunctionCallsService {
-            if (!::functionCall.isInitialized) {
-                functionCall = FunctionCallsService()
-            }
-            return functionCall
-        }
-    }
+object FunctionCallsService {
 
     fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
         if( data != null) {
@@ -96,31 +84,31 @@ class FunctionCallsService {
                         }
                     }
                     is CPPASTArraySubscriptExpression -> {
-                        ArraySubscriptExpressionService.getInstance().solveArraySubscript(
+                        ArraySubscriptExpressionService.solveArraySubscript(
                             datax,
                             statement!!
                         )
                     }
                     is CPPASTFieldReference -> {
-                        FieldReferenceService.getInstance().solveFieldReference(
+                        FieldReferenceService.solveFieldReference(
                             datax,
                             statement
                         )
                     }
                     is CPPASTCastExpression -> {
-                        CastExpressionService.getInstance().solveCastExpression(
+                        CastExpressionService.solveCastExpression(
                             datax,
                             statement!!
                         )
                     }
                     is CPPASTTypeIdExpression -> {
-                        TypeIdExpressionService.getInstance().solveTypeIdExpression(
+                        TypeIdExpressionService.solveTypeIdExpression(
                             statement!!,
                             datax
                             )
                     }
                     is CPPASTConditionalExpression -> {
-                        ConditionalExpressionService.getInstance().solveConditionalExpression(
+                        ConditionalExpressionService.solveConditionalExpression(
                             datax,
                             statement!!
                         )
@@ -194,7 +182,7 @@ class FunctionCallsService {
                 getFunctionArguments(binaryExpression, statement)
             }
             is CPPASTFieldReference -> {
-                FieldReferenceService.getInstance().solveFieldReference(
+                FieldReferenceService.solveFieldReference(
                     binaryExpression,
                     statement
                 )
@@ -203,7 +191,7 @@ class FunctionCallsService {
                 getOperands(binaryExpression, statement)
             }
             is CPPASTCastExpression -> {
-                CastExpressionService.getInstance().solveCastExpression(
+                CastExpressionService.solveCastExpression(
                     binaryExpression,
                     statement!!
                 )
@@ -224,7 +212,7 @@ class FunctionCallsService {
                 StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
             }
             is CPPASTSimpleTypeConstructorExpression -> {
-                SimpleTypeConstructorExpressionService.getInstance().solveTypeConstructorExpre(
+                SimpleTypeConstructorExpressionService.solveTypeConstructorExpre(
                     binaryExpression,
                     statement!!
                 )

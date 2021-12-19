@@ -5,19 +5,7 @@ import com.stannis.dataModel.statementTypes.ArraySubscript
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression
 
-class ArraySubscriptExpressionService {
-
-    companion object {
-
-        private lateinit var arraySubscriptExpressionService: ArraySubscriptExpressionService
-
-        fun getInstance(): ArraySubscriptExpressionService {
-            if (!Companion::arraySubscriptExpressionService.isInitialized) {
-                arraySubscriptExpressionService = ArraySubscriptExpressionService()
-            }
-            return arraySubscriptExpressionService
-        }
-    }
+object ArraySubscriptExpressionService {
 
     fun solveArraySubscript(cppastArraySubscriptExpression: CPPASTArraySubscriptExpression, statement: Statement) {
         val arraySubscr = ArraySubscript(

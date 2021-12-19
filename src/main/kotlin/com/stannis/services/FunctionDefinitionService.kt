@@ -10,20 +10,8 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTParameterDeclaration
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class FunctionDefinitionService  {
+object FunctionDefinitionService  {
 
-    companion object{
-        private lateinit var functionDefinitionService: FunctionDefinitionService
-
-        fun getInstance(): FunctionDefinitionService{
-            if(!::functionDefinitionService.isInitialized) {
-                functionDefinitionService = FunctionDefinitionService()
-            }
-            return functionDefinitionService
-        }
-    }
-
-    private val methodService = MethodService()
     private var declaration = Declaration(null, null, null, null, 0, null)
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
@@ -43,7 +31,7 @@ class FunctionDefinitionService  {
 
     fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, statement: Statement?) {
         if(statement is Method) {
-            methodService.setAntet(
+            MethodService.setAntet(
                 statement,
                 Antet(
                     declaration.declSpecifier.rawSignature,
