@@ -6,6 +6,8 @@ import com.stannis.declSpecifier.*
 import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import com.stannis.services.*
 import com.stannis.services.astNodes.*
+import com.stannis.services.astNodes.FunctionDefinitionService
+import com.stannis.services.astNodes.SimpleDeclSpecifierService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -132,14 +134,15 @@ object ASTNodeService {
                 modifier = node.rawSignature
             }
             is CPPASTSimpleDeclaration -> {
-                if(!SimpleDeclSpecifierService.solveDeclSpecifier(
+                if(!SimpleDeclarationService.solveDeclSpecifier(
                         node, statement!!, ASTVisitorOverride.getUnit())) {
 
                 }
             }
             is CPPASTFunctionDefinition -> {
-                FunctionDefinitionService
-                    .handleCPPASTFunctionDefinition(node, statement)
+                FunctionDefinitionService.solveFunctionDefinition(node, statement)
+//                FunctionDefinitionService
+//                    .handleCPPASTFunctionDefinition(node, statement)
             }
             is CPPASTForStatement -> {
                 ForBlockService.solveForBlock(node, statement)
@@ -189,8 +192,7 @@ object ASTNodeService {
                 StaticAssertionDeclarationService.solveStaticAssertionDeclaration(node, statement!!)
             }
             is CPPASTAliasDeclaration -> {
-                println(node)
-                //TODO
+                AliasDeclarationService.solveAliasDeclarationService(node, statement)
             }
             is CPPASTInitializerList -> {
                 println(node)
@@ -216,14 +218,22 @@ object ASTNodeService {
                 StatementMapper.addStatementToStatement(statement!!, simpleType)
             }
             is CPPASTParameterDeclaration -> {
-                println(node)
-                //TODO
+                ParameterDeclarationService.solveParameterDeclaration(node, statement)
             }
             is CPPASTCaseStatement -> {
                 CaseStatementService.solveCaseStatement(node, statement)
             }
             is CPPASTDefaultStatement -> {
                 DefaultStatementService.solveDefaultStatement(node, statement)
+            }
+            is CPPASTTemplateSpecialization -> {
+                TemplateSpecializationService.solveTemplateSpecialization(node, statement)
+            }
+            is CPPASTSimpleDeclSpecifier -> {
+                SimpleDeclSpecifierService.solveSimpleDeclSpecifieService(node, statement)
+            }
+            is CPPASTNamedTypeSpecifier -> {
+                NamedTypeSpecifierService.solveNamedTypeSpecifier(node, statement)
             }
             else -> throw Exception()
         }

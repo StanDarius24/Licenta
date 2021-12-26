@@ -59,7 +59,7 @@ object FunctionDefinitionService  {
             println(statement)  //TODO
         } else if(statement is AnonimStatement) {
             println(statement)
-        } else{
+        } else {
             throw Exception()
         }
     }

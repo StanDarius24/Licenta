@@ -3,7 +3,6 @@ package com.stannis.parser.reader.visitor
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
 import com.stannis.dataModel.statementTypes.TypedefStructure
-import com.stannis.declSpecifier.SimpleDeclSpecifierService
 import com.stannis.services.*
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*

@@ -8,7 +8,7 @@ import com.stannis.services.UnitService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-object SimpleDeclSpecifierService {
+object SimpleDeclarationService {
 
     private fun simpleDeclSpec(declaration: CPPASTSimpleDeclaration, statement: Statement) {
         declaration.declarators.iterator().forEachRemaining { data ->
