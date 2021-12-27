@@ -136,13 +136,10 @@ object ASTNodeService {
             is CPPASTSimpleDeclaration -> {
                 if(!SimpleDeclarationService.solveDeclSpecifier(
                         node, statement!!, ASTVisitorOverride.getUnit())) {
-
                 }
             }
             is CPPASTFunctionDefinition -> {
                 FunctionDefinitionService.solveFunctionDefinition(node, statement)
-//                FunctionDefinitionService
-//                    .handleCPPASTFunctionDefinition(node, statement)
             }
             is CPPASTForStatement -> {
                 ForBlockService.solveForBlock(node, statement)
@@ -195,19 +192,16 @@ object ASTNodeService {
                 AliasDeclarationService.solveAliasDeclarationService(node, statement)
             }
             is CPPASTInitializerList -> {
-                println(node)
-                //TODO
+                InitializerListService.solveInitializerList(node, statement)
             }
             is CPPASTTryBlockStatement -> {
-                println(node)
-                //TODO
+                TryBlockStatementService.solveTryBlockStatement(node, statement)
             }
             is CPPASTUsingDirective -> {
-                UsingDeclarationService.solveUnitDeclaration(node, statement)
+                UsingDirectiveService.solveUsingDirective(node, statement)
             }
             is CPPASTUsingDeclaration -> {
-                println(node)
-                //TODO
+                UsingDeclarationService.solveUnitDeclaration(node, statement)
             }
             is CPPASTEqualsInitializer -> {
                 val equals = EqualsInitializer(node.rawSignature, null)
@@ -234,6 +228,27 @@ object ASTNodeService {
             }
             is CPPASTNamedTypeSpecifier -> {
                 NamedTypeSpecifierService.solveNamedTypeSpecifier(node, statement)
+            }
+            is CPPASTPackExpansionExpression -> {
+                PackExpansionExpressionService.solvePackExpansionExpression(node, statement)
+            }
+            is CPPASTTypeId -> {
+                TypeIdService.solveTypeId(node, statement)
+            }
+            is CPPASTCatchHandler -> {
+                CatchHandlerService.solveCatchHandler(node, statement)
+            }
+            is CPPASTNamespaceAlias -> {
+                NamespaceAliasService.solveNamespaceAlias(node, statement)
+            }
+            is CPPASTName -> {
+                NameService.solveName(node, statement)
+            }
+            is CPPASTQualifiedName -> {
+                QualifiedNameService.solveQualifiedNameService(node, statement)
+            }
+            is CPPASTLinkageSpecification -> {
+                LinkageSpecificationService.solveLinkageSpecification(node, statement)
             }
             else -> throw Exception()
         }

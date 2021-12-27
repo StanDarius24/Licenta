@@ -11,7 +11,9 @@ object DeclaratorService {
 
     fun solveDeclaratorService(declarator: CPPASTDeclarator, statement: Statement?) {
         val decl = Declarator(declarator.name.rawSignature, null)
-        ASTNodeService.solveASTNode(declarator.initializer as ASTNode, decl)
+        if (declarator.initializer != null) {
+            ASTNodeService.solveASTNode(declarator.initializer as ASTNode, decl)
+        }
         StatementMapper.addStatementToStatement(statement!!, decl)
     }
 
