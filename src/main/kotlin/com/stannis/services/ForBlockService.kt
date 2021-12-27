@@ -10,18 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ForBlockService {
-
-    companion object{
-        private lateinit var forBlockService: ForBlockService
-
-        fun getInstance(): ForBlockService {
-            if(!::forBlockService.isInitialized) {
-                forBlockService = ForBlockService()
-            }
-            return forBlockService
-        }
-    }
+object ForBlockService {
 
     fun solveForBlock(data: CPPASTForStatement, statement: com.stannis.dataModel.Statement?) {
         val forT = For(null, null, null, null, null)
@@ -32,7 +21,7 @@ class ForBlockService {
         solveForConditionExpression(data.conditionExpression, forT)
         solveForIterationExpression(data.iterationExpression, forT)
         if(data.body != null) {
-            val meth = MethodService.getInstance().createMethod()
+            val meth = MethodService.createMethod()
             forT.addMethod(meth)
                 CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
         }
@@ -41,8 +30,7 @@ class ForBlockService {
     private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
         if( iterationExpression != null) {
             println(iterationExpression.rawSignature)
-            ASTNodeService.getInstance()
-                .solveASTNode(iterationExpression as ASTNode, forT)
+            ASTNodeService.solveASTNode(iterationExpression as ASTNode, forT)
         }
     }
 
@@ -51,8 +39,7 @@ class ForBlockService {
         val initT = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
         forT.addConditionExpression(initT)
         if(conditionExpression != null) {
-            ASTNodeService.getInstance()
-                .solveASTNode(conditionExpression as ASTNode, initT)
+            ASTNodeService.solveASTNode(conditionExpression as ASTNode, initT)
         }
     }
 
@@ -69,17 +56,17 @@ class ForBlockService {
             is CPPASTExpressionStatement -> {
                 val inits = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
                 val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
-                ASTNodeService.getInstance()
-                    .solveASTNode(initializerStatement.expression as ASTNode, inits)
+                ASTNodeService.solveASTNode(initializerStatement.expression as ASTNode, inits)
 
                     when (initializerStatement.expression) {
                         is CPPASTBinaryExpression -> { // TODO
-                            FunctionCallsService.getInstance().getOperands(
+                            FunctionCallsService.getOperands(
                                 initializerStatement.expression as CPPASTBinaryExpression,
                                 inits
                             ) // new statement structure
                         }
                         is CPPASTUnaryExpression -> {
+                            println(initializerStatement.expression)
                             //TODO
                         }
                         else -> {
@@ -101,8 +88,7 @@ class ForBlockService {
             com.stannis.dataModel.statementTypes.Statement(declarator!!.name.rawSignature, null, null, null, null)
         forT.addInitializer(initT)
 
-        ASTNodeService.getInstance()
-            .solveASTNode(declarator as ASTNode, initT)
+        ASTNodeService.solveASTNode(declarator as ASTNode, initT)
 
 //        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {  // TODO HANDLE ASTNODESERVICE!
 //            is CPPASTBinaryExpression -> {

@@ -11,24 +11,12 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ReturnStatementService {
-
-    companion object{
-        private lateinit var returnStatementService: ReturnStatementService
-
-        fun getInstance(): ReturnStatementService{
-            if(!::returnStatementService.isInitialized) {
-                returnStatementService = ReturnStatementService()
-            }
-            return returnStatementService
-        }
-    }
+object ReturnStatementService {
 
     fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
         val returnT = Return(null, null, null)
         if(data.returnValue != null) {
-            ASTNodeService.getInstance()
-                .solveASTNode(data.returnValue as ASTNode,
+            ASTNodeService.solveASTNode(data.returnValue as ASTNode,
                 returnT)
         }
         StatementMapper.addStatementToStatement(statement!!, returnT)

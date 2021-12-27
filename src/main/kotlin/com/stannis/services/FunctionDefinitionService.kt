@@ -1,29 +1,17 @@
 package com.stannis.services
 
-import com.google.inject.Inject
 import com.stannis.dataModel.Antet
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
+import com.stannis.dataModel.statementTypes.AnonimStatement
 import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTParameterDeclaration
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class FunctionDefinitionService  {
+object FunctionDefinitionService  {
 
-    companion object{
-        private lateinit var functionDefinitionService: FunctionDefinitionService
-
-        fun getInstance(): FunctionDefinitionService{
-            if(!::functionDefinitionService.isInitialized) {
-                functionDefinitionService = FunctionDefinitionService()
-            }
-            return functionDefinitionService
-        }
-    }
-
-    private val methodService = MethodService()
     private var declaration = Declaration(null, null, null, null, 0, null)
 
     private fun getTypes(deecl: ICPPASTParameterDeclaration, listOfDeclaration: ArrayList<Declaration>){
@@ -43,7 +31,7 @@ class FunctionDefinitionService  {
 
     fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, statement: Statement?) {
         if(statement is Method) {
-            methodService.setAntet(
+            MethodService.setAntet(
                 statement,
                 Antet(
                     declaration.declSpecifier.rawSignature,
@@ -68,6 +56,8 @@ class FunctionDefinitionService  {
                 }
             }
         } else if (statement is Class) {
+            println(statement)  //TODO
+        } else if(statement is AnonimStatement) {
             println(statement)
         } else {
             throw Exception()

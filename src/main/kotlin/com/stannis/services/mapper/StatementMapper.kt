@@ -86,10 +86,10 @@ class StatementMapper {
                     }
                 }
                 is ExpressionList -> {
-                    println(statementParent)
+                    statementParent.addStatement(statementChild)
                 }
                 is Class -> {
-                    println(statementParent)
+                    statementParent.addStatement(statementChild)
                 }
                 is DoStatement -> {
                     if(statementParent.condition == null) {

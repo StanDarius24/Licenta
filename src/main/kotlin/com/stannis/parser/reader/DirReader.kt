@@ -8,7 +8,7 @@ import java.nio.file.Paths
 class DirReader {
 
     companion object {
-        val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
+        val folder = "/home/stan/Desktop/Licenta/src/result"
         fun getAllFilesInResources(): ArrayList<String> {
             val list = ArrayList<String>()
             val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()

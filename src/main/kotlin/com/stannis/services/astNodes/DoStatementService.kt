@@ -9,29 +9,16 @@ import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDoStatement
 
-class DoStatementService {
-
-    companion object{
-        private lateinit var doStatementService: DoStatementService
-
-        fun getInstance(): DoStatementService{
-            if(!::doStatementService.isInitialized) {
-                doStatementService = DoStatementService()
-            }
-            return doStatementService
-        }
-    }
+object DoStatementService {
 
     fun solveDoStatement(doStatement: CPPASTDoStatement, statement: Statement?) {
         val doStm = DoStatement(null, null)
         val anonimStm = AnonimStatement(null)
-        ASTNodeService.getInstance()
-            .solveASTNode(doStatement.condition as ASTNode, doStm)
+        ASTNodeService.solveASTNode(doStatement.condition as ASTNode, doStm)
         (doStatement.body as CPPASTCompoundStatement).statements
             .iterator().forEachRemaining { iastStatement ->
                 run {
-                    ASTNodeService.getInstance()
-                        .solveASTNode(iastStatement as ASTNode, anonimStm)
+                    ASTNodeService.solveASTNode(iastStatement as ASTNode, anonimStm)
                     doStm.addToBody(anonimStm)
                 }
             }

@@ -8,18 +8,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ClassService {
-
-    companion object{
-        private lateinit var classService: ClassService
-
-        fun getInstance(): ClassService{
-            if(!::classService.isInitialized) {
-                classService = ClassService()
-            }
-            return classService
-        }
-    }
+object ClassService {
 
     private var defaulType = "public:"
 
@@ -35,8 +24,7 @@ class ClassService {
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
 
-                ASTNodeService.getInstance()
-                    .solveASTNode(member as ASTNode, classDeclaration)
+                ASTNodeService.solveASTNode(member as ASTNode, classDeclaration)
 //                when (member) {
 //                    is CPPASTVisibilityLabel -> {
 //                        defaulType = member.rawSignature
@@ -70,13 +58,13 @@ class ClassService {
     }
 
     private fun handleCPPASTFunctionDefinition(classDeclaration: Class, member: CPPASTFunctionDefinition) {
-        val method = MethodService.getInstance().createMethod()
-        classDeclaration.addMethod(method)
-        MethodService.getInstance().setAntet(method,
+        val method = MethodService.createMethod()
+        classDeclaration.addStatement(method)
+        MethodService.setAntet(method,
         Antet(
                 member.declSpecifier.rawSignature,
                 member.declarator.name.rawSignature,
-                FunctionDefinitionService.getInstance()
+                FunctionDefinitionService
                     .getParametersDeclarationArray((member.declarator as CPPASTFunctionDeclarator).parameters)
                 )
         )
@@ -112,8 +100,8 @@ class ClassService {
                 } else { 0 },
                 defaulType
             )
-            FunctionCallsService.getInstance().getFunctionCall(data, decl)
-            classDeclaration.addDeclaration(decl)
+            FunctionCallsService.getFunctionCall(data, decl)
+            classDeclaration.addStatement(decl)
         }
     }
 

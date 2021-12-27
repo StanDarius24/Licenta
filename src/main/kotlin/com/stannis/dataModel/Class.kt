@@ -3,22 +3,14 @@ package com.stannis.dataModel
 data class Class(
     var name: String?,
     var inheritance: ArrayList<String>?,
-    var declarations: ArrayList<Declaration?>?,
-    var methods: ArrayList<Method?>?
+    var declarations: ArrayList<Statement?>?,
     ): Statement {
 
-    fun addDeclaration(decl: Declaration) {
+    fun addStatement(decl: Statement) {
         if(declarations == null) {
             declarations = ArrayList()
         }
         declarations!!.add(decl)
-    }
-
-    fun addMethod(meth: Method) {
-        if(methods == null) {
-            methods = ArrayList()
-        }
-        methods!!.add(meth)
     }
 
     fun addInheritance(superClass: String) {

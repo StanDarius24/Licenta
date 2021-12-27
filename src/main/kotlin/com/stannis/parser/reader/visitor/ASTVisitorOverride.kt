@@ -3,13 +3,14 @@ package com.stannis.parser.reader.visitor
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Unit
 import com.stannis.dataModel.statementTypes.TypedefStructure
-import com.stannis.declSpecifier.SimpleDeclSpecifierService
 import com.stannis.services.*
+import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
 import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
+import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
@@ -19,8 +20,8 @@ class ASTVisitorOverride: ASTVisitor() {
 
     companion object{
 
-        private var method = MethodService.getInstance().createMethod()
-        private var unit = UnitService.getInstance().createUnit()
+        private var method = MethodService.createMethod()
+        private var unit = UnitService.createUnit()
         fun getUnit() :Unit {
             return this.unit
         }
@@ -54,54 +55,54 @@ class ASTVisitorOverride: ASTVisitor() {
         if(checkDecl(declaration)) {
             return PROCESS_CONTINUE
         }
-        method = MethodService.getInstance().createMethod()
+        method = MethodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
-        when (declaration) {
-            is CPPASTFunctionDefinition -> { // ASTAttributeOwner TODO
-                FunctionDefinitionService.getInstance().handleCPPASTFunctionDefinition(declaration, method)
-            }
-            is CPPASTSimpleDeclaration -> {
-                val simpleDeclSpecifierService = SimpleDeclSpecifierService()
-                if(!simpleDeclSpecifierService.solveDeclSpecifier(
-                        declaration, method, unit)
-                ) {
-                    return PROCESS_CONTINUE
-                }
-            }
-            is CPPASTProblemDeclaration -> {
-                println("Declaration problem")
-            }
-            is CPPASTLinkageSpecification -> {
-                println(declaration) //TODO
-            }
-            is CPPASTVisibilityLabel -> {
-                println(declaration) //TODO
-            }
-            is CPPASTTemplateDeclaration -> {
-                println(declaration) // TODO
-            }
-            is CPPASTStaticAssertionDeclaration -> {
-                println(declaration) //TODO
-            }
-            is CPPASTTemplateSpecialization -> {
-                println(declaration) //TODO
-            }
-            is CPPASTAliasDeclaration -> {
-                println(declaration) //TODO
-            }
-            is CPPASTUsingDirective -> {
-                println(declaration) //TODO
-            }
-            is CPPASTUsingDeclaration -> {
-                println(declaration) //TODO
-            }
-            is CPPASTNamespaceAlias -> {
-                println(declaration) //TODO
-            }
-            else -> { throw Exception() }
-        }
+
+        ASTNodeService.solveASTNode(declaration as ASTNode, method)
+
+//        when (declaration) {
+//            is CPPASTFunctionDefinition -> { // ASTAttributeOwner TODO
+//                FunctionDefinitionService.handleCPPASTFunctionDefinition(declaration, method)
+//            }
+//            is CPPASTSimpleDeclaration -> {
+//                if(!SimpleDeclSpecifierService.solveDeclSpecifier(declaration, method, unit)) {
+//                    return PROCESS_CONTINUE
+//                }
+//            }
+//            is CPPASTProblemDeclaration -> {
+//                println("Declaration problem")
+//            }
+//            is CPPASTLinkageSpecification -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTVisibilityLabel -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTTemplateDeclaration -> {
+//                println(declaration) // TODO
+//            }
+//            is CPPASTStaticAssertionDeclaration -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTTemplateSpecialization -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTAliasDeclaration -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTUsingDirective -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTUsingDeclaration -> {
+//                println(declaration) //TODO
+//            }
+//            is CPPASTNamespaceAlias -> {
+//                println(declaration) //TODO
+//            }
+//            else -> { throw Exception() }
+//        }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
-        UnitService.getInstance().addNewMethod(unit, method)
+        UnitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE
     }
 
@@ -112,7 +113,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
-        unit = UnitService.getInstance().createUnit()
+        unit = UnitService.createUnit()
         return PROCESS_CONTINUE
     }
 

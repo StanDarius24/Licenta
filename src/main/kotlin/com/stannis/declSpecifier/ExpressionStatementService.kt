@@ -10,22 +10,11 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
-class ExpressionStatementService {
-
-    companion object{
-        private lateinit var expressionStatementService: ExpressionStatementService
-
-        fun getInstance(): ExpressionStatementService{
-            if(!::expressionStatementService.isInitialized) {
-                expressionStatementService = ExpressionStatementService()
-            }
-            return expressionStatementService
-        }
-    }
+object ExpressionStatementService {
 
     private fun binaryExpressionSolver(data: CPPASTExpressionStatement, method: Method?) {
         val initialization = com.stannis.dataModel.statementTypes.Statement(data.expression.children[0].rawSignature, null, null, null, null)
-        FunctionCallsService.getInstance()
+        FunctionCallsService
             .getOperands(data.expression as CPPASTBinaryExpression, initialization) // new statement structure
         if(initialization.value != null && initialization.value!!.size > 1) {
             initialization.value!!.remove(initialization.value!![initialization.value!!.size - 1])
@@ -36,7 +25,7 @@ class ExpressionStatementService {
     private fun fieldReferenceSolver(data: CPPASTExpressionStatement, method: Method?) {
         when (((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner) {
             is CPPASTFieldReference -> {
-               FieldReferenceService.getInstance()
+               FieldReferenceService
                    .solveFieldReference(
                        ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTFieldReference,
                        method
@@ -60,7 +49,7 @@ class ExpressionStatementService {
                 method!!.addStatement(cpastmethod)
             }
             is CPPASTArraySubscriptExpression -> {
-                ArraySubscriptExpressionService.getInstance().solveArraySubscript(
+                ArraySubscriptExpressionService.solveArraySubscript(
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference).fieldOwner as CPPASTArraySubscriptExpression,
                     method!!
                     )
@@ -82,7 +71,7 @@ class ExpressionStatementService {
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTUnaryExpression).operand.rawSignature,
                     null,null, null
                 )
-                FunctionCallsService.getInstance().getArgumentsType(
+                FunctionCallsService.getArgumentsType(
                     data.expression as CPPASTFunctionCallExpression,
                     functcall
                 )
@@ -94,14 +83,14 @@ class ExpressionStatementService {
                     ((data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTIdExpression).name.rawSignature,
                     null, null, null
                 )
-                FunctionCallsService.getInstance().getArgumentsType(
+                FunctionCallsService.getArgumentsType(
                     data.expression as CPPASTFunctionCallExpression,
                     functcall
                 )
                 StatementMapper.addStatementToStatement(method!!, functcall)
             }
             is CPPASTFieldReference -> {
-                FieldReferenceService.getInstance()
+                FieldReferenceService
                     .solveFieldReference(
                         (data.expression as CPPASTFunctionCallExpression).functionNameExpression as CPPASTFieldReference,
                         method
@@ -114,8 +103,7 @@ class ExpressionStatementService {
     }
 
     fun solveExpressionStatement(data: CPPASTExpressionStatement, statement: com.stannis.dataModel.Statement?) {
-            ASTNodeService.getInstance()
-                .solveASTNode(
+            ASTNodeService.solveASTNode(
                     data.expression as ASTNode,
                     statement
                 )
