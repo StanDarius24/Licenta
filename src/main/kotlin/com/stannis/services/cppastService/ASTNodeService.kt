@@ -250,6 +250,18 @@ object ASTNodeService {
             is CPPASTLinkageSpecification -> {
                 LinkageSpecificationService.solveLinkageSpecification(node, statement)
             }
+            is CPPASTCompositeTypeSpecifier -> {
+                CompositeTypeSpecifierService.solveCompositeTypeSpecifier(node, statement)
+            }
+            is CPPASTEnumerationSpecifier -> {
+                EnumerationSpecifierService.solveEnumerationSpecifier(node, statement)
+            }
+            is CPPASTEnumerator -> {
+                EnumeratorService.solveEnumerator(node, statement)
+            }
+            is CPPASTElaboratedTypeSpecifier -> {
+                ElaboratedTypeSpecifierService.solveElaboratedTypeSpecifier(node, statement)
+            }
             else -> throw Exception()
         }
 
