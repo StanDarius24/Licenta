@@ -14,7 +14,7 @@ object ExceptionHandler {
             try {
                 val reader = Reader()
                 data = reader.readFileAsLinesUsingBufferedReader(filepath)
-                data = data.replace(text, "%%%$contor%%%PARSER")
+                data = data.replace(text, "int parser$contor")
                 mapOfProblemStatement = mapOfProblemStatement + mapOf(text to "%%%$contor%%%PARSER")
                 contor++
             } catch (ffe: FileNotFoundException) {

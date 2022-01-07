@@ -23,36 +23,7 @@ object ClassService {
         }
         declSpecifier.members.iterator().forEachRemaining { member ->
             run {
-
                 ASTNodeService.solveASTNode(member as ASTNode, classDeclaration)
-//                when (member) {
-//                    is CPPASTVisibilityLabel -> {
-//                        defaulType = member.rawSignature
-//                    }
-//                    is CPPASTSimpleDeclaration -> { // ASTAttributeOwner //TODO IMPORTANT different class
-//                        getDeclarationsForClass(member, classDeclaration)
-//                    }
-//                    is CPPASTFunctionDefinition -> {
-//                        handleCPPASTFunctionDefinition(classDeclaration, member)
-//                    }
-//                    is CPPASTTemplateDeclaration -> {
-//                        println(member)
-//                        //TODO
-//                    }
-//                    is CPPASTProblemDeclaration -> {
-//                        println(member)
-//                        //TODO
-//                    }
-//                    is CPPASTStaticAssertionDeclaration -> {
-//                        println(member)
-//                        //TODO
-//                    }
-//                    is CPPASTAliasDeclaration -> {
-//                        println(member)
-//                        //TODO
-//                    }
-//                    else -> { throw Exception() }
-//                }
             }
         }
     }

@@ -53,17 +53,7 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
                     println("DATA::: $filepath")
-                try {
-                    translationUnit.accept(astVisitorOverride)
-                } catch (e: NullPointerException) {
-                    println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
-                    val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(ExceptionHandler.handleError(astVisitorOverride.text, filepath))
-                    try {
-                        translationUnit.accept(astVisitorOverride)
-                    }catch (e: NullPointerException) {
-                        println("exception")
-                    }
-                }
+                        solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
                     val builder = JsonBuilder()
                     val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
 //                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString())
@@ -76,6 +66,15 @@ class Parser {
         }
     }
 
+    private fun solveTranslationUnit(translationUnit: IASTTranslationUnit, astVisitorOverride: ASTVisitorOverride, filepath: String) {
+        try {
+            translationUnit.accept(astVisitorOverride)
+        } catch (e: NullPointerException) {
+            println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
+            val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(ExceptionHandler.handleError(astVisitorOverride.text, filepath))
+            solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
+        }
+    }
 
     private fun getIASTTranslationUnit(code: CharArray) :IASTTranslationUnit {
         val fc = FileContent.create("", code)
