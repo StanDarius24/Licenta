@@ -4,7 +4,8 @@ import com.stannis.dataModel.Statement
 
 data class CPPMethodCall(
     var name:String?,
-    var functionCall: ArrayList<FunctionCall>?
+    var functionCall: ArrayList<FunctionCall>?,
+    override val type: String? = "CPPMethodCall"
 ): Statement {
     fun add(data: String) {
         name = data

@@ -4,5 +4,6 @@ import com.stannis.dataModel.Statement
 
 data class ArraySubscript(
     var arrayValue: String?,
-    var index: String?
+    var index: String?,
+    override val type: String? = "ArraySubscript"
 ): Statement

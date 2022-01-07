@@ -7,7 +7,9 @@ data class If(var operands: ArrayList<String>?,
               var Compounds: ArrayList<Statement>?,
               var functionCalls: ArrayList<FunctionCall>?,
               var ifBlock: ArrayList<Method>?,
-              var elseBlock: ArrayList<Method>?): Statement {
+              var elseBlock: ArrayList<Method>?,
+              override val type: String? = "If"
+): Statement {
 
     fun add(data: String) {
         if(operands == null) {

@@ -7,7 +7,8 @@ data class While(
     var operands: ArrayList<String>?,
     var Compounds: ArrayList<Statement>?,
     var functionCalls: ArrayList<FunctionCall>?,
-    var methods: ArrayList<Method>?
+    var methods: ArrayList<Method>?,
+    override val type: String? = "While"
 ): Statement {
 
     fun add(data: String) {

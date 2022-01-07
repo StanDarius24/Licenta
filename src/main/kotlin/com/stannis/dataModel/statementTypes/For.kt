@@ -1,20 +1,14 @@
 package com.stannis.dataModel.statementTypes
 
-import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
-
-//data.initializerStatement // declaration Statement int x = 0;
-//data.conditionExpression // conditia i<5 || calc();
-//data.conditionDeclaration // declaration in condition
-//data.iterationExpression // iteratii Binary expr / IdExpr etc..
-//data.body // compound statement
 
 data class For(
     var initializer: ArrayList<Statement>?,
     var conditionExpr: ArrayList<Statement>?,
     var conditionDecl: ArrayList<Statement>?,
     var iteration: ArrayList<Statement>?,
-    var body: Method?
+    var body: ArrayList<Statement>?,
+    override val type: String? = "For"
 ): Statement {
 
     fun addInitializer(data: Statement) {
@@ -45,8 +39,11 @@ data class For(
         iteration!!.add(data)
     }
 
-    fun addMethod(data: Method) {
-        body = data
+    fun addBody(data: Statement) {
+        if(body == null) {
+            body = ArrayList()
+        }
+        body!!.add(data)
     }
 
 }

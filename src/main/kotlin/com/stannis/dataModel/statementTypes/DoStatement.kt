@@ -4,7 +4,8 @@ import com.stannis.dataModel.Statement
 
 data class DoStatement(
     var condition: ArrayList<Statement>?,
-    var body: ArrayList<Statement>?
+    var body: ArrayList<Statement>?,
+    override val type: String? = "DoStatement"
 ): Statement {
 
     fun addToCondition(statement: Statement) {

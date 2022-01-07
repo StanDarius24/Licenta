@@ -5,7 +5,8 @@ import com.stannis.dataModel.Statement
 data class Return(
     var returnType: ArrayList<String>?,
     var functionCalls: ArrayList<FunctionCall>?,
-    var statement: Statement?
+    var statement: Statement?,
+    override val type: String? = "Return"
 ): Statement
 {
     fun addStatement(statement: Statement?) {

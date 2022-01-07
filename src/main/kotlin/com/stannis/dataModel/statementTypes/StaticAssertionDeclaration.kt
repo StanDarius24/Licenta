@@ -4,7 +4,9 @@ import com.stannis.dataModel.Statement
 
 data class StaticAssertionDeclaration(
     var condition: Statement?,
-    var message: Statement?
+    var message: Statement?,
+    override val type: String? = "StaticAssertionDeclaration"
+
 ): Statement {
 
     fun addCondition(statement: Statement) {

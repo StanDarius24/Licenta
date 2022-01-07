@@ -8,7 +8,8 @@ data class Statement(
     var value: ArrayList<String>?,
     var declaration: ArrayList<Declaration>?,
     var functionCalls: ArrayList<FunctionCall>?,
-    var statement: ArrayList<Statement>?
+    var statement: ArrayList<Statement>?,
+    override val type: String? = "Statement"
 ): Statement {
     fun add(data: String) {
             if (value == null) {

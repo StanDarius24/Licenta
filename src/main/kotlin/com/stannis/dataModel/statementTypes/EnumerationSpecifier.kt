@@ -4,7 +4,8 @@ import com.stannis.dataModel.Statement
 
 data class EnumerationSpecifier(
     var name: String?,
-    var enumerators: ArrayList<Statement>?
+    var enumerators: ArrayList<Statement>?,
+    override val type: String? = "EnumerationSpecifier"
 ): Statement {
     fun addEnumerators(statement: Statement) {
         if(enumerators == null) {

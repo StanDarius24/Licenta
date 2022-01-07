@@ -6,7 +6,8 @@ import com.stannis.dataModel.Statement
 data class TypedefStructure(
     var name: String?,
     var initialization: Declaration?,
-    var parameters: ArrayList<Declaration>?
+    var parameters: ArrayList<Declaration>?,
+    override val type: String? = "TypedefStructure"
 ): Statement {
 
     fun addInit(init: Declaration) {
