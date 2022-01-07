@@ -6,8 +6,10 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTParameterDeclaration
 
 object ParameterDeclarationService {
-    fun solveParameterDeclaration(paramDecl: CPPASTParameterDeclaration, statement: Statement?) {
-        val parDeclaration = ParameterDeclaration(paramDecl.declSpecifier.rawSignature, paramDecl.declarator.rawSignature)
-        StatementMapper.addStatementToStatement(statement!!, parDeclaration)
+
+    fun solveParameterDeclaration(parameterDeclaration: CPPASTParameterDeclaration, statement: Statement?) {
+        StatementMapper.addStatementToStatement(
+            statement!!,
+            ParameterDeclaration(parameterDeclaration.declSpecifier.rawSignature, parameterDeclaration.declarator.rawSignature))
     }
 }

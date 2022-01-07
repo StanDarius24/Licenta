@@ -5,7 +5,9 @@ import com.stannis.dataModel.Unit
 import com.stannis.dataModel.statementTypes.TypedefStructure
 import com.stannis.services.ClassService
 import com.stannis.services.UnitService
+import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
+import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object SimpleDeclarationService {
@@ -123,22 +125,24 @@ object SimpleDeclarationService {
     }
 
     fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement, unit: Unit): Boolean {
-        when (declaration.declSpecifier) {
-            is CPPASTSimpleDeclSpecifier -> {   //CPPASTBaseDeclSpecifier //TODO
-                simpleDeclSpec(declaration, statement)
-            }
-            is CPPASTCompositeTypeSpecifier -> {
-                if(!compositeTypeSpecifier(declaration, statement, unit)) {
-                    return false
-                }
-            }
-            is CPPASTNamedTypeSpecifier -> {} //TODO
-            is CPPASTEnumerationSpecifier -> {} //TODO
-            is CPPASTElaboratedTypeSpecifier -> {} //TODO
-            else -> {
-                throw Exception()
-            }
-        }
+        ASTNodeService.solveASTNode(declaration.declSpecifier as ASTNode, statement)
+
+//        when (declaration.declSpecifier) {
+//            is CPPASTSimpleDeclSpecifier -> {   //CPPASTBaseDeclSpecifier //TODO
+//                simpleDeclSpec(declaration, statement)
+//            }
+//            is CPPASTCompositeTypeSpecifier -> {
+//                if(!compositeTypeSpecifier(declaration, statement, unit)) {
+//                    return false
+//                }
+//            }
+//            is CPPASTNamedTypeSpecifier -> {} //TODO
+//            is CPPASTEnumerationSpecifier -> {} //TODO
+//            is CPPASTElaboratedTypeSpecifier -> {} //TODO
+//            else -> {
+//                throw Exception()
+//            }
+//        }
         return true
     }
 

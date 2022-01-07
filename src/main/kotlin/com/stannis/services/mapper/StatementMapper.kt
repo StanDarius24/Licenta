@@ -7,47 +7,6 @@ import com.stannis.dataModel.statementTypes.*
 
 class StatementMapper {
     companion object {
-
-        fun addNameDependingOnType(stats: Statement, name: String) {
-            when (stats) {
-                is While -> {
-                    stats.add(name)
-                }
-                is TypedefStructure -> {
-                    stats.add(name)
-                }
-                is com.stannis.dataModel.statementTypes.Statement -> {
-                    stats.add(name)
-                }
-                is FunctionCall -> {
-                    stats.add(name)
-                }
-                is CPPMethodCall -> {
-                    stats.add(name)
-                }
-            }
-        }
-
-        fun addFunctionCallDependingOnType(stats: Statement, fc: FunctionCall) {
-            when (stats) {
-                is FunctionCall -> {
-                    stats.add(fc)
-                }
-                is If -> {
-                    stats.add(fc)
-                }
-                is com.stannis.dataModel.statementTypes.Statement -> {
-                    stats.add(fc)
-                }
-                is Return -> {
-                    stats.add(fc)
-                }
-                is While -> {
-                    stats.add(fc)
-                }
-            }
-        }
-
         fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
             when(statementParent) {
                 is Method -> {
@@ -82,7 +41,7 @@ class StatementMapper {
                     } else if(statementParent.iteration == null) {
                         statementParent.addIteration(statementChild)
                     } else {
-                        statementParent.addMethod(statementChild as Method)
+                        statementParent.addBody(statementChild as Method)
                     }
                 }
                 is ExpressionList -> {

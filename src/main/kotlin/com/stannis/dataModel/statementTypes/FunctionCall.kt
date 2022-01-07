@@ -7,8 +7,9 @@ data class FunctionCall(
     var name: String?,
     var parameters: ArrayList<String>?,
     var complexParameters: ArrayList<Statement>?,
-    var functionCalls: ArrayList<FunctionCall>?
-): Statement
+    var functionCalls: ArrayList<FunctionCall>?,
+    override val type: String? = "FunctionCall"
+    ): Statement
 {
     fun addComplexParameters(statement: Statement) {
         if(complexParameters == null) {

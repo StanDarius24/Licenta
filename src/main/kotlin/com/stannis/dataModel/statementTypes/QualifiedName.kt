@@ -4,8 +4,9 @@ import com.stannis.dataModel.Statement
 
 data class QualifiedName(
     var qualifier: ArrayList<Statement>?,
-    var lastName: Statement?
-    ): Statement {
+    var lastName: Statement?,
+    override val type: String? = "QualifiedName"
+): Statement {
     fun addQualifier(statement: Statement) {
         if(qualifier == null) {
             qualifier = ArrayList()

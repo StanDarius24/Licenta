@@ -8,5 +8,6 @@ data class Declaration(
     var pointer: Boolean?,
     var function: FunctionCall?,
     var arraySize: Int?,
-    var modifier: String?
+    var modifier: String?,
+    override val type: String? = "Declaration"
 ): Statement

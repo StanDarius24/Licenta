@@ -3,12 +3,13 @@ package com.stannis.services
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
-import com.stannis.services.astNodes.*
+import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator
 import org.eclipse.cdt.core.dom.ast.IASTExpression
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause
 import org.eclipse.cdt.core.dom.ast.IASTNode
+import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object FunctionCallsService {
@@ -54,78 +55,9 @@ object FunctionCallsService {
         data!!.iterator().forEachRemaining {
                 datax: IASTInitializerClause ->
             run {
-                when (datax) {
-                    is CPPASTLiteralExpression -> { // TODO HANDLE ASTNODESERVICE!
-                        StatementMapper.addNameDependingOnType(statement!!, datax.rawSignature)
-                    }
-                    is CPPASTFunctionCallExpression -> {
-                        val list = ArrayList<String>()
-                        datax.arguments.iterator().forEachRemaining { data: IASTInitializerClause -> list.add(data.rawSignature) }
-                        val func = FunctionCall(
-                            null,
-                            datax.functionNameExpression.rawSignature,
-                            list, null, null
-                        )
-                        if( statement is FunctionCall) {
-                            statement.add(func)
-                        } else if(statement is com.stannis.dataModel.statementTypes.Statement){
-                            statement.add(func)
-                        }
-                    }
-                    is CPPASTIdExpression -> {
-                        StatementMapper.addNameDependingOnType(statement!!, datax.name.rawSignature)
-                    }
-                    is CPPASTBinaryExpression -> {
-                        getOperands(datax, statement)
-                    }
-                    is CPPASTUnaryExpression -> {
-                        if(statement is FunctionCall) {
-                            statement.addParameters(datax.operand.rawSignature)
-                        }
-                    }
-                    is CPPASTArraySubscriptExpression -> {
-                        ArraySubscriptExpressionService.solveArraySubscript(
-                            datax,
-                            statement!!
-                        )
-                    }
-                    is CPPASTFieldReference -> {
-                        FieldReferenceService.solveFieldReference(
-                            datax,
-                            statement
-                        )
-                    }
-                    is CPPASTCastExpression -> {
-                        CastExpressionService.solveCastExpression(
-                            datax,
-                            statement!!
-                        )
-                    }
-                    is CPPASTTypeIdExpression -> {
-                        TypeIdExpressionService.solveTypeIdExpression(
-                            statement!!,
-                            datax
-                            )
-                    }
-                    is CPPASTConditionalExpression -> {
-                        ConditionalExpressionService.solveConditionalExpression(
-                            datax,
-                            statement!!
-                        )
-
-                        println(datax) //TODO
-                    }
-                    is CPPASTLambdaExpression -> {
-                        println(datax) //TODO
-                    }
-                    is CPPASTPackExpansionExpression -> {
-                        println(datax) //TODO
-                    }
-                    is CPPASTNewExpression -> {
-                        println(datax) //TODO
-                    }
-                    else -> { throw Exception() }
-                }
+                val anonimStatement = AnonimStatement(null)
+                ASTNodeService.solveASTNode(datax as ASTNode, anonimStatement)
+                StatementMapper.addStatementToStatement(statement!!, anonimStatement.statement as Statement)
             }
         }
     }
@@ -134,94 +66,57 @@ object FunctionCallsService {
         declarationStatementForArgumentType(functionCall.arguments, statement)
     }
 
-    private fun getFunctionArguments(functionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
-        println(functionCallExpression.rawSignature)
-        if(functionCallExpression.functionNameExpression is CPPASTFieldReference) {
-            val ffcals = FunctionCall(
-                null,
-                (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
-                null,
-                null, null
-            )
-            when (statement) {
-                is com.stannis.dataModel.statementTypes.Statement -> {
-                    statement.name =
-                        (functionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature
-
-                    StatementMapper.addFunctionCallDependingOnType(statement, ffcals)
-        //            var returntype: String?,
-        //            var name: String?,
-        //            var parameters: ArrayList<String>?,
-        //            var functionCalls: ArrayList<FunctionCall>?
-                }
-                is If -> {
-                    statement.add(ffcals)
-                }
-                is FunctionCall -> {
-                    statement.add(ffcals)
-                }
-                else -> {
-                    //TODO
-                    throw Exception()
-                }
-            }
-        } else {
-        val functionCall = FunctionCall(null, functionCallExpression.functionNameExpression.rawSignature, null, null, null)
-        getArgumentsType(functionCallExpression, functionCall)
-        StatementMapper.addFunctionCallDependingOnType(statement!!, functionCall) }
-
-    }
-
     private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
-        when (binaryExpression) {
-            is CPPASTIdExpression, is CPPASTLiteralExpression, is CPPASTUnaryExpression -> {
-                println(binaryExpression.rawSignature)
-                StatementMapper.addNameDependingOnType(statement!!, binaryExpression.rawSignature)
-            }
-            is CPPASTFunctionCallExpression -> { // TODO HANDLE ASTNODESERVICE!
-                getFunctionArguments(binaryExpression, statement)
-            }
-            is CPPASTFieldReference -> {
-                FieldReferenceService.solveFieldReference(
-                    binaryExpression,
-                    statement
-                )
-            }
-            is CPPASTBinaryExpression -> {
-                getOperands(binaryExpression, statement)
-            }
-            is CPPASTCastExpression -> {
-                CastExpressionService.solveCastExpression(
-                    binaryExpression,
-                    statement!!
-                )
-            }
-            is CPPASTArraySubscriptExpression -> {
-                println(binaryExpression) //TODO
-            }
-            is CPPASTTypeIdExpression -> {
-                println(binaryExpression) //TODO
-            }
-            is CPPASTNewExpression -> {
-                val funcCall = FunctionCall(
-                    null,
-                    (binaryExpression.typeId.declSpecifier as CPPASTNamedTypeSpecifier).name.rawSignature,
-                    null,null,null
-                )
-                declarationStatementForArgumentType((binaryExpression.initializer as CPPASTConstructorInitializer).arguments, funcCall)
-                StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
-            }
-            is CPPASTSimpleTypeConstructorExpression -> {
-                SimpleTypeConstructorExpressionService.solveTypeConstructorExpre(
-                    binaryExpression,
-                    statement!!
-                )
-            }
-            is CPPASTConditionalExpression -> {
-                println(binaryExpression) //TODO
-            }
-            else -> { throw Exception() }
-        }
+        ASTNodeService.solveASTNode(binaryExpression as ASTNode, statement)
+//        when (binaryExpression) {
+//            is CPPASTIdExpression, is CPPASTLiteralExpression, is CPPASTUnaryExpression -> {
+//                println(binaryExpression.rawSignature)
+//                StatementMapper.addNameDependingOnType(statement!!, binaryExpression.rawSignature)
+//            }
+//            is CPPASTFunctionCallExpression -> { // TODO HANDLE ASTNODESERVICE!
+//                getFunctionArguments(binaryExpression, statement)
+//            }
+//            is CPPASTFieldReference -> {
+//                FieldReferenceService.solveFieldReference(
+//                    binaryExpression,
+//                    statement
+//                )
+//            }
+//            is CPPASTBinaryExpression -> {
+//                getOperands(binaryExpression, statement)
+//            }
+//            is CPPASTCastExpression -> {
+//                CastExpressionService.solveCastExpression(
+//                    binaryExpression,
+//                    statement!!
+//                )
+//            }
+//            is CPPASTArraySubscriptExpression -> {
+//                println(binaryExpression) //TODO
+//            }
+//            is CPPASTTypeIdExpression -> {
+//                println(binaryExpression) //TODO
+//            }
+//            is CPPASTNewExpression -> {
+//                val funcCall = FunctionCall(
+//                    null,
+//                    (binaryExpression.typeId.declSpecifier as CPPASTNamedTypeSpecifier).name.rawSignature,
+//                    null,null,null
+//                )
+//                declarationStatementForArgumentType((binaryExpression.initializer as CPPASTConstructorInitializer).arguments, funcCall)
+//                StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
+//            }
+//            is CPPASTSimpleTypeConstructorExpression -> {
+//                SimpleTypeConstructorExpressionService.solveTypeConstructorExpre(
+//                    binaryExpression,
+//                    statement!!
+//                )
+//            }
+//            is CPPASTConditionalExpression -> {
+//                println(binaryExpression) //TODO
+//            }
+//            else -> { throw Exception() }
+//        }
     }
 
     fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) { //TODO boolean operands need a fix
@@ -243,51 +138,6 @@ object FunctionCallsService {
         if(binaryExpression.operand2 != null) {
             handleOperands(binaryExpression.operand2, statement)
         }
-    }
-
-    fun getOperandsAsFunctionCall(cppastFunctionCallExpression: CPPASTFunctionCallExpression, returnT: Return) {
-        println(cppastFunctionCallExpression)
-        when (cppastFunctionCallExpression.functionNameExpression) {
-            is CPPASTIdExpression -> {
-                val funcCall = FunctionCall(
-                    null,
-                    cppastFunctionCallExpression.functionNameExpression.rawSignature,
-                    null, null, null
-                )
-                declarationStatementForArgumentType(cppastFunctionCallExpression.arguments, funcCall)
-                returnT.add(funcCall)
-            }
-            is CPPASTFieldReference -> {
-                val functCall = FunctionCall(
-                    null,
-                    (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldOwner.rawSignature,
-                    null, null, null
-                )
-                cppastFunctionCallExpression.arguments.iterator().forEachRemaining { expressions ->
-                    run {
-                        handleOperands(expressions as IASTExpression, functCall)
-                    }
-                }
-                val funcCall2 = FunctionCall(
-                    null,
-                    (cppastFunctionCallExpression.functionNameExpression as CPPASTFieldReference).fieldName.rawSignature,
-                    null, null, null
-                )
-                functCall.add(funcCall2)
-                returnT.add(functCall)
-            }
-            is CPPASTUnaryExpression -> {
-                println(cppastFunctionCallExpression.functionNameExpression)
-                //TODO
-            }
-            else -> {
-                throw Exception()
-            }
-        }
-    }
-
-    fun solve(node: CPPASTFunctionCallExpression, statement: Statement) {
-        println(node)
     }
 
 }

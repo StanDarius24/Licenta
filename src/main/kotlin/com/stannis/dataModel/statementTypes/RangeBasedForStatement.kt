@@ -5,7 +5,8 @@ import com.stannis.dataModel.Statement
 data class RangeBasedForStatement(
     var declaration: ArrayList<Statement>?,
     var initClause: ArrayList<Statement>?,
-    var body: ArrayList<Statement>?
+    var body: ArrayList<Statement>?,
+    override val type: String? = "RangeBaseForStatement"
 ): Statement {
 
     fun addDeclaration(statement: Statement) {

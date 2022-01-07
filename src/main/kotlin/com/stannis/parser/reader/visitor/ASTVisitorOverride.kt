@@ -16,7 +16,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 class ASTVisitorOverride: ASTVisitor() {
 
     private var switch = false
-
+    var text = ""
 
     companion object{
 
@@ -116,7 +116,6 @@ class ASTVisitorOverride: ASTVisitor() {
         unit = UnitService.createUnit()
         return PROCESS_CONTINUE
     }
-
     override fun visit(name: IASTName): Int {
         println("Found a IASTName: " + name.rawSignature)
         return PROCESS_CONTINUE
@@ -168,6 +167,7 @@ class ASTVisitorOverride: ASTVisitor() {
     }
 
     override fun visit(iastStatement: IASTStatement): Int {
+        text = iastStatement.rawSignature
         println("Found an IASTStatement: " + iastStatement.rawSignature)
         return PROCESS_CONTINUE
     }

@@ -1,118 +1,75 @@
 package com.stannis.services
 
+import com.stannis.dataModel.Statement
+import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.For
-import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
-import org.eclipse.cdt.core.dom.ast.IASTDeclarator
-import org.eclipse.cdt.core.dom.ast.IASTExpression
-import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object ForBlockService {
 
-    fun solveForBlock(data: CPPASTForStatement, statement: com.stannis.dataModel.Statement?) {
+    fun solveForBlock(data: CPPASTForStatement, statement: Statement?) {
         val forT = For(null, null, null, null, null)
         StatementMapper.addStatementToStatement(
             statement!!, forT
         )
-        solveForInitialization(data.initializerStatement, forT)
-        solveForConditionExpression(data.conditionExpression, forT)
-        solveForIterationExpression(data.iterationExpression, forT)
-        if(data.body != null) {
-            val meth = MethodService.createMethod()
-            forT.addMethod(meth)
-                CoreParserClass.seeCPASTCompoundStatement(data.body, meth)
-        }
+        solveInitialization(data, forT)
+        solveConditionExpression(data, forT)
+        solveIterationExpression(data, forT)
+        solveBodyStatements(data, forT)
     }
 
-    private fun solveForIterationExpression(iterationExpression: IASTExpression?, forT: For) {
-        if( iterationExpression != null) {
-            println(iterationExpression.rawSignature)
-            ASTNodeService.solveASTNode(iterationExpression as ASTNode, forT)
-        }
-    }
-
-
-    private fun solveForConditionExpression(conditionExpression: IASTExpression?, forT: For) {
-        val initT = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
-        forT.addConditionExpression(initT)
-        if(conditionExpression != null) {
-            ASTNodeService.solveASTNode(conditionExpression as ASTNode, initT)
-        }
-    }
-
-    private fun solveForInitialization(initializerStatement: IASTStatement?, forT: For) {
-        when (initializerStatement) {
-            is CPPASTDeclarationStatement -> {
-                (initializerStatement.declaration as CPPASTSimpleDeclaration).declarators
-                    .iterator().forEachRemaining { declarator ->
-                        run {
-                            setInitializer(declarator, forT)
-                        }
+    private fun solveBodyStatements(data: CPPASTForStatement, forT: For) {
+        if(data.body is CPPASTCompoundStatement) {
+            (data.body as CPPASTCompoundStatement).statements
+                .iterator().forEachRemaining { statement ->
+                    run {
+                        val anonimStatement = AnonimStatement(null)
+                        ASTNodeService.solveASTNode(statement as ASTNode, anonimStatement)
+                        forT.addBody(anonimStatement.statement as Statement)
                     }
-            }
-            is CPPASTExpressionStatement -> {
-                val inits = com.stannis.dataModel.statementTypes.Statement(null, null, null, null, null)
-                val thisMethod = ASTVisitorOverride.getMethod() // check this declarations compare with inits name.
-                ASTNodeService.solveASTNode(initializerStatement.expression as ASTNode, inits)
-
-                    when (initializerStatement.expression) {
-                        is CPPASTBinaryExpression -> { // TODO
-                            FunctionCallsService.getOperands(
-                                initializerStatement.expression as CPPASTBinaryExpression,
-                                inits
-                            ) // new statement structure
-                        }
-                        is CPPASTUnaryExpression -> {
-                            println(initializerStatement.expression)
-                            //TODO
-                        }
-                        else -> {
-                            throw Exception()
-                        }
-                    }
-            }
-            is CPPASTNullStatement -> {
-                //TODO
-            }
-            else -> {
-                throw Exception()
-            }
+                }
+        } else {
+            val anonimStatement = AnonimStatement(null)
+            ASTNodeService.solveASTNode(data.body as ASTNode, anonimStatement)
+            forT.addBody(anonimStatement.statement as Statement)
         }
     }
 
-    private fun setInitializer(declarator: IASTDeclarator?, forT: For) { //TODO make this a general function for every state of For{}
-        val initT =
-            com.stannis.dataModel.statementTypes.Statement(declarator!!.name.rawSignature, null, null, null, null)
-        forT.addInitializer(initT)
-
-        ASTNodeService.solveASTNode(declarator as ASTNode, initT)
-
-//        when ((declarator.initializer as CPPASTEqualsInitializer).initializerClause) {  // TODO HANDLE ASTNODESERVICE!
-//            is CPPASTBinaryExpression -> {
-//                FunctionCallsService.getInstance().getOperands((declarator.initializer as CPPASTEqualsInitializer).initializerClause as CPPASTBinaryExpression, initT)
-//            }
-//            is CPPASTLiteralExpression -> {
-//                initT.add((declarator.initializer as CPPASTEqualsInitializer).initializerClause.rawSignature)
-//            }
-//            is CPPASTIdExpression -> {
-//                println("initr") //TODO
-//            }
-//            is CPPASTInitializerList -> {
-//                println("initr") //TODO
-//            }
-//            is CPPASTFunctionCallExpression -> {
-//                println("initr")//TODO
-//            }
-//            is CPPASTCastExpression -> {
-//                println("initr")//TODO
-//            }
-//            else -> {
-//                throw Exception()
-//            }
-//        }
+    private fun solveIterationExpression(data:CPPASTForStatement, forT: For) {
+        val anonimStatement1 = AnonimStatement(null)
+        ASTNodeService.solveASTNode(data.iterationExpression as ASTNode, anonimStatement1)
+        forT.addIteration(anonimStatement1.statement as Statement)
+        val anonimStatement2 = AnonimStatement(null)
+        ASTNodeService.solveASTNode(data.iterationExpression  as ASTNode, anonimStatement2)
+        forT.addInitializer(anonimStatement2.statement as Statement)
     }
 
+    private fun solveConditionExpression(data: CPPASTForStatement, forT: For) {
+        val anonimStatement1 = AnonimStatement(null)
+        ASTNodeService.solveASTNode(data.conditionExpression as ASTNode, anonimStatement1)
+        forT.addConditionExpression(anonimStatement1.statement as Statement)
+        val anonimStatement2 = AnonimStatement(null)
+        ASTNodeService.solveASTNode(data.conditionExpression as ASTNode, anonimStatement2)
+        forT.addConditionExpression(anonimStatement2.statement as Statement)
+    }
+
+    private fun solveInitialization(data: CPPASTForStatement, forT: For) {
+        if (data.initializerStatement is CPPASTDeclarationStatement) {
+            ((data.initializerStatement as CPPASTDeclarationStatement).declaration as CPPASTSimpleDeclaration)
+                .declarators.iterator().forEachRemaining { declarator ->
+                    run {
+                        val anonimStatement1 = AnonimStatement(null)
+                        ASTNodeService.solveASTNode(declarator as ASTNode, anonimStatement1)
+                        forT.addInitializer(anonimStatement1.statement as Statement)
+                    }
+                }
+        } else {
+            val anonimStatement = AnonimStatement(null)
+            ASTNodeService.solveASTNode(data.initializerStatement as ASTNode, anonimStatement)
+            forT.addInitializer(anonimStatement.statement as Statement)
+        }
+    }
 }

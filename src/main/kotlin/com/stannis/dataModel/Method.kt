@@ -6,9 +6,11 @@ data class Method(
     var antet: Antet?,
     var declarations: ArrayList<Declaration>?,
     var statements: ArrayList<com.stannis.dataModel.Statement>?,
-    var methods: ArrayList<Method>?,
+    var methods: ArrayList<com.stannis.dataModel.Statement>?,
     var initialz: ArrayList<Statement>?,
-    var modifier: String?
+    var modifier: String?,
+    override val type: String? = "Method"
+
 ): com.stannis.dataModel.Statement {
     fun addInitialz(initialization: Statement) {
         if(initialz == null) {
@@ -23,7 +25,7 @@ data class Method(
         }
         statements!!.add(statement)
     }
-    fun addMethod(method: Method) {
+    fun addMethod(method: com.stannis.dataModel.Statement) {
         if(methods == null) {
             methods = ArrayList()
         }
