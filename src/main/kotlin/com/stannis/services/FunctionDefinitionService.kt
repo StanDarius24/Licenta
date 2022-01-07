@@ -1,12 +1,6 @@
 package com.stannis.services
 
-import com.stannis.dataModel.Antet
-import com.stannis.dataModel.Class
-import com.stannis.dataModel.Declaration
-import com.stannis.dataModel.Method
-import com.stannis.dataModel.Statement
-import com.stannis.dataModel.statementTypes.AnonimStatement
-import org.eclipse.cdt.core.dom.ast.IASTStatement
+import com.stannis.dataModel.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTParameterDeclaration
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
@@ -27,41 +21,6 @@ object FunctionDefinitionService  {
                 null
             )
             listOfDeclaration.add(declaration)
-    }
-
-    fun handleCPPASTFunctionDefinition(declaration: CPPASTFunctionDefinition, statement: Statement?) {
-        if(statement is Method) {
-            MethodService.setAntet(
-                statement,
-                Antet(
-                    declaration.declSpecifier.rawSignature,
-                    declaration.declarator.name.rawSignature,
-                    getParametersDeclarationArray((declaration.declarator as CPPASTFunctionDeclarator).parameters)
-                )
-            )
-            if (declaration.body != null) {
-                if (declaration.body is CPPASTCompoundStatement) {
-                    if ((declaration.body as CPPASTCompoundStatement).statements != null) {
-                        (declaration.body as CPPASTCompoundStatement).statements
-                            .iterator()
-                            .forEachRemaining { data: IASTStatement ->
-                                CoreParserClass.seeCPASTCompoundStatement(
-                                    data,
-                                    statement
-                                )
-                            }
-                    }
-                } else {
-                    throw Exception()
-                }
-            }
-        } else if (statement is Class) {
-            println(statement)  //TODO
-        } else if(statement is AnonimStatement) {
-            println(statement)
-        } else {
-            throw Exception()
-        }
     }
 
     fun getParametersDeclarationArray(params: Array<ICPPASTParameterDeclaration>): ArrayList<Declaration> {

@@ -1,6 +1,5 @@
 package com.stannis.declSpecifier
 
-import com.stannis.dataModel.Method
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.If
 import com.stannis.services.CoreParserClass

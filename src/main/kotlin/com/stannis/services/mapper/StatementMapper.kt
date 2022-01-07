@@ -2,6 +2,7 @@ package com.stannis.services.mapper
 
 import com.stannis.dataModel.Class
 import com.stannis.dataModel.Method
+import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 
@@ -62,6 +63,9 @@ class StatementMapper {
                 }
                 is ConstructorInitializer -> {
                     statementParent.addStatement(statementChild)
+                }
+                is PrimaryBlock -> {
+                    statementParent.statement = statementChild
                 }
                 else -> {
                     throw Exception()

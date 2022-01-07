@@ -3,7 +3,6 @@ package com.stannis.services.cppastService
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.declSpecifier.*
-import com.stannis.parser.reader.visitor.ASTVisitorOverride
 import com.stannis.services.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.astNodes.FunctionDefinitionService
@@ -23,7 +22,7 @@ object ASTNodeService {
                 BinaryExpressionService.solveBinaryExpressionService(node, statement)
             }
             is CPPASTFunctionCallExpression -> {
-                FunctionCallsService.setFunctionCallExpression(node, statement)
+                FunctionCallsService.solveFunctionCalls(node, statement)
             }
             is CPPASTUnaryExpression -> {
                 UnaryExpressionService.solveUneryExpression(node, statement)
@@ -88,27 +87,11 @@ object ASTNodeService {
                             }
             }
             is CPPASTDeclarationStatement -> {
-
-                this.solveASTNode(node.declaration as ASTNode, statement)
-
-//                when (node.declaration) {
-//                    is CPPASTSimpleDeclaration -> {
-//                        DeclarationStatementParser
-//                            .declStatement(node.declaration as CPPASTSimpleDeclaration, statement, modifier)
-//                    }
-//                    is CPPASTStaticAssertionDeclaration -> {
-//                        //TODO
-//                    }
-//                    is CPPASTAliasDeclaration -> {
-//
-//                    }
-//                    is CPPASTUsingDirective -> {
-//
-//                    }
-//                    else -> {
-//                        throw Exception()
-//                    }
-//                }
+                val declarationStatement = DeclarationStatement(null)
+                val anonimStatement = AnonimStatement(null)
+                this.solveASTNode(node.declaration as ASTNode, anonimStatement)
+                declarationStatement.addDeclaration(anonimStatement.statement as Statement)
+                StatementMapper.addStatementToStatement(statement!!, declarationStatement) //refactor this
             }
             is CPPASTExpressionStatement -> {
                 ExpressionStatementService
@@ -135,7 +118,8 @@ object ASTNodeService {
             }
             is CPPASTSimpleDeclaration -> {
                 if(!SimpleDeclarationService.solveDeclSpecifier(
-                        node, statement!!, ASTVisitorOverride.getUnit())) {
+                        node, statement!!)) {
+                    println("data")
                 }
             }
             is CPPASTFunctionDefinition -> {

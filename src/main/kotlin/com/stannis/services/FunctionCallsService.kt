@@ -14,6 +14,16 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object FunctionCallsService {
 
+    fun solveFunctionCalls(node: CPPASTFunctionCallExpression, statement: Statement?) {
+        val functionCalls = FunctionCalls(node.functionNameExpression.rawSignature, null)
+        node.arguments.iterator().forEachRemaining { argument -> run {
+            val anonimStatement = AnonimStatement(null)
+            ASTNodeService.solveASTNode(argument as ASTNode, anonimStatement)
+            functionCalls.addArgument(anonimStatement.statement as Statement)
+        } }
+        StatementMapper.addStatementToStatement(statement!!, functionCalls)
+    }
+
     fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
         if( data != null) {
             if( data.initializer != null) {
@@ -36,19 +46,6 @@ object FunctionCallsService {
                 }
             }
         }
-    }
-
-    fun setFunctionCallExpression(cppastFunctionCallExpression: CPPASTFunctionCallExpression, statement: Statement?) {
-        println(cppastFunctionCallExpression)
-        val functionCall = FunctionCall(
-            null,
-            cppastFunctionCallExpression.functionNameExpression.rawSignature,
-            null,
-            null,
-            null
-        )
-        declarationStatementForArgumentType(cppastFunctionCallExpression.arguments, functionCall)
-        StatementMapper.addStatementToStatement(statement!!, functionCall)
     }
 
     fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {
