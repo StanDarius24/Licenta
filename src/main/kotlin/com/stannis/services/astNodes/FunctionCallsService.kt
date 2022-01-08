@@ -1,4 +1,4 @@
-package com.stannis.services
+package com.stannis.services.astNodes
 
 import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
@@ -65,55 +65,6 @@ object FunctionCallsService {
 
     private fun handleOperands(binaryExpression: IASTExpression, statement: Statement?) {
         ASTNodeService.solveASTNode(binaryExpression as ASTNode, statement)
-//        when (binaryExpression) {
-//            is CPPASTIdExpression, is CPPASTLiteralExpression, is CPPASTUnaryExpression -> {
-//                println(binaryExpression.rawSignature)
-//                StatementMapper.addNameDependingOnType(statement!!, binaryExpression.rawSignature)
-//            }
-//            is CPPASTFunctionCallExpression -> { // TODO HANDLE ASTNODESERVICE!
-//                getFunctionArguments(binaryExpression, statement)
-//            }
-//            is CPPASTFieldReference -> {
-//                FieldReferenceService.solveFieldReference(
-//                    binaryExpression,
-//                    statement
-//                )
-//            }
-//            is CPPASTBinaryExpression -> {
-//                getOperands(binaryExpression, statement)
-//            }
-//            is CPPASTCastExpression -> {
-//                CastExpressionService.solveCastExpression(
-//                    binaryExpression,
-//                    statement!!
-//                )
-//            }
-//            is CPPASTArraySubscriptExpression -> {
-//                println(binaryExpression) //TODO
-//            }
-//            is CPPASTTypeIdExpression -> {
-//                println(binaryExpression) //TODO
-//            }
-//            is CPPASTNewExpression -> {
-//                val funcCall = FunctionCall(
-//                    null,
-//                    (binaryExpression.typeId.declSpecifier as CPPASTNamedTypeSpecifier).name.rawSignature,
-//                    null,null,null
-//                )
-//                declarationStatementForArgumentType((binaryExpression.initializer as CPPASTConstructorInitializer).arguments, funcCall)
-//                StatementMapper.addFunctionCallDependingOnType(statement!!, funcCall)
-//            }
-//            is CPPASTSimpleTypeConstructorExpression -> {
-//                SimpleTypeConstructorExpressionService.solveTypeConstructorExpre(
-//                    binaryExpression,
-//                    statement!!
-//                )
-//            }
-//            is CPPASTConditionalExpression -> {
-//                println(binaryExpression) //TODO
-//            }
-//            else -> { throw Exception() }
-//        }
     }
 
     fun getOperands(binaryExpression: CPPASTBinaryExpression, statement: Statement?) { //TODO boolean operands need a fix

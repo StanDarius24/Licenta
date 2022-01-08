@@ -1,4 +1,4 @@
-package com.stannis.services
+package com.stannis.services.astNodes
 
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement

@@ -60,47 +60,6 @@ class ASTVisitorOverride: ASTVisitor() {
 
         ASTNodeService.solveASTNode(declaration as ASTNode, method)
 
-//        when (declaration) {
-//            is CPPASTFunctionDefinition -> { // ASTAttributeOwner TODO
-//                FunctionDefinitionService.handleCPPASTFunctionDefinition(declaration, method)
-//            }
-//            is CPPASTSimpleDeclaration -> {
-//                if(!SimpleDeclSpecifierService.solveDeclSpecifier(declaration, method, unit)) {
-//                    return PROCESS_CONTINUE
-//                }
-//            }
-//            is CPPASTProblemDeclaration -> {
-//                println("Declaration problem")
-//            }
-//            is CPPASTLinkageSpecification -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTVisibilityLabel -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTTemplateDeclaration -> {
-//                println(declaration) // TODO
-//            }
-//            is CPPASTStaticAssertionDeclaration -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTTemplateSpecialization -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTAliasDeclaration -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTUsingDirective -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTUsingDeclaration -> {
-//                println(declaration) //TODO
-//            }
-//            is CPPASTNamespaceAlias -> {
-//                println(declaration) //TODO
-//            }
-//            else -> { throw Exception() }
-//        }
         if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
         UnitService.addNewMethod(unit, method)
         return PROCESS_CONTINUE

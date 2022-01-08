@@ -3,12 +3,10 @@ package com.stannis.services.cppastService
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.declSpecifier.*
-import com.stannis.services.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.astNodes.FunctionDefinitionService
 import com.stannis.services.astNodes.SimpleDeclSpecifierService
 import com.stannis.services.mapper.StatementMapper
-import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
@@ -78,13 +76,7 @@ object ASTNodeService {
                     .solveIfStatement(node, statement)
             }
             is CPPASTCompoundStatement -> {
-                node.statements.iterator()
-                            .forEachRemaining { dataStatement: IASTStatement ->
-                                CoreParserClass.seeCPASTCompoundStatement(
-                                    dataStatement,
-                                    statement
-                                )
-                            }
+                CompoundStatementService.solveCompoundStatement(node, statement)
             }
             is CPPASTDeclarationStatement -> {
                 val declarationStatement = DeclarationStatement(null)

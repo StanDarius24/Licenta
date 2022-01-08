@@ -17,13 +17,13 @@ class StatementMapper {
                     statementParent.addComplexParameters(statementChild)
                 }
                 is If -> {
-                    statementParent.addStatement(statementChild)
+                    statementParent.needAfix(statementChild)
                 }
                 is com.stannis.dataModel.statementTypes.Statement -> {
                     statementParent.addStatement(statementChild)
                 }
                 is Return -> {
-                    statementParent.addStatement(statementChild)
+                    statementParent.retValue = statementChild
                 }
                 is SimpleTypeConstructorExpression -> {
                     statementParent.addParameter(statementChild)

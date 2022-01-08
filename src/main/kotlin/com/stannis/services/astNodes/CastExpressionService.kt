@@ -12,12 +12,15 @@ object CastExpressionService {
 
     fun solveCastExpression(cppastCastExpression: CPPASTCastExpression, statement: Statement?) {
         val castExpr = CastExpression(null, null)
+
         val anonimStatement = AnonimStatement(null)
         ASTNodeService.solveASTNode(cppastCastExpression.operand as ASTNode, anonimStatement)
         castExpr.operand = anonimStatement.statement
+
         val anonimStatement1 = AnonimStatement(null)
         ASTNodeService.solveASTNode(cppastCastExpression.typeId as ASTNode,  anonimStatement1)
         castExpr.typeId = anonimStatement1
+
         StatementMapper.addStatementToStatement(statement!!, castExpr)
     }
 }
