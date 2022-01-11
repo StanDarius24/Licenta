@@ -61,8 +61,8 @@ object ASTNodeService {
             }
             is CPPASTTypeIdExpression -> {
                 TypeIdExpressionService.solveTypeIdExpression(
-                    statement!!,
-                    node
+                    node,
+                    statement
                 )
             }
             is CPPASTSimpleTypeConstructorExpression -> {
@@ -110,7 +110,7 @@ object ASTNodeService {
             }
             is CPPASTSimpleDeclaration -> {
                 if(!SimpleDeclarationService.solveDeclSpecifier(
-                        node, statement!!)) {
+                        node, statement)) {
                     println("data")
                 }
             }
@@ -237,6 +237,9 @@ object ASTNodeService {
             }
             is CPPASTElaboratedTypeSpecifier -> {
                 ElaboratedTypeSpecifierService.solveElaboratedTypeSpecifier(node, statement)
+            }
+            is CPPASTLambdaExpression -> {
+                LambdaExpressionService.solveLambdaExpression(node, statement)
             }
             else -> throw Exception()
         }

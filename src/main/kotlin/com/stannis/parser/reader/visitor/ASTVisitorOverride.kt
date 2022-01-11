@@ -1,9 +1,7 @@
 package com.stannis.parser.reader.visitor
 
 import com.stannis.dataModel.*
-import com.stannis.dataModel.Unit
-import com.stannis.dataModel.statementTypes.TypedefStructure
-import com.stannis.services.*
+import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -11,22 +9,15 @@ import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 class ASTVisitorOverride: ASTVisitor() {
 
-    private var switch = false
     var text = ""
 
     companion object{
-
-        private var method = MethodService.createMethod()
-        private var unit = UnitService.createUnit()
-        fun getUnit() :Unit {
-            return this.unit
-        }
-        fun getMethod() :Method {
-            return this.method
+        private var primaryBlock = PrimaryBlock(null)
+        fun getPrimaryBlock(): PrimaryBlock {
+            return primaryBlock
         }
     }
 
@@ -35,33 +26,13 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    private fun checkDecl(declaration: IASTDeclaration): Boolean {
-        switch = false
-        if(method.statements != null && method.statements!!.size > 0) {
-            method.statements!!.iterator().forEachRemaining { elements ->
-                run {
-                    if (elements is TypedefStructure) {
-                        if(declaration.parent is CPPASTCompositeTypeSpecifier && elements.name == (declaration.parent as CPPASTCompositeTypeSpecifier).name.rawSignature) {
-                            switch = true
-                        }
-                    }
-                }
-            }
-        }
-        return switch
-    }
-
     override fun visit(declaration: IASTDeclaration): Int {
-        if(checkDecl(declaration)) {
-            return PROCESS_CONTINUE
-        }
-        method = MethodService.createMethod()
         println("Found a declaration: " + declaration.rawSignature)
-
-        ASTNodeService.solveASTNode(declaration as ASTNode, method)
-
-        if(method.declarations != null || method.statements != null || method.antet != null || method.methods !=null)
-        UnitService.addNewMethod(unit, method)
+        val anonimStatement = AnonimStatement(null)
+        ASTNodeService.solveASTNode(declaration as ASTNode, anonimStatement)
+        if(anonimStatement.statement != null) {
+            primaryBlock.addStatement(anonimStatement.statement as Statement)
+        }
         return PROCESS_CONTINUE
     }
 
@@ -72,7 +43,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
-        unit = UnitService.createUnit()
+        primaryBlock = PrimaryBlock(null)
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {

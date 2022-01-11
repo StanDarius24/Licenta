@@ -53,31 +53,32 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
                     println("DATA::: $filepath")
+                    val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
                     solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
                     val builder = JsonBuilder()
                     println("ALFABET: " + dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
-                    val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
+                    val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString() + extension)
 //                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString())
                     fileToWrite.bufferedWriter().use { out ->
-                        out.write(builder.createJson(ASTVisitorOverride.getUnit()))
+                        out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                     }
-                    println(builder.createJson(ASTVisitorOverride.getUnit()))
+                    println(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                 println(ExceptionHandler.mapOfProblemStatement)
             }
         }
     }
 
     private fun solveTranslationUnit(translationUnit: IASTTranslationUnit, astVisitorOverride: ASTVisitorOverride, filepath: String) {
-        try {
+//        try {
             translationUnit.accept(astVisitorOverride)
-        } catch (e: NullPointerException) {
-            println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
-            val datax = ExceptionHandler.rewritefile(astVisitorOverride.text, filepath)
-            if(datax != null) {
-                val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(datax)
-                solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
-            }
-        }
+//        } catch (e: NullPointerException) {
+//            println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
+//            val datax = ExceptionHandler.rewritefile(astVisitorOverride.text, filepath)
+//            if(datax != null) {
+//                val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(datax)
+//                solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
+//            }
+//        }
     }
 
     private fun getIASTTranslationUnit(code: CharArray) :IASTTranslationUnit {

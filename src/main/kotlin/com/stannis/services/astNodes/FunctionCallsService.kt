@@ -1,6 +1,5 @@
 package com.stannis.services.astNodes
 
-import com.stannis.dataModel.Declaration
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.cppastService.ASTNodeService
@@ -22,30 +21,6 @@ object FunctionCallsService {
             functionCalls.addArgument(anonimStatement.statement as Statement)
         } }
         StatementMapper.addStatementToStatement(statement!!, functionCalls)
-    }
-
-    fun getFunctionCall(data: IASTDeclarator?, decl: Declaration) {
-        if( data != null) {
-            if( data.initializer != null) {
-                data.initializer.children.iterator().forEachRemaining { datax: IASTNode ->
-                    run {
-                        when (datax) {
-                            is CPPASTFunctionCallExpression -> {
-                                val funcCall = FunctionCall(
-                                    null,
-                                    datax.functionNameExpression.rawSignature,
-                                    null,
-                                    null,
-                                    null
-                                )
-                                declarationStatementForArgumentType(datax.arguments, funcCall)
-                                decl.function = funcCall
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
     fun declarationStatementForArgumentType(data: Array<IASTInitializerClause>?, statement: Statement?) {

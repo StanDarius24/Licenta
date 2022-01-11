@@ -1,7 +1,5 @@
 package com.stannis.services.mapper
 
-import com.stannis.dataModel.Class
-import com.stannis.dataModel.Method
 import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
@@ -10,9 +8,6 @@ class StatementMapper {
     companion object {
         fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
             when(statementParent) {
-                is Method -> {
-                    statementParent.addStatement(statementChild)
-                }
                 is FunctionCall -> {
                     statementParent.addComplexParameters(statementChild)
                 }
@@ -42,13 +37,10 @@ class StatementMapper {
                     } else if(statementParent.iteration == null) {
                         statementParent.addIteration(statementChild)
                     } else {
-                        statementParent.addBody(statementChild as Method)
+                        statementParent.addBody(statementChild)
                     }
                 }
                 is ExpressionList -> {
-                    statementParent.addStatement(statementChild)
-                }
-                is Class -> {
                     statementParent.addStatement(statementChild)
                 }
                 is DoStatement -> {
@@ -65,7 +57,7 @@ class StatementMapper {
                     statementParent.addStatement(statementChild)
                 }
                 is PrimaryBlock -> {
-                    statementParent.statement = statementChild
+                    statementParent.addStatement(statementChild)
                 }
                 else -> {
                     throw Exception()
