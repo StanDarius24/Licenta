@@ -30,18 +30,27 @@
             <version>${kotlin.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/de.mhoffrogge.attached/org.eclipse.cdt.core -->
+        <!-- https://mvnrepository.com/artifact/com.diffplug.spotless/spotless-eclipse-cdt -->
         <dependency>
-            <groupId>de.mhoffrogge.attached</groupId>
-            <artifactId>org.eclipse.cdt.core</artifactId>
-            <version>5.11.0</version>
+            <groupId>com.diffplug.spotless</groupId>
+            <artifactId>spotless-eclipse-cdt</artifactId>
+            <version>10.5.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.equinox/org.eclipse.equinox.common -->
+
+        <!-- https://mvnrepository.com/artifact/org.eclipse.platform/org.eclipse.equinox.common -->
         <dependency>
-            <groupId>org.eclipse.equinox</groupId>
+            <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.equinox.common</artifactId>
-            <version>3.6.0</version>
+            <version>3.15.100</version>
         </dependency>
+
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.eclipse.equinox/org.eclipse.equinox.common &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.eclipse.equinox</groupId>-->
+<!--            <artifactId>org.eclipse.equinox.common</artifactId>-->
+<!--            <version>3.6.0</version>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-runtime -->
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>

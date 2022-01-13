@@ -8,7 +8,7 @@ import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
-import kotlin.NullPointerException
+
 
 class Parser {
     fun test() {
@@ -54,7 +54,7 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
                     println("DATA::: $filepath")
                     val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
-                    solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
+                    translationUnit.accept(astVisitorOverride)
                     val builder = JsonBuilder()
                     println("ALFABET: " + dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
                     val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString() + extension)
@@ -66,19 +66,6 @@ class Parser {
                 println(ExceptionHandler.mapOfProblemStatement)
             }
         }
-    }
-
-    private fun solveTranslationUnit(translationUnit: IASTTranslationUnit, astVisitorOverride: ASTVisitorOverride, filepath: String) {
-//        try {
-            translationUnit.accept(astVisitorOverride)
-//        } catch (e: NullPointerException) {
-//            println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
-//            val datax = ExceptionHandler.rewritefile(astVisitorOverride.text, filepath)
-//            if(datax != null) {
-//                val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(datax)
-//                solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
-//            }
-//        }
     }
 
     private fun getIASTTranslationUnit(code: CharArray) :IASTTranslationUnit {

@@ -241,6 +241,9 @@ object ASTNodeService {
             is CPPASTLambdaExpression -> {
                 LambdaExpressionService.solveLambdaExpression(node, statement)
             }
+            is CPPASTProblemExpression -> {
+
+            }
             else -> throw Exception()
         }
 

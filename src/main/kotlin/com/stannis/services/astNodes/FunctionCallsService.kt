@@ -4,10 +4,8 @@ import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
-import org.eclipse.cdt.core.dom.ast.IASTDeclarator
 import org.eclipse.cdt.core.dom.ast.IASTExpression
 import org.eclipse.cdt.core.dom.ast.IASTInitializerClause
-import org.eclipse.cdt.core.dom.ast.IASTNode
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 

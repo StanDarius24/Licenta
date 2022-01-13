@@ -15,9 +15,11 @@ object NewExpressionService {
         val anonimStatement = AnonimStatement(null)
         ASTNodeService.solveASTNode(node.typeId as ASTNode, anonimStatement)
         newExpression.typeId = anonimStatement.statement
-        val anonimStatement1 = AnonimStatement(null)
-        ASTNodeService.solveASTNode(node.initializer as ASTNode, anonimStatement1)
-        newExpression.initializer = anonimStatement1.statement
+        if(node.initializer != null) {
+            val anonimStatement1 = AnonimStatement(null)
+            ASTNodeService.solveASTNode(node.initializer as ASTNode, anonimStatement1)
+            newExpression.initializer = anonimStatement1.statement
+        }
         StatementMapper.addStatementToStatement(statement, newExpression)
     }
 }
