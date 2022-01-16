@@ -11,6 +11,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 object SimpleDeclarationService {
 
     fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement?): Boolean {
+
         val simpleDeclaration = SimpleDeclaration(null, null)
         declaration.declarators.iterator().forEachRemaining { decl -> run {
             val anonimStatement = AnonimStatement(null)

@@ -122,7 +122,7 @@ object ASTNodeService {
             }
             is CPPASTDeclarator -> {
                 DeclaratorService
-                    .solveDeclaratorService(node, statement)
+                    .solveDeclaratorService(node, statement, modifier)
             }
             is CPPASTBreakStatement -> {
                 val breaks = BreakStatement(node.rawSignature)
