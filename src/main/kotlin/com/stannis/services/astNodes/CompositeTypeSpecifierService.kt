@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 
 object CompositeTypeSpecifierService {
     fun solveCompositeTypeSpecifier(cppastCompositeTypeSpecifier: CPPASTCompositeTypeSpecifier, statement: Statement?) {
-        val data = CompositeTypeSpecifier(cppastCompositeTypeSpecifier.rawSignature, null)
+        val data = CompositeTypeSpecifier(cppastCompositeTypeSpecifier.name.rawSignature, null)
         cppastCompositeTypeSpecifier.members.iterator().forEachRemaining { declaration ->
             run {
                 val anonimStatement = AnonimStatement(null)

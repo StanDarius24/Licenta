@@ -3,13 +3,10 @@ package com.stannis.services.cppastService
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.declSpecifier.*
-import com.stannis.parser.reader.visitor.ASTVisitorOverride
-import com.stannis.services.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.astNodes.FunctionDefinitionService
 import com.stannis.services.astNodes.SimpleDeclSpecifierService
 import com.stannis.services.mapper.StatementMapper
-import org.eclipse.cdt.core.dom.ast.IASTStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
@@ -23,7 +20,7 @@ object ASTNodeService {
                 BinaryExpressionService.solveBinaryExpressionService(node, statement)
             }
             is CPPASTFunctionCallExpression -> {
-                FunctionCallsService.setFunctionCallExpression(node, statement)
+                FunctionCallsService.solveFunctionCalls(node, statement)
             }
             is CPPASTUnaryExpression -> {
                 UnaryExpressionService.solveUneryExpression(node, statement)
@@ -64,8 +61,8 @@ object ASTNodeService {
             }
             is CPPASTTypeIdExpression -> {
                 TypeIdExpressionService.solveTypeIdExpression(
-                    statement!!,
-                    node
+                    node,
+                    statement
                 )
             }
             is CPPASTSimpleTypeConstructorExpression -> {
@@ -79,36 +76,14 @@ object ASTNodeService {
                     .solveIfStatement(node, statement)
             }
             is CPPASTCompoundStatement -> {
-                node.statements.iterator()
-                            .forEachRemaining { dataStatement: IASTStatement ->
-                                CoreParserClass.seeCPASTCompoundStatement(
-                                    dataStatement,
-                                    statement
-                                )
-                            }
+                CompoundStatementService.solveCompoundStatement(node, statement)
             }
             is CPPASTDeclarationStatement -> {
-
-                this.solveASTNode(node.declaration as ASTNode, statement)
-
-//                when (node.declaration) {
-//                    is CPPASTSimpleDeclaration -> {
-//                        DeclarationStatementParser
-//                            .declStatement(node.declaration as CPPASTSimpleDeclaration, statement, modifier)
-//                    }
-//                    is CPPASTStaticAssertionDeclaration -> {
-//                        //TODO
-//                    }
-//                    is CPPASTAliasDeclaration -> {
-//
-//                    }
-//                    is CPPASTUsingDirective -> {
-//
-//                    }
-//                    else -> {
-//                        throw Exception()
-//                    }
-//                }
+                val declarationStatement = DeclarationStatement(null)
+                val anonimStatement = AnonimStatement(null)
+                this.solveASTNode(node.declaration as ASTNode, anonimStatement)
+                declarationStatement.addDeclaration(anonimStatement.statement as Statement)
+                StatementMapper.addStatementToStatement(statement!!, declarationStatement) //refactor this
             }
             is CPPASTExpressionStatement -> {
                 ExpressionStatementService
@@ -135,7 +110,8 @@ object ASTNodeService {
             }
             is CPPASTSimpleDeclaration -> {
                 if(!SimpleDeclarationService.solveDeclSpecifier(
-                        node, statement!!, ASTVisitorOverride.getUnit())) {
+                        node, statement)) {
+                    println("data")
                 }
             }
             is CPPASTFunctionDefinition -> {
@@ -146,7 +122,7 @@ object ASTNodeService {
             }
             is CPPASTDeclarator -> {
                 DeclaratorService
-                    .solveDeclaratorService(node, statement)
+                    .solveDeclaratorService(node, statement, modifier)
             }
             is CPPASTBreakStatement -> {
                 val breaks = BreakStatement(node.rawSignature)
@@ -261,6 +237,12 @@ object ASTNodeService {
             }
             is CPPASTElaboratedTypeSpecifier -> {
                 ElaboratedTypeSpecifierService.solveElaboratedTypeSpecifier(node, statement)
+            }
+            is CPPASTLambdaExpression -> {
+                LambdaExpressionService.solveLambdaExpression(node, statement)
+            }
+            is CPPASTProblemExpression -> {
+
             }
             else -> throw Exception()
         }

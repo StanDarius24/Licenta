@@ -1,7 +1,6 @@
 package com.stannis.services.mapper
 
-import com.stannis.dataModel.Class
-import com.stannis.dataModel.Method
+import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 
@@ -9,20 +8,17 @@ class StatementMapper {
     companion object {
         fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
             when(statementParent) {
-                is Method -> {
-                    statementParent.addStatement(statementChild)
-                }
                 is FunctionCall -> {
                     statementParent.addComplexParameters(statementChild)
                 }
                 is If -> {
-                    statementParent.addStatement(statementChild)
+                    statementParent.needAfix(statementChild)
                 }
                 is com.stannis.dataModel.statementTypes.Statement -> {
                     statementParent.addStatement(statementChild)
                 }
                 is Return -> {
-                    statementParent.addStatement(statementChild)
+                    statementParent.retValue = statementChild
                 }
                 is SimpleTypeConstructorExpression -> {
                     statementParent.addParameter(statementChild)
@@ -41,13 +37,10 @@ class StatementMapper {
                     } else if(statementParent.iteration == null) {
                         statementParent.addIteration(statementChild)
                     } else {
-                        statementParent.addBody(statementChild as Method)
+                        statementParent.addBody(statementChild)
                     }
                 }
                 is ExpressionList -> {
-                    statementParent.addStatement(statementChild)
-                }
-                is Class -> {
                     statementParent.addStatement(statementChild)
                 }
                 is DoStatement -> {
@@ -61,6 +54,9 @@ class StatementMapper {
                     statementParent.initialization = statementChild
                 }
                 is ConstructorInitializer -> {
+                    statementParent.addStatement(statementChild)
+                }
+                is PrimaryBlock -> {
                     statementParent.addStatement(statementChild)
                 }
                 else -> {

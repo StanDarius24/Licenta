@@ -1,5 +1,6 @@
 package com.stannis.parser.reader
 
+import com.stannis.callHierarchy.classParser
 import com.stannis.json.JsonBuilder
 import com.stannis.parser.reader.error.ExceptionHandler
 import com.stannis.parser.reader.visitor.ASTVisitorOverride
@@ -8,7 +9,7 @@ import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
-import kotlin.NullPointerException
+
 
 class Parser {
     fun test() {
@@ -53,29 +54,17 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
                     println("DATA::: $filepath")
-                    solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
+                    val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
+                    translationUnit.accept(astVisitorOverride)
                     val builder = JsonBuilder()
-                    println("ALFABET: " + dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
-                    val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString())
-//                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString())
+                    val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString() + extension)
+//                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() + extension)
+                    classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
                     fileToWrite.bufferedWriter().use { out ->
-                        out.write(builder.createJson(ASTVisitorOverride.getUnit()))
+                        out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                     }
-                    println(builder.createJson(ASTVisitorOverride.getUnit()))
+                    println(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                 println(ExceptionHandler.mapOfProblemStatement)
-            }
-        }
-    }
-
-    private fun solveTranslationUnit(translationUnit: IASTTranslationUnit, astVisitorOverride: ASTVisitorOverride, filepath: String) {
-        try {
-            translationUnit.accept(astVisitorOverride)
-        } catch (e: NullPointerException) {
-            println("ERROR IN ||||||||||| \n${astVisitorOverride.text}")
-            val datax = ExceptionHandler.rewritefile(astVisitorOverride.text, filepath)
-            if(datax != null) {
-                val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(datax)
-                solveTranslationUnit(translationUnit, astVisitorOverride, filepath)
             }
         }
     }
