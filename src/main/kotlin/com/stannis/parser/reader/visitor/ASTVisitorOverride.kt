@@ -1,9 +1,8 @@
 package com.stannis.parser.reader.visitor
 
 import com.stannis.dataModel.*
-import com.stannis.dataModel.statementTypes.AnonimStatement
-import com.stannis.dataModel.statementTypes.Declarator
-import com.stannis.dataModel.statementTypes.SimpleDeclaration
+import com.stannis.dataModel.Statement
+import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -11,7 +10,8 @@ import org.eclipse.cdt.core.dom.ast.c.ICASTDesignator
 import org.eclipse.cdt.core.dom.ast.cpp.*
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 
 class ASTVisitorOverride: ASTVisitor() {
 
@@ -33,20 +33,48 @@ class ASTVisitorOverride: ASTVisitor() {
     private fun checkDecl(declaration: IASTDeclaration): Boolean {
         switch = false
         if(primaryBlock.statements != null && primaryBlock.statements!!.size > 0) {
-            primaryBlock.statements!!.iterator().forEachRemaining{
-                elements -> run {
-                    if(elements is SimpleDeclaration && elements.declarators != null) {
-                        elements.declarators!!.iterator().forEach {
-                            declarator -> run {
-                                if(declarator is Declarator) {
-                                    if(!switch && declaration.parent is CPPASTCompositeTypeSpecifier && declarator.name == (declaration.parent as CPPASTCompositeTypeSpecifier).name.rawSignature) {
-                                        switch = true;
+            primaryBlock.statements!!.iterator().forEachRemaining { statement ->
+                run {
+                    if (statement is SimpleDeclaration) {
+                        if (statement.declSpecifier is CompositeTypeSpecifier) {
+                            (statement.declSpecifier as CompositeTypeSpecifier).declarations!!.iterator()
+                                .forEachRemaining { decl ->
+                                    run {
+                                        if (decl is SimpleDeclaration) {
+                                            println(declaration)
+                                            decl.declarators!!.iterator().forEachRemaining { declArr ->
+                                                run {
+                                                    if (declArr is Declarator) {
+                                                        if (declaration is CPPASTSimpleDeclaration) {
+                                                            if (declArr.name == declaration.declarators[0].name.rawSignature) {
+                                                                switch = true
+                                                            }
+                                                        } else {
+                                                            println(declaration)
+                                                        }
+                                                    } else {
+                                                        throw Exception()
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                         }
+                    } else if (statement is FunctionDefinition) {
+                        statement.declarator!!.iterator().forEachRemaining { decl ->
+                            run {
+                                if (decl is Declarator) {
+                                    if(declaration is CPPASTFunctionDefinition) {
+                                        if (decl.name == declaration.declarator.name.rawSignature) {
+                                            switch = true
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-            }
+                }
             }
         }
         return switch
@@ -54,7 +82,7 @@ class ASTVisitorOverride: ASTVisitor() {
 
     override fun visit(declaration: IASTDeclaration): Int {
         if(checkDecl(declaration)) {
-            return PROCESS_CONTINUE;
+            return PROCESS_CONTINUE
         }
         println("Found a declaration: " + declaration.rawSignature)
         val anonimStatement = AnonimStatement(null)

@@ -8,13 +8,13 @@ import java.nio.file.Paths
 class DirReader {
 
     companion object {
-        val folder = "/home/stan/Desktop/Licenta/src/result"
-//        val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
+//        val folder = "/home/stan/Desktop/Licenta/src/result"
+        val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
         fun getAllFilesInResources(): ArrayList<String> {
             val list = ArrayList<String>()
             val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
-            val resourcesPath = Paths.get(projectDirAbsolutePath, "/src/main/resources/c++/rec")
-//            val resourcesPath = Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec")
+//            val resourcesPath = Paths.get(projectDirAbsolutePath, "/c++/c++/src/main/resources/c++/rec")
+            val resourcesPath = Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec")
             Files.walk(resourcesPath)
                 .filter { item -> Files.isRegularFile(item) && isCOrCppFileRelated(item.fileName.toString()) }
                 .forEach { item -> list.add(item.toString())}
