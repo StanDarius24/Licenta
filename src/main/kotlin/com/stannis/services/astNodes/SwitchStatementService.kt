@@ -12,12 +12,16 @@ object SwitchStatementService {
 
     fun solveSwitchStatement(switchStatement: CPPASTSwitchStatement, statement: Statement?) {
         val data = SwitchStatement(null, null)
-        val anonimStatement = AnonimStatement(null)
-        ASTNodeService.solveASTNode(switchStatement.controllerExpression as ASTNode, anonimStatement)
-        data.addControllerExpression(anonimStatement)
-        val anonimStatement2 = AnonimStatement(null)
-        ASTNodeService.solveASTNode(switchStatement.body as ASTNode, anonimStatement2)
-        data.addBody(anonimStatement2)
+        if(switchStatement.controllerExpression != null) {
+            val anonimStatement = AnonimStatement(null)
+            ASTNodeService.solveASTNode(switchStatement.controllerExpression as ASTNode, anonimStatement)
+            data.addControllerExpression(anonimStatement)
+        }
+        if (switchStatement.body != null) {
+            val anonimStatement2 = AnonimStatement(null)
+            ASTNodeService.solveASTNode(switchStatement.body as ASTNode, anonimStatement2)
+            data.addBody(anonimStatement2)
+        }
         StatementMapper.addStatementToStatement(statement!!, data)
     }
 

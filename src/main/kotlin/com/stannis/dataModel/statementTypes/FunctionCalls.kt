@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class FunctionCalls(
-    var name: String?,
+    var name: Statement?,
     var arguments: ArrayList<Statement>?,
     override val type: String? = "FunctionCalls"
     ): Statement {

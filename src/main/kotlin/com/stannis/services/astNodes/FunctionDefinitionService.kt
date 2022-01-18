@@ -17,7 +17,9 @@ object FunctionDefinitionService {
         }
         functionDefinition.declaratorSpecifier = anonimStatement1.statement
         val anonimStatement2 = AnonimStatement(null)
-        ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)
+        if(funcDef.declarator != null) {
+            ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)
+        }
         functionDefinition.addDeclarator(anonimStatement2.statement as Statement)
         val anonimStatement3 = AnonimStatement(null)
         if(funcDef.body != null) {

@@ -1,4 +1,4 @@
-package com.stannis.json
+package com.stannis.parser.json
 
 import com.google.gson.GsonBuilder
 import com.stannis.dataModel.PrimaryBlock

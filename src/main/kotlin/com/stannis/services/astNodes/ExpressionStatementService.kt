@@ -1,4 +1,4 @@
-package com.stannis.declSpecifier
+package com.stannis.services.astNodes
 
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
