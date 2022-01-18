@@ -1,15 +1,14 @@
-package com.stannis.parser.reader
+package com.stannis.parser.fileHandler
 
 import com.stannis.callHierarchy.classParser
-import com.stannis.json.JsonBuilder
-import com.stannis.parser.reader.error.ExceptionHandler
-import com.stannis.parser.reader.visitor.ASTVisitorOverride
+import com.stannis.parser.json.JsonBuilder
+import com.stannis.parser.error.ExceptionHandler
+import com.stannis.parser.visitor.ASTVisitorOverride
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
-
 
 class Parser {
     fun test() {
@@ -20,7 +19,7 @@ class Parser {
                     var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
                     dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
 //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
-                    DirReader.makedir(dir)
+                DirReader.makedir(dir)
                     val data = reader.readFileAsLinesUsingBufferedReader(filepath)
                     val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
@@ -57,7 +56,12 @@ class Parser {
                     val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
                     translationUnit.accept(astVisitorOverride)
                     val builder = JsonBuilder()
-                    val fileToWrite = DirReader.createfile(dir + "\\" + filepath.subSequence(filepath.lastIndexOf("\\") + 1, filepath.length).toString() + extension)
+                    val fileToWrite = DirReader.createfile(
+                        dir + "\\" + filepath.subSequence(
+                            filepath.lastIndexOf("\\") + 1,
+                            filepath.length
+                        ).toString() + extension
+                    )
 //                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() + extension)
                     classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
                     fileToWrite.bufferedWriter().use { out ->

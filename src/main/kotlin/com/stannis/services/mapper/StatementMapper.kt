@@ -14,9 +14,6 @@ class StatementMapper {
                 is If -> {
                     statementParent.needAfix(statementChild)
                 }
-                is com.stannis.dataModel.statementTypes.Statement -> {
-                    statementParent.addStatement(statementChild)
-                }
                 is Return -> {
                     statementParent.retValue = statementChild
                 }

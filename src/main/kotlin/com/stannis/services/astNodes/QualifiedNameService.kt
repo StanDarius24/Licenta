@@ -17,7 +17,9 @@ object QualifiedNameService {
         cppastQualifiedName.qualifier.iterator().forEachRemaining { qualifier -> run {
             val anonimStatement2 = AnonimStatement(null)
             ASTNodeService.solveASTNode(qualifier as ASTNode, anonimStatement2)
-            qualifiedName.addQualifier(anonimStatement2.statement as Statement)
+            if(anonimStatement2.statement != null) {
+                qualifiedName.addQualifier(anonimStatement2.statement as Statement)
+            }
         }}
         StatementMapper.addStatementToStatement(statement!!, qualifiedName)
     }

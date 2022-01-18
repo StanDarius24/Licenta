@@ -2,7 +2,6 @@ package com.stannis.services.cppastService
 
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
-import com.stannis.declSpecifier.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.astNodes.FunctionDefinitionService
 import com.stannis.services.astNodes.SimpleDeclSpecifierService
@@ -119,6 +118,9 @@ object ASTNodeService {
             }
             is CPPASTForStatement -> {
                 ForBlockService.solveForBlock(node, statement)
+            }
+            is CPPASTFunctionDeclarator -> {
+                FunctionDeclaratorService.solveFunctionDeclarator(node, statement)
             }
             is CPPASTDeclarator -> {
                 DeclaratorService
@@ -242,6 +244,18 @@ object ASTNodeService {
                 LambdaExpressionService.solveLambdaExpression(node, statement)
             }
             is CPPASTProblemExpression -> {
+
+            }
+            is CPPASTTemplateId -> {
+
+            }
+            is CPPASTExplicitTemplateInstantiation -> {
+
+            }
+            is CPPASTTemplatedTypeTemplateParameter -> {
+
+            }
+            is CPPASTConversionName -> {
 
             }
             else -> throw Exception()

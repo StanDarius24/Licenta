@@ -1,4 +1,4 @@
-package com.stannis.parser.reader
+package com.stannis.parser.fileHandler
 
 import java.io.File
 import java.lang.Exception

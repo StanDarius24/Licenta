@@ -1,6 +1,6 @@
-package com.stannis.parser.reader.error
+package com.stannis.parser.error
 
-import com.stannis.parser.reader.Reader
+import com.stannis.parser.fileHandler.Reader
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException

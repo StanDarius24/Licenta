@@ -12,7 +12,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 object FunctionCallsService {
 
     fun solveFunctionCalls(node: CPPASTFunctionCallExpression, statement: Statement?) {
-        val functionCalls = FunctionCalls(node.functionNameExpression.rawSignature, null)
+        val functionCalls = FunctionCalls(null, null)
+        val anonimStatement1 = AnonimStatement(null)
+        ASTNodeService.solveASTNode(node.functionNameExpression as ASTNode, anonimStatement1)
+        functionCalls.name = anonimStatement1.statement
         node.arguments.iterator().forEachRemaining { argument -> run {
             val anonimStatement = AnonimStatement(null)
             ASTNodeService.solveASTNode(argument as ASTNode, anonimStatement)

@@ -1,6 +1,6 @@
 package com.stannis
 
-import com.stannis.parser.reader.Parser
+import com.stannis.parser.fileHandler.Parser
 
 /*
 Historically, the suffix for a C++ source file was .C. This caused a few problems the first time C++ was ported to a system where case wasn't significant in the filename.
