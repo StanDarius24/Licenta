@@ -17,8 +17,8 @@ class Parser {
         filesname.iterator().forEachRemaining { filepath ->
             run {
                     var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
-                    dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
-//                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
+//                    dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
+                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
                 DirReader.makedir(dir)
                     val data = reader.readFileAsLinesUsingBufferedReader(filepath)
                     val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
@@ -56,13 +56,13 @@ class Parser {
                     val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
                     translationUnit.accept(astVisitorOverride)
                     val builder = JsonBuilder()
-                    val fileToWrite = DirReader.createfile(
-                        dir + "\\" + filepath.subSequence(
-                            filepath.lastIndexOf("\\") + 1,
-                            filepath.length
-                        ).toString() + extension
-                    )
-//                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() + extension)
+//                    val fileToWrite = DirReader.createfile(
+//                        dir + "\\" + filepath.subSequence(
+//                            filepath.lastIndexOf("\\") + 1,
+//                            filepath.length
+//                        ).toString() + extension
+//                    )
+                    val fileToWrite = DirReader.createfile(dir + "/" + filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() + extension)
                     classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
                     fileToWrite.bufferedWriter().use { out ->
                         out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))

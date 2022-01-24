@@ -110,7 +110,6 @@ object ASTNodeService {
             is CPPASTSimpleDeclaration -> {
                 if(!SimpleDeclarationService.solveDeclSpecifier(
                         node, statement)) {
-                    println("data")
                 }
             }
             is CPPASTFunctionDefinition -> {
