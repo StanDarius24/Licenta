@@ -5,7 +5,7 @@ import com.stannis.dataModel.statementTypes.Name
 import com.stannis.dataModel.statementTypes.ParameterDeclaration
 import com.stannis.dataModel.statementTypes.QualifiedName
 
-object FunctionDelegator {
+object FunctionDeclaratorRegistry {
     var list: ArrayList<FunctionDeclarator>? = null
     var sw = true
     fun addToList(functionDeclarator: FunctionDeclarator) {
@@ -14,11 +14,15 @@ object FunctionDelegator {
             list!!.add(functionDeclarator)
         } else {
             sw = false
+            var sw1: Boolean
+            var sw2: Boolean
             list!!.forEach { data -> run {
                     if (functionDeclarator.name is QualifiedName) {
-                        sw = sw xor solveQualifiedName(data, (functionDeclarator.name as QualifiedName), functionDeclarator)
+                        sw1 = solveQualifiedName(data, (functionDeclarator.name as QualifiedName), functionDeclarator)// check for interface
+                        sw = sw || sw1
                     } else if (functionDeclarator.name is Name) {
-                        sw = sw xor solveName(data, (functionDeclarator.name as Name), functionDeclarator)
+                        sw2 = solveName(data, (functionDeclarator.name as Name), functionDeclarator)
+                        sw = sw || sw2
                     }
             } }
         }
@@ -76,17 +80,17 @@ object FunctionDelegator {
             is QualifiedName -> {
                 val test1 = qualifiedName.lastName!! == (function.name as QualifiedName).lastName
                 val test2 =(qualifiedName.qualifier?.get(0) as Name).name.equals(((function.name as QualifiedName).qualifier?.get(0) as Name).name)
-                test1 && test2
+                !(test1 && test2)
             }
             is Name -> {
                 if(!checkParameters(functionDeclarator, function.name as Name, function)) {
-                    qualifiedName.lastName!! == function.name
+                    qualifiedName.lastName!! != function.name
                 } else {
                     true
                 }
             }
             else -> {
-                false
+                true
             }
         }
     }
