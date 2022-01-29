@@ -3,6 +3,7 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FunctionDeclarator
+import com.stannis.function.FunctionDeclaratorRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -25,5 +26,6 @@ object FunctionDeclaratorService {
             }
         }
         StatementMapper.addStatementToStatement(statement!!, functionDeclarator)
+        FunctionDeclaratorRegistry.addToList(functionDeclarator)
     }
 }

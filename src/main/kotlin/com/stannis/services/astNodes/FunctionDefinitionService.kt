@@ -3,6 +3,7 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FunctionDefinition
+import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -10,7 +11,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
-        val functionDefinition = FunctionDefinition(null, null, null)
+        val functionDefinition = FunctionDefinition(null, null, null)   // only functions with implementation
         val anonimStatement1 = AnonimStatement(null)
         if(funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
@@ -26,6 +27,7 @@ object FunctionDefinitionService {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
         functionDefinition.body = anonimStatement3.statement
+        FunctionDefinitionRegistry.addToList(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
     }
 }
