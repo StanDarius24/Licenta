@@ -12,4 +12,8 @@ object SimpleDeclarationRegistry {
         list!!.add(data)
         println(data)
     }
+
+    fun clearList() {
+        list = null
+    }
 }

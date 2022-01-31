@@ -243,19 +243,19 @@ object ASTNodeService {
                 LambdaExpressionService.solveLambdaExpression(node, statement)
             }
             is CPPASTProblemExpression -> {
-
+                throw Exception()
             }
             is CPPASTTemplateId -> {
-
+                throw Exception()
             }
             is CPPASTExplicitTemplateInstantiation -> {
-
+                throw Exception()
             }
             is CPPASTTemplatedTypeTemplateParameter -> {
-
+                throw Exception()
             }
             is CPPASTConversionName -> {
-
+                throw Exception()
             }
             else -> throw Exception()
         }

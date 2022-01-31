@@ -1,13 +1,18 @@
 package com.stannis.function
 
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 
 object FunctionDefinitionRegistry {
 
     var list: ArrayList<FunctionDefinition>? = null
 
+    fun clearList() {
+        list = null
+    }
+
     fun addToList(data: FunctionDefinition) {
-        if(list == null) {
+        if (list == null) {
             list = ArrayList()
         }
         val newFunctionDefinition = FunctionDefinition(data.declaratorSpecifier, data.declarator, null)
@@ -33,7 +38,7 @@ object FunctionDefinitionRegistry {
                         compoundStatement.addStatement(findDeclarationForFunctionCall(data.body as CompoundStatement, statement))
                     }
                     is BinaryExpression -> {
-
+//                        throw Exception()
                     }
                 }
             } }
@@ -58,11 +63,24 @@ object FunctionDefinitionRegistry {
                 } }
             } else if(statements is FunctionCalls) {
                 println() // save all declarations get them and check what types function call is.
+                SimpleDeclarationRegistry.list!!.iterator().forEachRemaining { declaration -> run {
+                    declaration.declarators!!.iterator().forEachRemaining { declarator -> run {
+                        if(declarator is Declarator) {
+                            if(statements.name is FieldReference) {
+                                if (declarator.name.equals(((statements.name as FieldReference).fieldOwner as IdExpression).expression.toString())) {
+                                    val arrlist: ArrayList<Statement>? = ArrayList()
+                                    arrlist!!.add(declarator)
+                                    functionCallWithDeclaration.declaration =
+                                        SimpleDeclaration(arrlist, declaration.declSpecifier)
+                                }
+                            } else if(statements.name is IdExpression) {
+                                println()
+                            }
+                        }
+                    } }
+                } }
             }
         } }
-        if(functionCallWithDeclaration.declaration == null) { // global declaration
-            println()
-        }
         return functionCallWithDeclaration
     }
 }

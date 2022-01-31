@@ -6,7 +6,13 @@ import com.stannis.dataModel.statementTypes.ParameterDeclaration
 import com.stannis.dataModel.statementTypes.QualifiedName
 
 object FunctionDeclaratorRegistry {
+
     var list: ArrayList<FunctionDeclarator>? = null
+
+    fun clearList(){
+        list = null
+    }
+
     var sw = true
     fun addToList(functionDeclarator: FunctionDeclarator) {
         if(list == null) {

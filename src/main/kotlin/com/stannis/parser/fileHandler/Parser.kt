@@ -1,8 +1,8 @@
 package com.stannis.parser.fileHandler
 
 import com.stannis.callHierarchy.classParser
+import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.parser.json.JsonBuilder
-import com.stannis.parser.error.ExceptionHandler
 import com.stannis.parser.visitor.ASTVisitorOverride
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
@@ -67,8 +67,8 @@ class Parser {
                     fileToWrite.bufferedWriter().use { out ->
                         out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                     }
-                    println(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
-                println(ExceptionHandler.mapOfProblemStatement)
+                    println(builder.createJson(FunctionDefinitionRegistry.list))
+//                println(ExceptionHandler.mapOfProblemStatement)
             }
         }
     }
