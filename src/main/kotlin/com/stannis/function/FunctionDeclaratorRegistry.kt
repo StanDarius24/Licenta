@@ -15,7 +15,7 @@ object FunctionDeclaratorRegistry {
 
     var sw = true
     fun addToList(functionDeclarator: FunctionDeclarator) {
-        if(list == null) {
+        if(list == null) { // here
             list = ArrayList()
             list!!.add(functionDeclarator)
         } else {

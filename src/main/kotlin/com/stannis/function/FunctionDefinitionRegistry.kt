@@ -21,32 +21,48 @@ object FunctionDefinitionRegistry {
         println()
     }
 
-    private fun removeUnwantedTypes(data: FunctionDefinition, newFunctionDefinition: FunctionDefinition) {
+    private fun addStatement(statement: Statement, compoundStatement: CompoundStatement, data: FunctionDefinition) {
+        when (statement) {
+            is SimpleDeclaration -> {
+                compoundStatement.addStatement(statement)
+            }
+            is DeclarationStatement -> {
+                statement.declarations!!.iterator().forEach { declaration -> run {
+                    compoundStatement.addStatement(declaration)
+                } }
+            }
+            is FunctionCalls -> {
+                if(data.body != null) {
+                    compoundStatement.addStatement(
+                        findDeclarationForFunctionCall(
+                            data.body as CompoundStatement,
+                            statement,
+                            data
+                        )
+                    )
+                }
+            }
+            is BinaryExpression -> {
+//                        throw Exception()
+            }
+        }
+    }
+
+    private fun removeUnwantedTypes(data: FunctionDefinition, newFunctionDefinition: FunctionDefinition) {// prelucrare body
         val compoundStatement = CompoundStatement(null)
         if(data.body is CompoundStatement) {
             (data.body as CompoundStatement).statements!!.iterator().forEach { statement -> run {
-                when (statement) {
-                    is SimpleDeclaration -> {
-                        compoundStatement.addStatement(statement)
-                    }
-                    is DeclarationStatement -> {
-                        statement.declarations!!.iterator().forEach { declaration -> run {
-                            compoundStatement.addStatement(declaration)
-                        } }
-                    }
-                    is FunctionCalls -> {
-                        compoundStatement.addStatement(findDeclarationForFunctionCall(data.body as CompoundStatement, statement))
-                    }
-                    is BinaryExpression -> {
-//                        throw Exception()
-                    }
-                }
+                addStatement(statement, compoundStatement, data)
             } }
         }
         newFunctionDefinition.body = compoundStatement
     }
 
-    private fun findDeclarationForFunctionCall(body: CompoundStatement, statement: FunctionCalls): FunctionCallWithDeclaration {
+    private fun findDeclarationForFunctionCall(
+        body: CompoundStatement,
+        statement: FunctionCalls,
+        data: FunctionDefinition
+    ): FunctionCallWithDeclaration {
         val functionCallWithDeclaration = FunctionCallWithDeclaration(statement, null)
         body.statements!!.iterator().forEachRemaining { statements -> run {
             if(statements is DeclarationStatement) {
@@ -74,6 +90,11 @@ object FunctionDefinitionRegistry {
                                         SimpleDeclaration(arrlist, declaration.declSpecifier)
                                 }
                             } else if(statements.name is IdExpression) {
+                                statements.arguments!!.iterator().forEachRemaining { argument -> run {
+                                    if(argument is FunctionCalls) {
+                                        addStatement(argument, body, data)
+                                    }
+                                } }
                                 println()
                             }
                         }
