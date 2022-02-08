@@ -3,6 +3,7 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.*
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.SimpleDeclaration
+import com.stannis.function.DeclaratorParentExtractor
 import com.stannis.function.SimpleDeclarationRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -13,7 +14,6 @@ object SimpleDeclarationService {
 
     fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement?): Boolean {
         val simpleDeclaration = SimpleDeclaration(null, null)
-        SimpleDeclarationRegistry.addToList(simpleDeclaration)
         declaration.declarators.iterator().forEachRemaining { decl -> run {
             val anonimStatement = AnonimStatement(null)
             ASTNodeService.solveASTNode(decl as ASTNode, anonimStatement)
@@ -23,6 +23,7 @@ object SimpleDeclarationService {
         ASTNodeService.solveASTNode(declaration.declSpecifier as ASTNode, anonimStatement2)
         simpleDeclaration.declSpecifier = anonimStatement2.statement
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
+        SimpleDeclarationRegistry.addToList(simpleDeclaration, DeclaratorParentExtractor.extractParentasFunctionCall(declaration))
         return true
     }
 

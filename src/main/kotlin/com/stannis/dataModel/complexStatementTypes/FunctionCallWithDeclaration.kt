@@ -1,4 +1,4 @@
-package com.stannis.dataModel.statementTypes
+package com.stannis.dataModel.complexStatementTypes
 
 import com.stannis.dataModel.Statement
 
