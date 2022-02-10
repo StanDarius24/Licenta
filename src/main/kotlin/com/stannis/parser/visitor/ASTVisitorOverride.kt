@@ -3,6 +3,9 @@ package com.stannis.parser.visitor
 import com.stannis.dataModel.*
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
+import com.stannis.function.FunctionDeclaratorRegistry
+import com.stannis.function.FunctionDefinitionRegistry
+import com.stannis.function.SimpleDeclarationRegistry
 import com.stannis.parser.error.MultipleDeclarationWhenComposite
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
@@ -53,6 +56,9 @@ class ASTVisitorOverride: ASTVisitor() {
     override fun visit(translationUnit: IASTTranslationUnit): Int {
         println("Found a translationUnit: " + translationUnit.rawSignature)
         primaryBlock = PrimaryBlock(null)
+        SimpleDeclarationRegistry.clearList()
+        FunctionDeclaratorRegistry.clearList()
+        FunctionDefinitionRegistry.clearList()
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {
