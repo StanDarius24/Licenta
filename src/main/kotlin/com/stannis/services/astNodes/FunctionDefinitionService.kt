@@ -26,7 +26,7 @@ object FunctionDefinitionService {
         if(funcDef.body != null) {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
-        functionDefinition.body = anonimStatement3.statement
+        functionDefinition.addToBody(anonimStatement3.statement as Statement)
         FunctionDefinitionRegistry.addToList(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
     }

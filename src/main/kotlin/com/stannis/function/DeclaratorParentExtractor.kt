@@ -7,7 +7,7 @@ object DeclaratorParentExtractor {
 
     fun extractParentasFunctionCall(declaration: CPPASTSimpleDeclaration): CPPASTFunctionDefinition? {
         var parent = declaration.parent
-        while(parent != null && parent.parent !is CPPASTFunctionDefinition) {
+        while(parent != null && parent !is CPPASTFunctionDefinition) {
             parent = parent.parent
         }
         return parent as CPPASTFunctionDefinition?

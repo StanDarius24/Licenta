@@ -37,6 +37,10 @@ object FunctionDeclaratorRegistry {
                 if((element.name as QualifiedName).equals(functionDeclarator.name)) {
                     sw1 = checkParameters(element, functionDeclarator)
                 }
+            } else if(element.name is Name) {
+                if((functionDeclarator.name as QualifiedName).lastName!!.equals(element.name)) {
+                    sw1 = true
+                }
             }
         } }
         return sw1
@@ -47,14 +51,14 @@ object FunctionDeclaratorRegistry {
         elementFromList.parameter!!.iterator().forEachRemaining { element -> run {
             functionDeclarator.parameter!!.iterator().forEachRemaining { parameter -> run {
                 if(element.equals(parameter)) {
-                    number ++
+                    number += 1
                 }
             } }
         } }
         if(number.equals(functionDeclarator.parameter!!.size)) {
-            return false
+            return true
         }
-        return true
+        return false
     }
 
     private fun solveName(functionDeclarator: FunctionDeclarator): Boolean {
@@ -62,7 +66,7 @@ object FunctionDeclaratorRegistry {
         list!!.iterator().forEachRemaining { element -> run {
             if(element.name is Name) {
                 if((element.name as Name).equals(functionDeclarator.name)) {
-                    sw1 = checkParameters(element, functionDeclarator)
+                    sw1 = sw1 || checkParameters(element, functionDeclarator)
                 }
             }
         } }
