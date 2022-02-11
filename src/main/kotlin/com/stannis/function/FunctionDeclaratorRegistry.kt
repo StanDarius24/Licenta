@@ -48,15 +48,21 @@ object FunctionDeclaratorRegistry {
 
     private fun checkParameters(elementFromList: FunctionDeclarator, functionDeclarator: FunctionDeclarator): Boolean {
         var number = 0
-        elementFromList.parameter!!.iterator().forEachRemaining { element -> run {
-            functionDeclarator.parameter!!.iterator().forEachRemaining { parameter -> run {
-                if(element.equals(parameter)) {
-                    number += 1
+        if(elementFromList.parameter != null) {
+            elementFromList.parameter!!.iterator().forEachRemaining { element ->
+                run {
+                    functionDeclarator.parameter!!.iterator().forEachRemaining { parameter ->
+                        run {
+                            if (element.equals(parameter)) {
+                                number += 1
+                            }
+                        }
+                    }
                 }
-            } }
-        } }
-        if(number.equals(functionDeclarator.parameter!!.size)) {
-            return true
+            }
+            if(number.equals(functionDeclarator.parameter!!.size)) {
+                return true
+            }
         }
         return false
     }
