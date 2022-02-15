@@ -3,9 +3,8 @@ package com.stannis.services.cppastService
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.astNodes.*
-import com.stannis.services.astNodes.FunctionDefinitionService
-import com.stannis.services.astNodes.SimpleDeclSpecifierService
 import com.stannis.services.mapper.StatementMapper
+import org.eclipse.cdt.core.dom.ast.IASTPreprocessorIncludeStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
@@ -256,6 +255,9 @@ object ASTNodeService {
             }
             is CPPASTConversionName -> {
                 throw Exception()
+            }
+            is IASTPreprocessorIncludeStatement -> {
+                InclusionStatementService.solveInclusionStatement(node, statement)
             }
             else -> throw Exception()
         }

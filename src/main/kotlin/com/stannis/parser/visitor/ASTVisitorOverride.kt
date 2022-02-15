@@ -6,6 +6,7 @@ import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.FunctionDeclaratorRegistry
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.function.SimpleDeclarationRegistry
+import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.error.MultipleDeclarationWhenComposite
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
@@ -16,6 +17,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTranslationUnit
 
 class ASTVisitorOverride: ASTVisitor() {
 
@@ -59,6 +61,7 @@ class ASTVisitorOverride: ASTVisitor() {
         SimpleDeclarationRegistry.clearList()
         FunctionDeclaratorRegistry.clearList()
         FunctionDefinitionRegistry.clearList()
+        TranslationUnitRegistry.storeTranslationUnit(translationUnit as CPPASTTranslationUnit)
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {

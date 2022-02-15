@@ -20,6 +20,7 @@ object FunctionDefinitionRegistry {
         val newFunctionDefinition = FunctionDefinition(data.declaratorSpecifier, data.declarator, null)
         removeUnwantedTypes(data, newFunctionDefinition)
         list!!.add(newFunctionDefinition)
+        TranslationUnitRegistry.setFunctionCalls(list)
         println()
     }
 

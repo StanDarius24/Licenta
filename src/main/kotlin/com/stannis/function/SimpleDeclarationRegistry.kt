@@ -26,6 +26,7 @@ object SimpleDeclarationRegistry {
                 list = ArrayList()
             }
             list!!.add(declarationWithParent)
+            TranslationUnitRegistry.finalTranslation.declaration = list
             println(list)
         }
     }
