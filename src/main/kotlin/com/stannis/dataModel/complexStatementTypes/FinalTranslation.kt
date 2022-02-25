@@ -1,11 +1,13 @@
 package com.stannis.dataModel.complexStatementTypes
 
 import com.stannis.dataModel.Statement
+import com.stannis.dataModel.statementTypes.DeclarationStatement
 import com.stannis.dataModel.statementTypes.FunctionDefinition
 
 data class FinalTranslation(
     var directives: ArrayList<Statement>?,
-    var declaration: ArrayList<DeclarationWithParent>?,
+    var globalDeclaration: ArrayList<DeclarationWithParent>?,
+    var internDeclaration: ArrayList<DeclarationWithParent>?,
     var functionCalls: ArrayList<FunctionDefinition>?,
     override val type: String = "FinalTranslation"
     ): Statement {

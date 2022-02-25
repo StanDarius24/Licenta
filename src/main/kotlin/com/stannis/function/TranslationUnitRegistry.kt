@@ -11,7 +11,7 @@ import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTranslationUnit
 
 object TranslationUnitRegistry {
-    var finalTranslation = FinalTranslation(null, null, null)
+    var finalTranslation = FinalTranslation(null, null,null, null)
 
     fun storeTranslationUnit(translationUnit: CPPASTTranslationUnit) {
         translationUnit.includeDirectives.iterator().forEachRemaining { directive -> run {
@@ -25,7 +25,11 @@ object TranslationUnitRegistry {
         finalTranslation.functionCalls = data
     }
 
-    fun setDeclaration(decl: ArrayList<DeclarationWithParent>) {
-        finalTranslation.declaration = decl
+    fun setDeclarationGlobal(decl: ArrayList<DeclarationWithParent>) {
+        finalTranslation.globalDeclaration = decl
+    }
+
+    fun setDeclarationIntern(decl: ArrayList<DeclarationWithParent>) {
+        finalTranslation.internDeclaration = decl
     }
 }

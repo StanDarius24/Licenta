@@ -180,8 +180,7 @@ object ASTNodeService {
                 UsingDeclarationService.solveUnitDeclaration(node, statement)
             }
             is CPPASTEqualsInitializer -> {
-                val equals = EqualsInitializer(node.rawSignature, null)
-                StatementMapper.addStatementToStatement(statement!!, equals)
+                EqualsInitializerService.solveEqualsInitializer(node, statement)
             }
             is CPPASTSimpleTypeTemplateParameter -> {
                 val simpleType = SimpleTypeTemplateParameter(node.name.rawSignature)

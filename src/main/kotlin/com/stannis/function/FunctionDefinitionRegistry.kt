@@ -3,7 +3,6 @@ package com.stannis.function
 import com.stannis.dataModel.complexStatementTypes.DeclarationWithParent
 import com.stannis.dataModel.complexStatementTypes.FunctionCallWithDeclaration
 import com.stannis.dataModel.statementTypes.*
-import org.eclipse.cdt.internal.core.dom.rewrite.astwriter.DeclaratorWriter
 
 object FunctionDefinitionRegistry {
 
@@ -36,16 +35,21 @@ object FunctionDefinitionRegistry {
         statements.statements!!.iterator().forEachRemaining { statement -> run  {
             when (statement) {
                 is FunctionCalls -> {
-                    resolveWhenStatementIsFunctionCall(statement, newFunctionDefinition, oldFunctionDefinition)
+                    if(newFunctionDefinition.body == null) {
+                        resolveWhenStatementIsFunctionCall(statement, newFunctionDefinition, oldFunctionDefinition)
+                    }
                 }
             }
         }}
     }
 
     private fun resolveWhenStatementIsFunctionCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
-        SimpleDeclarationRegistry.list!!.iterator().forEachRemaining { simpleDeclaration -> run {
-                    solveWhenDeclarationIsDeclarator(statement, simpleDeclaration, newFunctionDefinition, oldFunctionDefinition)
-        }}
+        println()
+        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration -> run {
+            if(newFunctionDefinition == declaration.parent) {
+
+            }
+        } }
     }
 
     private fun solveWhenDeclarationIsDeclarator(statement: FunctionCalls, declarationWithParent: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
@@ -59,7 +63,7 @@ object FunctionDefinitionRegistry {
     private fun idExpressionSolver(statement: FunctionCalls, declarationWithParent: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
         declarationWithParent.declaration.declarators!!.iterator().forEachRemaining { declaration -> run {
             if(declaration is Declarator) {
-                if ((statement.name as IdExpression).expression.toString().equals(declaration.name)) {
+                if ((statement.name as IdExpression).expression.toString() == declaration.name) {
                     newFunctionDefinition.addToBody(FunctionCallWithDeclaration(oldFunctionDefinition, statement))
                 }
             }
@@ -71,10 +75,10 @@ object FunctionDefinitionRegistry {
             if(declaration is Declarator) {
                 if((statement.name as FieldReference).fieldOwner is IdExpression) {
                     if (((statement.name as FieldReference).fieldOwner!! as IdExpression).expression.equals(declaration.name)) {
-                        newFunctionDefinition.addToBody(FunctionCallWithDeclaration(oldFunctionDefinition, statement))
+                        newFunctionDefinition.addToBody(FunctionCallWithDeclaration(oldFunctionDefinition.body!![0], declaration))
                     }
                 } else if((statement.name as FieldReference).fieldOwner is FieldReference){
-                    if((((statement.name as FieldReference).fieldOwner as FieldReference).fieldName as Name).name!!.equals(declaration.name)) {
+                    if((((statement.name as FieldReference).fieldOwner as FieldReference).fieldName as Name).name!! == declaration.name) {
                         newFunctionDefinition.addToBody(FunctionCallWithDeclaration(statement, declaration))
                     }
                 } else if((statement.name as FieldReference).fieldName is Name) {
