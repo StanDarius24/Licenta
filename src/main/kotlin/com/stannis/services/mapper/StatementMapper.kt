@@ -56,6 +56,9 @@ class StatementMapper {
                 is PrimaryBlock -> {
                     statementParent.addStatement(statementChild)
                 }
+                is IdExpression -> {
+                    statementParent.expression = statementChild
+                }
                 else -> {
                     throw Exception()
                 }

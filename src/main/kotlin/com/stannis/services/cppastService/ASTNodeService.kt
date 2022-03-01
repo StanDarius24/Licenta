@@ -3,9 +3,8 @@ package com.stannis.services.cppastService
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.astNodes.*
-import com.stannis.services.astNodes.FunctionDefinitionService
-import com.stannis.services.astNodes.SimpleDeclSpecifierService
 import com.stannis.services.mapper.StatementMapper
+import org.eclipse.cdt.core.dom.ast.IASTPreprocessorIncludeStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
@@ -37,10 +36,7 @@ object ASTNodeService {
                 LiteralExpressionService.solveLiteralExpression(node, statement)
             }
             is CPPASTIdExpression -> {
-                StatementMapper.addStatementToStatement(
-                    statement!!,
-                    IdExpression(node.rawSignature)
-                )
+                IdExpressionService.solveIdExpression(node, statement)
             }
             is CPPASTNewExpression -> {
                 NewExpressionService
@@ -181,8 +177,7 @@ object ASTNodeService {
                 UsingDeclarationService.solveUnitDeclaration(node, statement)
             }
             is CPPASTEqualsInitializer -> {
-                val equals = EqualsInitializer(node.rawSignature, null)
-                StatementMapper.addStatementToStatement(statement!!, equals)
+                EqualsInitializerService.solveEqualsInitializer(node, statement)
             }
             is CPPASTSimpleTypeTemplateParameter -> {
                 val simpleType = SimpleTypeTemplateParameter(node.name.rawSignature)
@@ -256,6 +251,9 @@ object ASTNodeService {
             }
             is CPPASTConversionName -> {
                 throw Exception()
+            }
+            is IASTPreprocessorIncludeStatement -> {
+                InclusionStatementService.solveInclusionStatement(node, statement)
             }
             else -> throw Exception()
         }
