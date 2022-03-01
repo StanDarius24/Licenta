@@ -36,10 +36,7 @@ object ASTNodeService {
                 LiteralExpressionService.solveLiteralExpression(node, statement)
             }
             is CPPASTIdExpression -> {
-                StatementMapper.addStatementToStatement(
-                    statement!!,
-                    IdExpression(node.rawSignature)
-                )
+                IdExpressionService.solveIdExpression(node, statement)
             }
             is CPPASTNewExpression -> {
                 NewExpressionService

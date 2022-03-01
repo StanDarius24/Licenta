@@ -26,68 +26,72 @@ object FunctionDefinitionRegistry {
     private fun removeUnwantedTypes(oldFunctionDefinition: FunctionDefinition, newFunctionDefinition: FunctionDefinition) { // save only functionCalls, Declaration
         oldFunctionDefinition.body!!.iterator().forEachRemaining { statements -> run {
             if(statements is CompoundStatement) {
-                removeIfBodyCompoundStatement(statements, newFunctionDefinition, oldFunctionDefinition)
+                removeIfBodyCompoundStatement(statements, newFunctionDefinition)
             }
         } }
     }
 
-    private fun removeIfBodyCompoundStatement(statements: CompoundStatement, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
+    private fun removeIfBodyCompoundStatement(statements: CompoundStatement, newFunctionDefinition: FunctionDefinition) {
         statements.statements!!.iterator().forEachRemaining { statement -> run  {
             when (statement) {
                 is FunctionCalls -> {
-                    if(newFunctionDefinition.body == null) {
-                        resolveWhenStatementIsFunctionCall(statement, newFunctionDefinition, oldFunctionDefinition)
-                    }
+                        resolveWhenStatementIsFunctionCall(statement, newFunctionDefinition)
                 }
             }
         }}
     }
 
-    private fun resolveWhenStatementIsFunctionCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
-        println()
-        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration -> run {
-            if(newFunctionDefinition == declaration.parent) {
-
-            }
-        } }
-    }
-
-    private fun solveWhenDeclarationIsDeclarator(statement: FunctionCalls, declarationWithParent: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
-        if(statement.name is IdExpression) {
-            idExpressionSolver(statement, declarationWithParent, newFunctionDefinition, oldFunctionDefinition)
-        } else if(statement.name is FieldReference) {
-            fieldReferenceSolver(statement, declarationWithParent, newFunctionDefinition, oldFunctionDefinition)
+    private fun resolveWhenStatementIsFunctionCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
+        if(!checkInternDeclaration(statement, newFunctionDefinition)) {
+            checkGlobalDeclaration(statement, newFunctionDefinition)
         }
     }
 
-    private fun idExpressionSolver(statement: FunctionCalls, declarationWithParent: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
-        declarationWithParent.declaration.declarators!!.iterator().forEachRemaining { declaration -> run {
-            if(declaration is Declarator) {
-                if ((statement.name as IdExpression).expression.toString() == declaration.name) {
-                    newFunctionDefinition.addToBody(FunctionCallWithDeclaration(oldFunctionDefinition, statement))
-                }
-            }
+    private fun checkGlobalDeclaration(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
+        SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration -> run {
+            verifyIfFunctionCallDeclaration(statement, declaration, newFunctionDefinition, true)
         } }
     }
 
-    private fun fieldReferenceSolver(statement: FunctionCalls, declarationWithParent: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, oldFunctionDefinition: FunctionDefinition) {
-        declarationWithParent.declaration.declarators!!.iterator().forEachRemaining { declaration -> run {
-            if(declaration is Declarator) {
-                if((statement.name as FieldReference).fieldOwner is IdExpression) {
-                    if (((statement.name as FieldReference).fieldOwner!! as IdExpression).expression.equals(declaration.name)) {
-                        newFunctionDefinition.addToBody(FunctionCallWithDeclaration(oldFunctionDefinition.body!![0], declaration))
-                    }
-                } else if((statement.name as FieldReference).fieldOwner is FieldReference){
-                    if((((statement.name as FieldReference).fieldOwner as FieldReference).fieldName as Name).name!! == declaration.name) {
-                        newFunctionDefinition.addToBody(FunctionCallWithDeclaration(statement, declaration))
-                    }
-                } else if((statement.name as FieldReference).fieldName is Name) {
-                    if(((statement.name as FieldReference).fieldName as Name).name.equals(declaration.name)) {
-                        newFunctionDefinition.addToBody(FunctionCallWithDeclaration(statement, declaration))
+    private fun checkInternDeclaration(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition): Boolean {
+        var bool1 = false
+        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration -> run {
+            bool1 = verifyIfFunctionCallDeclaration(statement, declaration, newFunctionDefinition, false)
+        } }
+        return bool1
+    }
+
+    private fun verifyIfFunctionCallDeclaration(statement: FunctionCalls, declaration: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, boolean: Boolean): Boolean {
+        var bool =false
+        declaration.declaration.declarators!!.iterator().forEachRemaining { declarator -> run {
+            if((declarator as Declarator).name.equals(getStatementName(statement, boolean))) {
+                val functionCallWithDeclaration = FunctionCallWithDeclaration(statement, declarator)
+                newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                bool = true
+            }
+        }
+        }
+        return bool
+    }
+
+    private fun getStatementName(statement: FunctionCalls, boolean: Boolean): String? {
+        if(statement.name is FieldReference) {
+            if((statement.name as FieldReference).fieldOwner is IdExpression) {
+                if(((statement.name as FieldReference).fieldOwner as IdExpression).expression is Name) {
+                    return (((statement.name as FieldReference).fieldOwner as IdExpression).expression as Name).name
+                } else if(((statement.name as FieldReference).fieldOwner as IdExpression).expression is QualifiedName && boolean) {
+                    if((((statement.name as FieldReference).fieldOwner as IdExpression).expression as QualifiedName).lastName is Name) {
+                        return ((((statement.name as FieldReference).fieldOwner as IdExpression).expression as QualifiedName).lastName as Name).name
                     }
                 }
             }
-        } }
+        } else if(statement.name is IdExpression) {
+            if((statement.name as IdExpression).expression is Name) {
+                return ((statement.name as IdExpression).expression as Name).name
+            }
+        }
+        return null
     }
+
 
 }
