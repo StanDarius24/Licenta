@@ -6,9 +6,9 @@ data class SimpleDeclaration(
     var declarators: ArrayList<Statement>?,
     var declSpecifier: Statement?,
     override val type: String? = "SimpleDeclaration"
-):Statement {
+) : Statement {
     fun addDeclarators(statement: Statement) {
-        if(declarators == null) {
+        if (declarators == null) {
             declarators = ArrayList()
         }
         declarators!!.add(statement)

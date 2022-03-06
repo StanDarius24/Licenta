@@ -6,9 +6,9 @@ data class SimpleTypeConstructorExpression(
     var castType: String?,
     var parameters: ArrayList<Statement>?,
     override val type: String? = "SimpleTypeConstructorExpression"
-): Statement {
+) : Statement {
     fun addParameter(statement: Statement) {
-        if(parameters == null) {
+        if (parameters == null) {
             parameters = ArrayList()
         }
         parameters!!.add(statement)

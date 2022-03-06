@@ -7,12 +7,9 @@ import com.stannis.dataModel.statementTypes.*
 class StatementMapper {
     companion object {
         fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
-            when(statementParent) {
+            when (statementParent) {
                 is FunctionCall -> {
                     statementParent.addComplexParameters(statementChild)
-                }
-                is If -> {
-                    statementParent.needAfix(statementChild)
                 }
                 is Return -> {
                     statementParent.retValue = statementChild
@@ -25,13 +22,13 @@ class StatementMapper {
                 }
                 is For -> {
                     println(statementParent)
-                    if(statementParent.initializer == null) {
+                    if (statementParent.initializer == null) {
                         statementParent.addInitializer(statementChild)
-                    } else if(statementParent.conditionExpr == null) {
+                    } else if (statementParent.conditionExpr == null) {
                         statementParent.addConditionExpression(statementChild)
-                    } else if(statementParent.conditionDecl == null) {
+                    } else if (statementParent.conditionDecl == null) {
                         statementParent.addConditionDeclaration(statementChild)
-                    } else if(statementParent.iteration == null) {
+                    } else if (statementParent.iteration == null) {
                         statementParent.addIteration(statementChild)
                     } else {
                         statementParent.addBody(statementChild)
@@ -41,7 +38,7 @@ class StatementMapper {
                     statementParent.addStatement(statementChild)
                 }
                 is DoStatement -> {
-                    if(statementParent.condition == null) {
+                    if (statementParent.condition == null) {
                         statementParent.addToCondition(statementChild)
                     } else {
                         statementParent.addToBody(statementChild)
@@ -64,6 +61,5 @@ class StatementMapper {
                 }
             }
         }
-
     }
 }

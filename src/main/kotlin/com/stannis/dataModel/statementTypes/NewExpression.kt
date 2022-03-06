@@ -6,5 +6,4 @@ data class NewExpression(
     var typeId: Statement?,
     var initializer: Statement?,
     override val type: String? = "NewExpression"
-): Statement {
-}
+) : Statement

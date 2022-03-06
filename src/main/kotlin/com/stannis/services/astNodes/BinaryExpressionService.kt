@@ -11,22 +11,21 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBinaryExpression
 object BinaryExpressionService {
 
     private fun handreOperands(node: ASTNode, statement: Statement) {
-       ASTNodeService.solveASTNode(node, statement)
+        ASTNodeService.solveASTNode(node, statement)
     }
 
     fun solveBinaryExpressionService(expression: CPPASTBinaryExpression, statement: Statement?) {
         val binaryExpr = BinaryExpression(null, null)
-        if(expression.operand1 != null) {
-            val anonimStatement = AnonimStatement( null)
+        if (expression.operand1 != null) {
+            val anonimStatement = AnonimStatement(null)
             handreOperands(expression.operand1 as ASTNode, anonimStatement)
             binaryExpr.addLeftExpression(anonimStatement.statement!!)
         }
-        if(expression.operand2 != null) {
-            val anonimStatement = AnonimStatement( null)
+        if (expression.operand2 != null) {
+            val anonimStatement = AnonimStatement(null)
             handreOperands(expression.operand2 as ASTNode, anonimStatement)
             binaryExpr.addRightExpression(anonimStatement.statement!!)
         }
         StatementMapper.addStatementToStatement(statement!!, binaryExpr)
     }
-
 }

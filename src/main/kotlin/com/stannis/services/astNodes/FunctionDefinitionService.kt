@@ -13,23 +13,24 @@ object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
         val functionDefinition = setFunction(funcDef)
         val anonimStatement3 = AnonimStatement(null)
-        if(funcDef.body != null) {
+        FunctionDefinitionRegistry.addToList(functionDefinition)
+        if (funcDef.body != null) {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
         functionDefinition.addToBody(anonimStatement3.statement as Statement)
-        FunctionDefinitionRegistry.addToList(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
     }
 
     fun setFunction(funcDef: CPPASTFunctionDefinition): FunctionDefinition {
-        val functionDefinition = FunctionDefinition(null, null, null)   // only functions with implementation
+        val functionDefinition =
+            FunctionDefinition(null, null, null) // only functions with implementation
         val anonimStatement1 = AnonimStatement(null)
-        if(funcDef.declSpecifier != null) {
+        if (funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
         }
         functionDefinition.declaratorSpecifier = anonimStatement1.statement
         val anonimStatement2 = AnonimStatement(null)
-        if(funcDef.declarator != null) {
+        if (funcDef.declarator != null) {
             ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)
         }
         functionDefinition.addDeclarator(anonimStatement2.statement as Statement)

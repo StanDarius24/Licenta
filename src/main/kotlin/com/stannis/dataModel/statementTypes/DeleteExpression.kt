@@ -5,4 +5,4 @@ import com.stannis.dataModel.Statement
 data class DeleteExpression(
     var deletedExpression: String?,
     override val type: String? = "DeleteExpression"
-): Statement
+) : Statement

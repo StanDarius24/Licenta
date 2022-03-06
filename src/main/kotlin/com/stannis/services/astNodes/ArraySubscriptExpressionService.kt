@@ -7,11 +7,15 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpressi
 
 object ArraySubscriptExpressionService {
 
-    fun solveArraySubscript(cppastArraySubscriptExpression: CPPASTArraySubscriptExpression, statement: Statement) {
-        val arraySubscr = ArraySubscript(
-            cppastArraySubscriptExpression.arrayExpression.rawSignature,
-            cppastArraySubscriptExpression.argument.rawSignature
-        )
+    fun solveArraySubscript(
+        cppastArraySubscriptExpression: CPPASTArraySubscriptExpression,
+        statement: Statement
+    ) {
+        val arraySubscr =
+            ArraySubscript(
+                cppastArraySubscriptExpression.arrayExpression.rawSignature,
+                cppastArraySubscriptExpression.argument.rawSignature
+            )
         StatementMapper.addStatementToStatement(statement, arraySubscr)
     }
 }

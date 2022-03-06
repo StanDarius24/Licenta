@@ -12,9 +12,12 @@ object SwitchStatementService {
 
     fun solveSwitchStatement(switchStatement: CPPASTSwitchStatement, statement: Statement?) {
         val data = SwitchStatement(null, null)
-        if(switchStatement.controllerExpression != null) {
+        if (switchStatement.controllerExpression != null) {
             val anonimStatement = AnonimStatement(null)
-            ASTNodeService.solveASTNode(switchStatement.controllerExpression as ASTNode, anonimStatement)
+            ASTNodeService.solveASTNode(
+                switchStatement.controllerExpression as ASTNode,
+                anonimStatement
+            )
             data.addControllerExpression(anonimStatement)
         }
         if (switchStatement.body != null) {
@@ -24,5 +27,4 @@ object SwitchStatementService {
         }
         StatementMapper.addStatementToStatement(statement!!, data)
     }
-
 }

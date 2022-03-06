@@ -10,7 +10,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTParameterDeclaration
 
 object ParameterDeclarationService {
 
-    fun solveParameterDeclaration(parameterDeclaration: CPPASTParameterDeclaration, statement: Statement?) {
+    fun solveParameterDeclaration(
+        parameterDeclaration: CPPASTParameterDeclaration,
+        statement: Statement?
+    ) {
         val parameterDecl = ParameterDeclaration(null, null)
         val anonimStatement1 = AnonimStatement(null)
         val anonimStatement2 = AnonimStatement(null)

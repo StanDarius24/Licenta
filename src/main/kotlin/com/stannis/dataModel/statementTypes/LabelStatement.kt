@@ -6,9 +6,9 @@ data class LabelStatement(
     var name: String?,
     var expressions: ArrayList<Statement>?,
     override val type: String? = "LabelStatement"
-): Statement {
+) : Statement {
     fun addExpression(statement: Statement) {
-        if(expressions == null) {
+        if (expressions == null) {
             expressions = ArrayList()
         }
         expressions!!.add(statement)

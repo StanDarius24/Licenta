@@ -10,4 +10,4 @@ data class LambdaExpression(
     var closureTypeName: Statement?,
     var implicitFunctionCallName: Statement?,
     override val type: String? = "LambdaExpression",
-    ): Statement
+) : Statement

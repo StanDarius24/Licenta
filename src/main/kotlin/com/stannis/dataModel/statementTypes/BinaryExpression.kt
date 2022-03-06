@@ -6,7 +6,7 @@ data class BinaryExpression(
     var leftExpression: Statement?,
     var rightExpression: Statement?,
     override val type: String? = "BinaryExpression"
-): Statement {
+) : Statement {
     fun addLeftExpression(statement: Statement) {
         this.leftExpression = statement
     }
@@ -14,5 +14,4 @@ data class BinaryExpression(
     fun addRightExpression(statement: Statement) {
         this.rightExpression = statement
     }
-
 }

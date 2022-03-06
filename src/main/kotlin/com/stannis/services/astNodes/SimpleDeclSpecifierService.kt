@@ -6,7 +6,10 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier
 
 object SimpleDeclSpecifierService {
-    fun solveSimpleDeclSpecifieService(simplDecl: CPPASTSimpleDeclSpecifier, statement: Statement?) {
+    fun solveSimpleDeclSpecifieService(
+        simplDecl: CPPASTSimpleDeclSpecifier,
+        statement: Statement?
+    ) {
         val simpleDeclaration = SimpleDeclSpecifier(simplDecl.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
     }

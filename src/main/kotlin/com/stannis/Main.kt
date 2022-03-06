@@ -20,10 +20,8 @@ In the case of headers it makes absolutely no difference to the compiler.
 In the case of source files different endings will cause the compiler to assume a different language. But this can normally be overridden.
  */
 
-
 fun main() {
 
     val parser = Parser()
     parser.test()
-
 }

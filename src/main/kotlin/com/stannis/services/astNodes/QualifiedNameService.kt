@@ -14,13 +14,15 @@ object QualifiedNameService {
         val anonimStatement1 = AnonimStatement(null)
         ASTNodeService.solveASTNode(cppastQualifiedName.lastName as ASTNode, anonimStatement1)
         qualifiedName.lastName = anonimStatement1.statement
-        cppastQualifiedName.qualifier.iterator().forEachRemaining { qualifier -> run {
-            val anonimStatement2 = AnonimStatement(null)
-            ASTNodeService.solveASTNode(qualifier as ASTNode, anonimStatement2)
-            if(anonimStatement2.statement != null) {
-                qualifiedName.addQualifier(anonimStatement2.statement as Statement)
+        cppastQualifiedName.qualifier.iterator().forEachRemaining { qualifier ->
+            run {
+                val anonimStatement2 = AnonimStatement(null)
+                ASTNodeService.solveASTNode(qualifier as ASTNode, anonimStatement2)
+                if (anonimStatement2.statement != null) {
+                    qualifiedName.addQualifier(anonimStatement2.statement as Statement)
+                }
             }
-        }}
+        }
         StatementMapper.addStatementToStatement(statement!!, qualifiedName)
     }
 }

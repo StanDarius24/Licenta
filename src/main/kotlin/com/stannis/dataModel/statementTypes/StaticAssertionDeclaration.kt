@@ -6,8 +6,7 @@ data class StaticAssertionDeclaration(
     var condition: Statement?,
     var message: Statement?,
     override val type: String? = "StaticAssertionDeclaration"
-
-): Statement {
+) : Statement {
 
     fun addCondition(statement: Statement) {
         this.condition = statement

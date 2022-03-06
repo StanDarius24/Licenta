@@ -6,7 +6,13 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier
 
 object ElaboratedTypeSpecifierService {
-    fun solveElaboratedTypeSpecifier(cppastElaboratedTypeSpecifier: CPPASTElaboratedTypeSpecifier, statement: Statement?) {
-        StatementMapper.addStatementToStatement(statement!!, ElaboratedTypeSpecifier(cppastElaboratedTypeSpecifier.name.rawSignature))
+    fun solveElaboratedTypeSpecifier(
+        cppastElaboratedTypeSpecifier: CPPASTElaboratedTypeSpecifier,
+        statement: Statement?
+    ) {
+        StatementMapper.addStatementToStatement(
+            statement!!,
+            ElaboratedTypeSpecifier(cppastElaboratedTypeSpecifier.name.rawSignature)
+        )
     }
 }

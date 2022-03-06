@@ -11,12 +11,9 @@ object ExpressionListService {
 
     fun solveExpressionList(expression: CPPASTExpressionList, statement: Statement) {
         val expressionList = ExpressionList(null)
-        expression.expressions.iterator()
-            .forEachRemaining { expression ->
-                run {
-                    ASTNodeService.solveASTNode(expression as ASTNode, expressionList)
-                }
-            }
+        expression.expressions.iterator().forEachRemaining { expressionX ->
+            run { ASTNodeService.solveASTNode(expressionX as ASTNode, expressionList) }
+        }
         StatementMapper.addStatementToStatement(statement, expressionList)
     }
 }

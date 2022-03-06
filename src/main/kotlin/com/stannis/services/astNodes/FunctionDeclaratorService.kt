@@ -17,11 +17,12 @@ object FunctionDeclaratorService {
             ASTNodeService.solveASTNode(node.name as ASTNode, anonimStatement)
             functionDeclarator.name = anonimStatement.statement
         }
-        if(node.parameters.size > 0) {
-            node.parameters.iterator().forEachRemaining { param -> run {
-                val anonimStatement1 = AnonimStatement(null)
-                ASTNodeService.solveASTNode(param as ASTNode, anonimStatement1)
-                functionDeclarator.addParameter(anonimStatement1.statement as Statement)
+        if (node.parameters.size > 0) {
+            node.parameters.iterator().forEachRemaining { param ->
+                run {
+                    val anonimStatement1 = AnonimStatement(null)
+                    ASTNodeService.solveASTNode(param as ASTNode, anonimStatement1)
+                    functionDeclarator.addParameter(anonimStatement1.statement as Statement)
                 }
             }
         }

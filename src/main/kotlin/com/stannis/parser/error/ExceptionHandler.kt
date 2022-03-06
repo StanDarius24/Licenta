@@ -10,7 +10,7 @@ object ExceptionHandler {
     var mapOfProblemStatement: Map<String, String> = mutableMapOf()
     fun handleError(text: String, filepath: String): CharArray {
         var data = ""
-        if(text != "") {
+        if (text != "") {
             try {
                 val reader = Reader()
                 data = reader.readFileAsLinesUsingBufferedReader(filepath)
@@ -27,14 +27,15 @@ object ExceptionHandler {
     }
 
     fun rewritefile(text: String, filepath: String): CharArray? {
-        if(!text.contains("parser")) {
+        if (!text.contains("parser")) {
             var data = ""
             if (text != "") {
                 try {
                     val reader = Reader()
                     data = reader.readFileAsLinesUsingBufferedReader(filepath)
                     data = data.replace(text, "//parser$contor;\n")
-                    mapOfProblemStatement = mapOfProblemStatement + mapOf(text to "//parser$contor;\n")
+                    mapOfProblemStatement =
+                        mapOfProblemStatement + mapOf(text to "//parser$contor;\n")
                     contor++
                     val file = File(filepath)
                     file.delete()

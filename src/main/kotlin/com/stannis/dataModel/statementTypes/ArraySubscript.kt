@@ -6,4 +6,4 @@ data class ArraySubscript(
     var arrayValue: String?,
     var index: String?,
     override val type: String? = "ArraySubscript"
-): Statement
+) : Statement

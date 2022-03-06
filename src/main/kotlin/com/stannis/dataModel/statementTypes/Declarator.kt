@@ -7,4 +7,4 @@ data class Declarator(
     var name: String?,
     var initialization: Statement?,
     override val type: String? = "Declarator"
-): Statement
+) : Statement

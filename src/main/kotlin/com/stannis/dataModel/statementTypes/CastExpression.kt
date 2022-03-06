@@ -6,4 +6,4 @@ data class CastExpression(
     var operand: Statement?,
     var typeId: Statement?,
     override val type: String? = "CastExpression"
-): Statement
+) : Statement

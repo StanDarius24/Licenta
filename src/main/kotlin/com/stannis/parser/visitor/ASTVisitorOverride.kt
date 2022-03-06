@@ -17,13 +17,12 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTranslationUnit
 
-class ASTVisitorOverride: ASTVisitor() {
+class ASTVisitorOverride : ASTVisitor() {
 
     var text = ""
 
-    companion object{
+    companion object {
         private var primaryBlock = PrimaryBlock(null)
         fun getPrimaryBlock(): PrimaryBlock {
             return primaryBlock
@@ -36,7 +35,7 @@ class ASTVisitorOverride: ASTVisitor() {
     }
 
     override fun visit(declaration: IASTDeclaration): Int {
-        if((declaration is CPPASTFunctionDefinition || declaration is CPPASTSimpleDeclaration)) {
+        if ((declaration is CPPASTFunctionDefinition || declaration is CPPASTSimpleDeclaration)) {
             if (MultipleDeclarationWhenComposite.checkDecl(declaration, primaryBlock)) {
                 return PROCESS_CONTINUE
             }
@@ -44,7 +43,7 @@ class ASTVisitorOverride: ASTVisitor() {
         println("Found a declaration: " + declaration.rawSignature)
         val anonimStatement = AnonimStatement(null)
         ASTNodeService.solveASTNode(declaration as ASTNode, anonimStatement)
-        if(anonimStatement.statement != null) {
+        if (anonimStatement.statement != null) {
             primaryBlock.addStatement(anonimStatement.statement as Statement)
         }
         return PROCESS_CONTINUE
@@ -56,12 +55,17 @@ class ASTVisitorOverride: ASTVisitor() {
     }
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
+        if (TranslationUnitRegistry.check) {
+            TranslationUnitRegistry.createTranslationUnit()
+            SimpleDeclarationRegistry.clearList()
+            FunctionDeclaratorRegistry.clearList()
+            FunctionDefinitionRegistry.clearList()
+        } else {
+            TranslationUnitRegistry.check = true
+        }
         println("Found a translationUnit: " + translationUnit.rawSignature)
         primaryBlock = PrimaryBlock(null)
-        SimpleDeclarationRegistry.clearList()
-        FunctionDeclaratorRegistry.clearList()
-        FunctionDefinitionRegistry.clearList()
-        TranslationUnitRegistry.storeTranslationUnit(translationUnit as CPPASTTranslationUnit)
+
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {
@@ -70,7 +74,7 @@ class ASTVisitorOverride: ASTVisitor() {
     }
 
     override fun visit(parameterDeclaration: IASTParameterDeclaration): Int {
-        println("Found a IASTParameterDeclaration: " + parameterDeclaration.rawSignature )
+        println("Found a IASTParameterDeclaration: " + parameterDeclaration.rawSignature) //
         return PROCESS_CONTINUE
     }
 
@@ -99,17 +103,17 @@ class ASTVisitorOverride: ASTVisitor() {
         return PROCESS_CONTINUE
     }
 
-    override fun visit(specifier :IASTAttributeSpecifier) : Int {
+    override fun visit(specifier: IASTAttributeSpecifier): Int {
         println("Found an IASTAttributeSpecifier: " + specifier.rawSignature)
         return PROCESS_CONTINUE
     }
 
-    override fun visit(token: IASTToken) : Int {
+    override fun visit(token: IASTToken): Int {
         println("Found an IASTToken: " + token.rawSignature)
         return PROCESS_CONTINUE
     }
 
-    override fun visit(token: IASTExpression) : Int {
+    override fun visit(token: IASTExpression): Int {
         println("Found an IASTToken: " + token.rawSignature)
         return PROCESS_CONTINUE
     }

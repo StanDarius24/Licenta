@@ -6,20 +6,19 @@ data class DoStatement(
     var condition: ArrayList<Statement>?,
     var body: ArrayList<Statement>?,
     override val type: String? = "DoStatement"
-): Statement {
+) : Statement {
 
     fun addToCondition(statement: Statement) {
-        if(condition == null) {
+        if (condition == null) {
             condition = ArrayList()
         }
         condition!!.add(statement)
     }
 
     fun addToBody(statement: Statement) {
-        if(body == null) {
+        if (body == null) {
             body = ArrayList()
         }
         body!!.add(statement)
     }
-
 }

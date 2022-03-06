@@ -6,4 +6,4 @@ data class NamespaceAlias(
     var alias: Statement?,
     var qualifiedName: Statement?,
     override val type: String? = "NamespaceAlias"
-): Statement
+) : Statement

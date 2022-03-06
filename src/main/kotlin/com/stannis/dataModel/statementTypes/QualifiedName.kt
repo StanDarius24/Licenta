@@ -6,9 +6,9 @@ data class QualifiedName(
     var qualifier: ArrayList<Statement>?,
     var lastName: Statement?,
     override val type: String? = "QualifiedName"
-): Statement {
+) : Statement {
     fun addQualifier(statement: Statement) {
-        if(qualifier == null) {
+        if (qualifier == null) {
             qualifier = ArrayList()
         }
         qualifier!!.add(statement)

@@ -11,11 +11,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTInitializerList
 object InitializerListService {
     fun solveInitializerList(initList: CPPASTInitializerList, statement: Statement?) {
         val initializerList = InitializerList(null)
-        initList.children.iterator().forEachRemaining { iastNode -> run {
-            val anonimStatement = AnonimStatement(null)
-            ASTNodeService.solveASTNode(iastNode as ASTNode, anonimStatement)
-            initializerList.addInitializers(anonimStatement.statement as Statement)
-        } }
+        initList.children.iterator().forEachRemaining { iastNode ->
+            run {
+                val anonimStatement = AnonimStatement(null)
+                ASTNodeService.solveASTNode(iastNode as ASTNode, anonimStatement)
+                initializerList.addInitializers(anonimStatement.statement as Statement)
+            }
+        }
         StatementMapper.addStatementToStatement(statement!!, initializerList)
     }
 }

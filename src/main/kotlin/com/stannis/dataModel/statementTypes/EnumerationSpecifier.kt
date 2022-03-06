@@ -6,9 +6,9 @@ data class EnumerationSpecifier(
     var name: String?,
     var enumerators: ArrayList<Statement>?,
     override val type: String? = "EnumerationSpecifier"
-): Statement {
+) : Statement {
     fun addEnumerators(statement: Statement) {
-        if(enumerators == null) {
+        if (enumerators == null) {
             enumerators = ArrayList()
         }
         enumerators!!.add(statement)

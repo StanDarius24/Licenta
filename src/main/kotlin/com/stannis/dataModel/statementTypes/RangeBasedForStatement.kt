@@ -7,24 +7,24 @@ data class RangeBasedForStatement(
     var initClause: ArrayList<Statement>?,
     var body: ArrayList<Statement>?,
     override val type: String? = "RangeBaseForStatement"
-): Statement {
+) : Statement {
 
     fun addDeclaration(statement: Statement) {
-        if(declaration == null) {
+        if (declaration == null) {
             declaration = ArrayList()
         }
         declaration!!.add(statement)
     }
 
     fun addInitClause(statement: Statement) {
-        if(initClause == null) {
+        if (initClause == null) {
             initClause = ArrayList()
         }
         initClause!!.add(statement)
     }
 
     fun addBody(statement: Statement) {
-        if(body == null) {
+        if (body == null) {
             body = ArrayList()
         }
         body!!.add(statement)
