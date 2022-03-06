@@ -7,6 +7,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier
 
 object NamedTypeSpecifierService {
     fun solveNamedTypeSpecifier(namedTypeSpec: CPPASTNamedTypeSpecifier, statement: Statement?) {
-        StatementMapper.addStatementToStatement(statement!!, NamedTypeSpecifier(namedTypeSpec.rawSignature))
+        StatementMapper.addStatementToStatement(
+            statement!!,
+            NamedTypeSpecifier(namedTypeSpec.rawSignature)
+        )
     }
 }

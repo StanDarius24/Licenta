@@ -9,32 +9,25 @@ data class FunctionCall(
     var complexParameters: ArrayList<Statement>?,
     var functionCalls: ArrayList<FunctionCall>?,
     override val type: String? = "FunctionCall"
-    ): Statement
-{
+) : Statement {
     fun addComplexParameters(statement: Statement) {
-        if(complexParameters == null) {
+        if (complexParameters == null) {
             complexParameters = ArrayList()
         }
         complexParameters!!.add(statement)
     }
 
     fun add(data: String) {
-        if(parameters == null) {
+        if (parameters == null) {
             parameters = ArrayList()
         }
         parameters!!.add(data)
     }
 
     fun add(data: FunctionCall) {
-        if(functionCalls == null) {
+        if (functionCalls == null) {
             functionCalls = ArrayList()
         }
         functionCalls!!.add(data)
-    }
-    fun addParameters(data: String) {
-        if(parameters == null) {
-            parameters = ArrayList()
-        }
-        parameters!!.add(data)
     }
 }

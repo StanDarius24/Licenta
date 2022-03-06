@@ -6,4 +6,4 @@ data class ParameterDeclaration(
     var declarationSpecifier: Statement?,
     var declarator: Statement?,
     override val type: String? = "ParameterDeclaration"
-): Statement
+) : Statement

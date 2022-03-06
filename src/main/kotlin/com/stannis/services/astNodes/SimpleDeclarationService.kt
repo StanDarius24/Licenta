@@ -14,18 +14,21 @@ object SimpleDeclarationService {
 
     fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement?): Boolean {
         val simpleDeclaration = SimpleDeclaration(null, null)
-        declaration.declarators.iterator().forEachRemaining { decl -> run {
-            val anonimStatement = AnonimStatement(null)
-            ASTNodeService.solveASTNode(decl as ASTNode, anonimStatement)
-            simpleDeclaration.addDeclarators(anonimStatement.statement as Statement)
-        } }
+        declaration.declarators.iterator().forEachRemaining { decl ->
+            run {
+                val anonimStatement = AnonimStatement(null)
+                ASTNodeService.solveASTNode(decl as ASTNode, anonimStatement)
+                simpleDeclaration.addDeclarators(anonimStatement.statement as Statement)
+            }
+        }
         val anonimStatement2 = AnonimStatement(null)
         ASTNodeService.solveASTNode(declaration.declSpecifier as ASTNode, anonimStatement2)
         simpleDeclaration.declSpecifier = anonimStatement2.statement
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
-        SimpleDeclarationRegistry.addToList(simpleDeclaration, DeclaratorParentExtractor.extractParentasFunctionCall(declaration))
+        SimpleDeclarationRegistry.addToList(
+            simpleDeclaration,
+            DeclaratorParentExtractor.extractParentasFunctionCall(declaration)
+        )
         return true
     }
-
-
 }

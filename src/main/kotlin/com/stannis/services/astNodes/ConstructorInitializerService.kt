@@ -9,14 +9,14 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer
 
 object ConstructorInitializerService {
 
-    fun solveConstructorInitializer(constructorInitializer: CPPASTConstructorInitializer, statement: Statement?) {
+    fun solveConstructorInitializer(
+        constructorInitializer: CPPASTConstructorInitializer,
+        statement: Statement?
+    ) {
         val constrInit = ConstructorInitializer(null)
-        constructorInitializer.arguments
-            .iterator().forEachRemaining { arg ->
-                run {
-                    ASTNodeService.solveASTNode(arg as ASTNode, constrInit)
-                }
-            }
+        constructorInitializer.arguments.iterator().forEachRemaining { arg ->
+            run { ASTNodeService.solveASTNode(arg as ASTNode, constrInit) }
+        }
         StatementMapper.addStatementToStatement(statement!!, constrInit)
     }
 }

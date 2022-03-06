@@ -6,4 +6,4 @@ data class FieldReference(
     var fieldName: Statement?,
     var fieldOwner: Statement?,
     override val type: String? = "FieldReference"
-): Statement
+) : Statement

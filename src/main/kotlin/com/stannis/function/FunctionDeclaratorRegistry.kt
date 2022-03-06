@@ -8,23 +8,25 @@ object FunctionDeclaratorRegistry {
 
     var list: ArrayList<FunctionDeclarator>? = null
 
-    fun clearList(){
+    fun clearList() {
         list = null
     }
 
     var sw: Boolean = false
 
-    fun addToList(functionDeclarator: FunctionDeclarator) { // declarari de functii, fara body. metode fara implementare, interfete etc.
-        if(list == null) { // here
+    fun addToList(
+        functionDeclarator: FunctionDeclarator
+    ) { // declarari de functii, fara body. metode fara implementare, interfete etc.
+        if (list == null) { // here
             list = ArrayList()
         } else {
-            if(functionDeclarator.name is Name) {
+            if (functionDeclarator.name is Name) {
                 sw = solveName(functionDeclarator)
-            } else if(functionDeclarator.name is QualifiedName) {
+            } else if (functionDeclarator.name is QualifiedName) {
                 sw = solveQualifiedName(functionDeclarator)
             }
         }
-        if(!sw) {
+        if (!sw) {
             list!!.add(functionDeclarator)
             println()
         }
@@ -32,35 +34,40 @@ object FunctionDeclaratorRegistry {
 
     private fun solveQualifiedName(functionDeclarator: FunctionDeclarator): Boolean {
         var sw1 = false
-        list!!.iterator().forEachRemaining { element -> run {
-            if(element.name is QualifiedName) {
-                if((element.name as QualifiedName).equals(functionDeclarator.name)) {
-                    sw1 = checkParameters(element, functionDeclarator)
-                }
-            } else if(element.name is Name) {
-                if((functionDeclarator.name as QualifiedName).lastName!!.equals(element.name)) {
-                    sw1 = true
+        list!!.iterator().forEachRemaining { element ->
+            run {
+                if (element.name is QualifiedName) {
+                    if ((element.name as QualifiedName) == functionDeclarator.name) {
+                        sw1 = checkParameters(element, functionDeclarator)
+                    }
+                } else if (element.name is Name) {
+                    if ((functionDeclarator.name as QualifiedName).lastName!! == element.name) {
+                        sw1 = true
+                    }
                 }
             }
-        } }
+        }
         return sw1
     }
 
-    private fun checkParameters(elementFromList: FunctionDeclarator, functionDeclarator: FunctionDeclarator): Boolean {
+    private fun checkParameters(
+        elementFromList: FunctionDeclarator,
+        functionDeclarator: FunctionDeclarator
+    ): Boolean {
         var number = 0
-        if(elementFromList.parameter != null) {
+        if (elementFromList.parameter != null) {
             elementFromList.parameter!!.iterator().forEachRemaining { element ->
                 run {
                     functionDeclarator.parameter!!.iterator().forEachRemaining { parameter ->
                         run {
-                            if (element.equals(parameter)) {
+                            if (element == parameter) {
                                 number += 1
                             }
                         }
                     }
                 }
             }
-            if(number.equals(functionDeclarator.parameter!!.size)) {
+            if (number == functionDeclarator.parameter!!.size) {
                 return true
             }
         }
@@ -69,15 +76,15 @@ object FunctionDeclaratorRegistry {
 
     private fun solveName(functionDeclarator: FunctionDeclarator): Boolean {
         var sw1 = false
-        list!!.iterator().forEachRemaining { element -> run {
-            if(element.name is Name) {
-                if((element.name as Name).equals(functionDeclarator.name)) {
-                    sw1 = sw1 || checkParameters(element, functionDeclarator)
+        list!!.iterator().forEachRemaining { element ->
+            run {
+                if (element.name is Name) {
+                    if ((element.name as Name) == functionDeclarator.name) {
+                        sw1 = sw1 || checkParameters(element, functionDeclarator)
+                    }
                 }
             }
-        } }
+        }
         return sw1
     }
-
-
 }

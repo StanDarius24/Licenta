@@ -12,11 +12,13 @@ object CompoundStatementService {
 
     fun solveCompoundStatement(node: CPPASTCompoundStatement, statement: Statement?) {
         val compoundStatement = CompoundStatement(null)
-        node.statements.iterator().forEachRemaining { statements -> run {
-            val anonimStatement = AnonimStatement(null)
-            ASTNodeService.solveASTNode(statements as ASTNode, anonimStatement)
-            compoundStatement.addStatement(anonimStatement.statement as Statement)
-        } }
+        node.statements.iterator().forEachRemaining { statements ->
+            run {
+                val anonimStatement = AnonimStatement(null)
+                ASTNodeService.solveASTNode(statements as ASTNode, anonimStatement)
+                compoundStatement.addStatement(anonimStatement.statement as Statement)
+            }
+        }
         StatementMapper.addStatementToStatement(statement!!, compoundStatement)
     }
 }

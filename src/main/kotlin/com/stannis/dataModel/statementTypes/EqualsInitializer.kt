@@ -6,9 +6,9 @@ data class EqualsInitializer(
     var functionName: Statement?,
     var statements: ArrayList<Statement>?,
     override val type: String? = "EqualsInitializer"
-): Statement {
+) : Statement {
     fun addStatement(statement: Statement) {
-        if(statements == null) {
+        if (statements == null) {
             statements = ArrayList()
         }
         statements!!.add(statement)

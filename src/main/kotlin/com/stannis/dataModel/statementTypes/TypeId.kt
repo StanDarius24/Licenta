@@ -6,5 +6,4 @@ data class TypeId(
     var declSpecifier: Statement?,
     var abstractDeclaration: Statement?,
     override val type: String? = "TypeId"
-
-): Statement
+) : Statement

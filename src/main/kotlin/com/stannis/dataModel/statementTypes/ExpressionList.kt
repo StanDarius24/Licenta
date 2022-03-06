@@ -5,9 +5,9 @@ import com.stannis.dataModel.Statement
 data class ExpressionList(
     var expressions: ArrayList<Statement>?,
     override val type: String? = "ExpressionList"
-): Statement {
+) : Statement {
     fun addStatement(statement: Statement) {
-        if(expressions == null) {
+        if (expressions == null) {
             expressions = ArrayList()
         }
         expressions!!.add(statement)

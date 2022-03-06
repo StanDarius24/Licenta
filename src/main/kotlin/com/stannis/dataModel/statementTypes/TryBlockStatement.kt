@@ -6,9 +6,9 @@ data class TryBlockStatement(
     var catchHandlers: ArrayList<Statement>?,
     var tryBlock: Statement?,
     override val type: String? = "TryBlockStatement"
-): Statement {
+) : Statement {
     fun addCatchHandlers(statement: Statement) {
-        if(catchHandlers == null) {
+        if (catchHandlers == null) {
             catchHandlers = ArrayList()
         }
         catchHandlers!!.add(statement)

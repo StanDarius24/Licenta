@@ -11,11 +11,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTryBlockStatement
 object TryBlockStatementService {
     fun solveTryBlockStatement(tryBlockStatement: CPPASTTryBlockStatement, statement: Statement?) {
         val tryBlock = TryBlockStatement(null, null)
-        tryBlockStatement.catchHandlers.iterator().forEachRemaining { catchHandler -> run {
-            val anonimStatement = AnonimStatement(null)
-            ASTNodeService.solveASTNode(catchHandler as ASTNode, anonimStatement)
-            tryBlock.addCatchHandlers(anonimStatement.statement as Statement)
-        } }
+        tryBlockStatement.catchHandlers.iterator().forEachRemaining { catchHandler ->
+            run {
+                val anonimStatement = AnonimStatement(null)
+                ASTNodeService.solveASTNode(catchHandler as ASTNode, anonimStatement)
+                tryBlock.addCatchHandlers(anonimStatement.statement as Statement)
+            }
+        }
         val anonimStatement2 = AnonimStatement(null)
         ASTNodeService.solveASTNode(tryBlockStatement.tryBody as ASTNode, anonimStatement2)
         tryBlock.tryBlock = anonimStatement2.statement

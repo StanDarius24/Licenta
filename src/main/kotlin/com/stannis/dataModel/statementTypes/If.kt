@@ -8,8 +8,4 @@ data class If(
     var elseClause: Statement?,
     var condDecl: Statement?,
     override val type: String? = "If"
-    ): Statement {
-        fun needAfix(statement: Statement) {
-            throw Exception()
-        }
-    }
+) : Statement

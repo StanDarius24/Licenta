@@ -9,7 +9,10 @@ import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTStaticAssertionDeclaration
 
 object StaticAssertionDeclarationService {
-    fun solveStaticAssertionDeclaration(staticAssertioncppast: CPPASTStaticAssertionDeclaration, statement: Statement?) {
+    fun solveStaticAssertionDeclaration(
+        staticAssertioncppast: CPPASTStaticAssertionDeclaration,
+        statement: Statement?
+    ) {
         val staticAssertion = StaticAssertionDeclaration(null, null)
         val anonimStatement1 = AnonimStatement(null)
         ASTNodeService.solveASTNode(staticAssertioncppast.condition as ASTNode, anonimStatement1)

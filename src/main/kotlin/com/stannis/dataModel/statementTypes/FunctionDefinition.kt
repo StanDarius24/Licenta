@@ -7,15 +7,15 @@ data class FunctionDefinition(
     var declarator: ArrayList<Statement>?,
     var body: ArrayList<Statement>?,
     override val type: String? = "FunctionDefinition"
-): Statement {
+) : Statement {
     fun addDeclarator(statement: Statement) {
-        if(declarator == null) {
+        if (declarator == null) {
             declarator = ArrayList()
         }
         declarator!!.add(statement)
     }
     fun addToBody(statement: Statement) {
-        if(body == null) {
+        if (body == null) {
             body = ArrayList()
         }
         body!!.add(statement)

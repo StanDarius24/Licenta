@@ -7,4 +7,4 @@ data class While(
     var condition2: Statement?,
     var body: Statement?,
     override val type: String? = "While"
-    ): Statement
+) : Statement

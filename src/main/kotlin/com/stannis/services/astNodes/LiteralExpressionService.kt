@@ -7,7 +7,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression
 
 object LiteralExpressionService {
 
-    fun solveLiteralExpression(cppastLiteralExpression: CPPASTLiteralExpression, statement: Statement?) {
+    fun solveLiteralExpression(
+        cppastLiteralExpression: CPPASTLiteralExpression,
+        statement: Statement?
+    ) {
         val literalExpr = LiteralExpression(cppastLiteralExpression.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, literalExpr)
     }

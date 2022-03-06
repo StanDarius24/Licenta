@@ -9,10 +9,12 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorE
 
 object SimpleTypeConstructorExpressionService {
 
-    fun solveTypeConstructorExpre(expression: CPPASTSimpleTypeConstructorExpression, statement: Statement) {
-        val simpleTypeConstr = SimpleTypeConstructorExpression(
-            expression.declSpecifier.rawSignature, null
-        )
+    fun solveTypeConstructorExpre(
+        expression: CPPASTSimpleTypeConstructorExpression,
+        statement: Statement
+    ) {
+        val simpleTypeConstr =
+            SimpleTypeConstructorExpression(expression.declSpecifier.rawSignature, null)
         ASTNodeService.solveASTNode(expression.initializer as ASTNode, simpleTypeConstr)
         StatementMapper.addStatementToStatement(statement, simpleTypeConstr)
     }

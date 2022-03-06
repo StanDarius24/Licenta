@@ -13,7 +13,7 @@ object ReturnStatementService {
     fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
         val returnStructure = Return(null)
 
-        if(data.returnValue != null) {
+        if (data.returnValue != null) {
             val anonimStatement1 = AnonimStatement(null)
             ASTNodeService.solveASTNode(data.returnValue as ASTNode, anonimStatement1)
             returnStructure.retValue = anonimStatement1.statement

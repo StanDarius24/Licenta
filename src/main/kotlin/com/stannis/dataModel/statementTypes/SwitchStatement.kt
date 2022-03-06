@@ -6,7 +6,7 @@ data class SwitchStatement(
     var controllerExpression: Statement?,
     var body: Statement?,
     override val type: String? = "SwitchStatement"
-): Statement {
+) : Statement {
     fun addControllerExpression(statement: Statement?) {
         controllerExpression = statement
     }

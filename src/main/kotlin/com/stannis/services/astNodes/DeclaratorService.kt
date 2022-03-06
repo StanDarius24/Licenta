@@ -9,9 +9,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator
 
 object DeclaratorService {
 
-    fun solveDeclaratorService(declarator: CPPASTDeclarator, statement: Statement?, modifier: String) {
-        val decl = Declarator(modifier,null, null)
-        if(declarator.name != null) {
+    fun solveDeclaratorService(
+        declarator: CPPASTDeclarator,
+        statement: Statement?,
+        modifier: String
+    ) {
+        val decl = Declarator(modifier, null, null)
+        if (declarator.name != null) {
             decl.name = declarator.name.rawSignature
         }
         if (declarator.initializer != null) {
@@ -19,5 +23,4 @@ object DeclaratorService {
         }
         StatementMapper.addStatementToStatement(statement!!, decl)
     }
-
 }

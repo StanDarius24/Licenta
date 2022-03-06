@@ -7,7 +7,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression
 
 object DeleteExpressionService {
 
-    fun solveDeleteExpression(cppastDeleteExpression: CPPASTDeleteExpression, statement: Statement?) {
+    fun solveDeleteExpression(
+        cppastDeleteExpression: CPPASTDeleteExpression,
+        statement: Statement?
+    ) {
         val delExpression = DeleteExpression(cppastDeleteExpression.operand.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, delExpression)
     }

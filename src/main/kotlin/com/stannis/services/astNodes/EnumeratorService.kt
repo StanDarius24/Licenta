@@ -15,12 +15,11 @@ object EnumeratorService {
         val anonimStatement1 = AnonimStatement(null)
         ASTNodeService.solveASTNode(cppastEnumerator.name as ASTNode, anonimStatement1)
         enumerator.name = anonimStatement1.statement
-        val anonimStatement2 =AnonimStatement(null)
-        if(cppastEnumerator.value != null) {
+        val anonimStatement2 = AnonimStatement(null)
+        if (cppastEnumerator.value != null) {
             ASTNodeService.solveASTNode(cppastEnumerator.value as ASTNode, anonimStatement2)
         }
         enumerator.value = anonimStatement2.statement
         StatementMapper.addStatementToStatement(statement!!, enumerator)
     }
-
 }

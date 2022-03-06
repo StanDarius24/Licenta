@@ -3,10 +3,22 @@ package com.stannis.function
 import com.stannis.dataModel.complexStatementTypes.DeclarationWithParent
 import com.stannis.dataModel.complexStatementTypes.FunctionCallWithDeclaration
 import com.stannis.dataModel.statementTypes.*
+import com.stannis.services.astNodes.FunctionDefinitionService
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object FunctionDefinitionRegistry {
 
     var list: ArrayList<FunctionDefinition>? = null
+
+    var listOfComplexFunctionCalls: ArrayList<FunctionDefinition>? = null
+
+    private fun addToComplexFunctions(functionDefinition: FunctionDefinition) {
+        if (listOfComplexFunctionCalls == null) {
+            listOfComplexFunctionCalls = ArrayList()
+        }
+        listOfComplexFunctionCalls!!.add(functionDefinition)
+        println()
+    }
 
     fun clearList() {
         list = null
@@ -16,82 +28,150 @@ object FunctionDefinitionRegistry {
         if (list == null) {
             list = ArrayList()
         }
-        val newFunctionDefinition = FunctionDefinition(data.declaratorSpecifier, data.declarator, null)
-        removeUnwantedTypes(data, newFunctionDefinition)
-        list!!.add(newFunctionDefinition)
-        TranslationUnitRegistry.setFunctionCalls(list)
-        println()
+        list!!.add(data)
     }
 
-    private fun removeUnwantedTypes(oldFunctionDefinition: FunctionDefinition, newFunctionDefinition: FunctionDefinition) { // save only functionCalls, Declaration
-        oldFunctionDefinition.body!!.iterator().forEachRemaining { statements -> run {
-            if(statements is CompoundStatement) {
-                removeIfBodyCompoundStatement(statements, newFunctionDefinition)
+    private fun resolveWhenStatementIsFunctionCall(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition
+    ) {
+        if (!checkInternDeclaration(statement, newFunctionDefinition)) {
+            if (!checkGlobalDeclaration(statement, newFunctionDefinition)) {
+                println()
             }
-        } }
-    }
-
-    private fun removeIfBodyCompoundStatement(statements: CompoundStatement, newFunctionDefinition: FunctionDefinition) {
-        statements.statements!!.iterator().forEachRemaining { statement -> run  {
-            when (statement) {
-                is FunctionCalls -> {
-                        resolveWhenStatementIsFunctionCall(statement, newFunctionDefinition)
-                }
-            }
-        }}
-    }
-
-    private fun resolveWhenStatementIsFunctionCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
-        if(!checkInternDeclaration(statement, newFunctionDefinition)) {
-            checkGlobalDeclaration(statement, newFunctionDefinition)
         }
     }
 
-    private fun checkGlobalDeclaration(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
-        SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration -> run {
-            verifyIfFunctionCallDeclaration(statement, declaration, newFunctionDefinition, true)
-        } }
-    }
-
-    private fun checkInternDeclaration(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition): Boolean {
+    private fun checkGlobalDeclaration(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition
+    ): Boolean {
         var bool1 = false
-        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration -> run {
-            bool1 = verifyIfFunctionCallDeclaration(statement, declaration, newFunctionDefinition, false)
-        } }
+        SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration ->
+            run {
+                bool1 =
+                    verifyIfFunctionCallDeclaration(
+                        statement,
+                        declaration,
+                        newFunctionDefinition,
+                        true
+                    )
+            }
+        }
         return bool1
     }
 
-    private fun verifyIfFunctionCallDeclaration(statement: FunctionCalls, declaration: DeclarationWithParent, newFunctionDefinition: FunctionDefinition, boolean: Boolean): Boolean {
-        var bool =false
-        declaration.declaration.declarators!!.iterator().forEachRemaining { declarator -> run {
-            if((declarator as Declarator).name.equals(getStatementName(statement, boolean))) {
-                val functionCallWithDeclaration = FunctionCallWithDeclaration(statement, declarator)
-                newFunctionDefinition.addToBody(functionCallWithDeclaration)
-                bool = true
+    private fun checkInternDeclaration(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition
+    ): Boolean {
+        var bool1 = false
+        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration ->
+            run {
+                bool1 =
+                    verifyIfFunctionCallDeclaration(
+                        statement,
+                        declaration,
+                        newFunctionDefinition,
+                        false
+                    )
             }
         }
+        return bool1
+    }
+
+    private fun verifyIfFunctionCallDeclaration(
+        statement: FunctionCalls,
+        declaration: DeclarationWithParent,
+        newFunctionDefinition: FunctionDefinition,
+        boolean: Boolean
+    ): Boolean {
+        var bool = false
+        declaration.declaration.declarators!!.iterator().forEachRemaining { declarator ->
+            run {
+                if ((declarator as Declarator).name.equals(getStatementName(statement, boolean))) {
+                    val functionCallWithDeclaration =
+                        FunctionCallWithDeclaration(statement, declarator)
+                    newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                    bool = true
+                }
+            }
         }
         return bool
     }
 
     private fun getStatementName(statement: FunctionCalls, boolean: Boolean): String? {
-        if(statement.name is FieldReference) {
-            if((statement.name as FieldReference).fieldOwner is IdExpression) {
-                if(((statement.name as FieldReference).fieldOwner as IdExpression).expression is Name) {
-                    return (((statement.name as FieldReference).fieldOwner as IdExpression).expression as Name).name
-                } else if(((statement.name as FieldReference).fieldOwner as IdExpression).expression is QualifiedName && boolean) {
-                    if((((statement.name as FieldReference).fieldOwner as IdExpression).expression as QualifiedName).lastName is Name) {
-                        return ((((statement.name as FieldReference).fieldOwner as IdExpression).expression as QualifiedName).lastName as Name).name
+        if (statement.name is FieldReference) {
+            if ((statement.name as FieldReference).fieldOwner is IdExpression) {
+                if (((statement.name as FieldReference).fieldOwner as IdExpression).expression is
+                        Name
+                ) {
+                    return (((statement.name as FieldReference).fieldOwner as IdExpression)
+                            .expression as
+                            Name)
+                        .name
+                } else if (((statement.name as FieldReference).fieldOwner as IdExpression)
+                        .expression is
+                        QualifiedName && boolean
+                ) {
+                    if ((((statement.name as FieldReference).fieldOwner as IdExpression)
+                                .expression as
+                                QualifiedName)
+                            .lastName is
+                            Name
+                    ) {
+                        return ((((statement.name as FieldReference).fieldOwner as IdExpression)
+                                    .expression as
+                                    QualifiedName)
+                                .lastName as
+                                Name)
+                            .name
                     }
                 }
             }
-        } else if(statement.name is IdExpression) {
-            if((statement.name as IdExpression).expression is Name) {
+        } else if (statement.name is IdExpression) {
+            if ((statement.name as IdExpression).expression is Name) {
                 return ((statement.name as IdExpression).expression as Name).name
             }
         }
         return null
     }
 
+    fun addFunctionCallToFunctionDefinition(
+        functionCalls: FunctionCalls,
+        parent: CPPASTFunctionDefinition
+    ) {
+        val parentStructure = FunctionDefinitionService.setFunction(parent)
+        if (!checkInternComplex(parentStructure, functionCalls)) {
+            list!!.iterator().forEachRemaining { functionDefinition ->
+                run {
+                    if (parentStructure == functionDefinition) {
+                        resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
+                    }
+                }
+            }
+            addToComplexFunctions(parentStructure)
+        }
+        println(parentStructure)
+    }
 
+    private fun checkInternComplex(
+        parentStructure: FunctionDefinition,
+        functionCalls: FunctionCalls
+    ): Boolean {
+        var bool = false
+        if (listOfComplexFunctionCalls != null) {
+            listOfComplexFunctionCalls!!.iterator().forEachRemaining { complex ->
+                run {
+                    parentStructure.body = complex.body
+                    if (parentStructure == complex) {
+                        resolveWhenStatementIsFunctionCall(functionCalls, complex)
+                        bool = true
+                    }
+                    parentStructure.body = null
+                }
+            }
+        }
+        return bool
+    }
 }

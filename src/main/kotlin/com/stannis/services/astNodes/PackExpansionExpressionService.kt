@@ -9,7 +9,10 @@ import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTPackExpansionExpression
 
 object PackExpansionExpressionService {
-    fun solvePackExpansionExpression(packExpansion: CPPASTPackExpansionExpression, statement: Statement?) {
+    fun solvePackExpansionExpression(
+        packExpansion: CPPASTPackExpansionExpression,
+        statement: Statement?
+    ) {
         val packExpansionExpression = PackEpansionExpression(null)
         val anonimStatement = AnonimStatement(null)
         ASTNodeService.solveASTNode(packExpansion.pattern as ASTNode, anonimStatement)
