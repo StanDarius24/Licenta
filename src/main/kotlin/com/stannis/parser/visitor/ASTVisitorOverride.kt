@@ -22,10 +22,16 @@ class ASTVisitorOverride : ASTVisitor() {
 
     var text = ""
 
+
     companion object {
         private var primaryBlock = PrimaryBlock(null)
         fun getPrimaryBlock(): PrimaryBlock {
             return primaryBlock
+        }
+        private var checkHeader: Boolean = false
+        private var lastCheckHeader: Boolean = false
+        fun setCheck(bol: Boolean) {
+            checkHeader = bol
         }
     }
 
@@ -55,7 +61,7 @@ class ASTVisitorOverride : ASTVisitor() {
     }
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
-        if (TranslationUnitRegistry.check) {
+        if (TranslationUnitRegistry.check && !lastCheckHeader) {
             TranslationUnitRegistry.createTranslationUnit()
             SimpleDeclarationRegistry.clearList()
             FunctionDeclaratorRegistry.clearList()
@@ -65,7 +71,7 @@ class ASTVisitorOverride : ASTVisitor() {
         }
         println("Found a translationUnit: " + translationUnit.rawSignature)
         primaryBlock = PrimaryBlock(null)
-
+        lastCheckHeader = checkHeader
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {

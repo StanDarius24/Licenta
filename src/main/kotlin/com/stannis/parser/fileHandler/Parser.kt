@@ -14,11 +14,17 @@ import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
 
 class Parser {
-    fun test() {
+    fun justDoSmth() {
         val reader = Reader()
         val filesname = DirReader.getAllFilesInResources()
         filesname.iterator().forEachRemaining { filepath ->
             run {
+                val astVisitorOverride = ASTVisitorOverride()
+                if(filepath.contains(".h")) {
+                    ASTVisitorOverride.setCheck(true)
+                } else {
+                    ASTVisitorOverride.setCheck(false)
+                }
                 CompositeTypeRegistry.setPath(filepath)
                 var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
                 dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
@@ -28,7 +34,6 @@ class Parser {
                 val translationUnit: IASTTranslationUnit =
                     getIASTTranslationUnit(data.toCharArray())
 
-                val astVisitorOverride = ASTVisitorOverride()
                 astVisitorOverride.shouldVisitNames = true
                 astVisitorOverride.shouldVisitDeclarations = true
                 astVisitorOverride.shouldVisitInitializers = true

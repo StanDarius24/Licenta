@@ -21,7 +21,6 @@ In the case of source files different endings will cause the compiler to assume 
  */
 
 fun main() {
-
     val parser = Parser()
-    parser.test()
+    parser.justDoSmth()
 }

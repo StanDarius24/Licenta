@@ -44,7 +44,10 @@ object FunctionDefinitionRegistry {
         }
     }
 
-    private fun libraryMethodCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
+    private fun libraryMethodCall(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition
+    ) {
         // check data
     }
 
