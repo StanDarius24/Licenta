@@ -37,9 +37,47 @@ object FunctionDefinitionRegistry {
     ) {
         if (!checkInternDeclaration(statement, newFunctionDefinition)) {
             if (!checkGlobalDeclaration(statement, newFunctionDefinition)) {
-                println()
+                if (!checkMethodArgument(statement, newFunctionDefinition)) {
+                    throw Exception()
+                }
             }
         }
+    }
+
+    private fun checkMethodArgument(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition
+    ): Boolean {
+        var bool1 = false
+        (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
+            .forEachRemaining { parameter ->
+                run {
+                    if (statement.name is FieldReference) {
+                        if ((statement.name as FieldReference).fieldOwner is IdExpression) {
+                            if (((statement.name as FieldReference).fieldOwner as IdExpression)
+                                    .expression is
+                                    Name
+                            ) {
+                                if (parameter is ParameterDeclaration) {
+                                    if (parameter.declarator is Declarator) {
+                                        if ((parameter.declarator as Declarator).name!!.equals(
+                                                (((statement.name as FieldReference).fieldOwner as
+                                                            IdExpression)
+                                                        .expression as
+                                                        Name)
+                                                    .name
+                                            )
+                                        ) {
+                                            bool1 = true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        return bool1
     }
 
     private fun checkGlobalDeclaration(
@@ -47,15 +85,18 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration ->
-            run {
-                bool1 =
-                    verifyIfFunctionCallDeclaration(
-                        statement,
-                        declaration,
-                        newFunctionDefinition,
-                        true
-                    )
+        if (SimpleDeclarationRegistry.globalDeclaration != null) {
+            SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration
+                ->
+                run {
+                    bool1 =
+                        verifyIfFunctionCallDeclaration(
+                            statement,
+                            declaration,
+                            newFunctionDefinition,
+                            true
+                        )
+                }
             }
         }
         return bool1
@@ -66,26 +107,29 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration ->
-            run {
-                if (declaration.parent is FunctionDefinition) {
-                    if ((declaration.parent as FunctionDefinition).declarator?.get(0) is
-                            FunctionDeclarator
-                    ) {
-                        if (((declaration.parent as FunctionDefinition).declarator?.get(0) as
-                                    FunctionDeclarator)
-                                .name?.equals(
-                                (newFunctionDefinition.declarator?.get(0) as FunctionDeclarator)
-                                    .name
-                            ) == true
+        if (SimpleDeclarationRegistry.internDeclaration != null) {
+            SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration
+                ->
+                run {
+                    if (declaration.parent is FunctionDefinition) {
+                        if ((declaration.parent as FunctionDefinition).declarator?.get(0) is
+                                FunctionDeclarator
                         ) {
-                            bool1 =
-                                verifyIfFunctionCallDeclaration(
-                                    statement,
-                                    declaration,
-                                    newFunctionDefinition,
-                                    false
-                                )
+                            if (((declaration.parent as FunctionDefinition).declarator?.get(0) as
+                                        FunctionDeclarator)
+                                    .name?.equals(
+                                    (newFunctionDefinition.declarator?.get(0) as FunctionDeclarator)
+                                        .name
+                                ) == true
+                            ) {
+                                bool1 =
+                                    verifyIfFunctionCallDeclaration(
+                                        statement,
+                                        declaration,
+                                        newFunctionDefinition,
+                                        false
+                                    )
+                            }
                         }
                     }
                 }
@@ -105,7 +149,7 @@ object FunctionDefinitionRegistry {
             run {
                 if ((declarator as Declarator).name.equals(getStatementName(statement, boolean))) {
                     val functionCallWithDeclaration =
-                        FunctionCallWithDeclaration(statement, declarator)
+                        FunctionCallWithDeclaration(statement, declarator, null)
                     newFunctionDefinition.addToBody(functionCallWithDeclaration)
                     bool = true
                 }

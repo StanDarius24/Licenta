@@ -217,7 +217,7 @@ object ASTNodeService {
                 throw Exception()
             }
             is CPPASTTemplateId -> {
-                throw Exception()
+                TemplateIdService.solveTemplateId(node, statement)
             }
             is CPPASTExplicitTemplateInstantiation -> {
                 throw Exception()

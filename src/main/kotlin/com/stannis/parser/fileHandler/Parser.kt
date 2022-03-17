@@ -1,6 +1,8 @@
 package com.stannis.parser.fileHandler
 
 import com.stannis.callHierarchy.classParser
+import com.stannis.function.ClassToDeclarationLinker
+import com.stannis.function.CompositeTypeRegistry
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
@@ -17,6 +19,7 @@ class Parser {
         val filesname = DirReader.getAllFilesInResources()
         filesname.iterator().forEachRemaining { filepath ->
             run {
+                CompositeTypeRegistry.setPath(filepath)
                 var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
                 dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
                 //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
@@ -79,6 +82,8 @@ class Parser {
                 //                println(ExceptionHandler.mapOfProblemStatement)
             }
         }
+        ClassToDeclarationLinker.linkClassDeclarationsToDeclarator()
+        println()
     }
 
     private fun getIASTTranslationUnit(code: CharArray): IASTTranslationUnit {

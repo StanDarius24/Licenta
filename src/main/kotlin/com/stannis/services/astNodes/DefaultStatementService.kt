@@ -8,7 +8,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement
 object DefaultStatementService {
 
     fun solveDefaultStatement(defaultStatement: CPPASTDefaultStatement, statement: Statement?) {
-        throw Exception()
-        StatementMapper.addStatementToStatement(statement!!, DefaultStatement(null))
+        StatementMapper.addStatementToStatement(statement!!, DefaultStatement())
     }
 }

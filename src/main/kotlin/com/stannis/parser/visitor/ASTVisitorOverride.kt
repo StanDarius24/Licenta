@@ -1,8 +1,8 @@
 package com.stannis.parser.visitor
 
-import com.stannis.dataModel.*
+import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
-import com.stannis.dataModel.statementTypes.*
+import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.function.FunctionDeclaratorRegistry
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.function.SimpleDeclarationRegistry

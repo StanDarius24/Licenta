@@ -6,7 +6,10 @@ import com.stannis.dataModel.statementTypes.For
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarationStatement
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTForStatement
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 
 object ForBlockService {
 

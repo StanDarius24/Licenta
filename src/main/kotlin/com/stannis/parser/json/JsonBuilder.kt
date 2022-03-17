@@ -10,7 +10,7 @@ class JsonBuilder {
         val jsonString = gson.toJson(primaryBlock)
         return jsonString
     }
-    fun createJson(list: ArrayList<FunctionDefinition>?): String? {
+    fun createJson(list: List<FunctionDefinition>?): String? {
         var jsonString: String? = null
         if (list != null) {
             val gson = GsonBuilder().setPrettyPrinting().create()

@@ -6,7 +6,7 @@ import com.stannis.dataModel.statementTypes.Return
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
-import org.eclipse.cdt.internal.core.dom.parser.cpp.*
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReturnStatement
 
 object ReturnStatementService {
 
