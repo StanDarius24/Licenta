@@ -38,10 +38,14 @@ object FunctionDefinitionRegistry {
         if (!checkInternDeclaration(statement, newFunctionDefinition)) {
             if (!checkGlobalDeclaration(statement, newFunctionDefinition)) {
                 if (!checkMethodArgument(statement, newFunctionDefinition)) {
-                    throw Exception()
+                    libraryMethodCall(statement, newFunctionDefinition)
                 }
             }
         }
+    }
+
+    private fun libraryMethodCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition) {
+        // check data
     }
 
     private fun checkMethodArgument(
@@ -52,31 +56,47 @@ object FunctionDefinitionRegistry {
         (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
             .forEachRemaining { parameter ->
                 run {
-                    if (statement.name is FieldReference) {
-                        if ((statement.name as FieldReference).fieldOwner is IdExpression) {
-                            if (((statement.name as FieldReference).fieldOwner as IdExpression)
-                                    .expression is
-                                    Name
+                    bool1 =
+                        checkIfParametersDeclaration(
+                            statement,
+                            newFunctionDefinition,
+                            parameter as ParameterDeclaration
+                        )
+                }
+            }
+        return bool1
+    }
+
+    private fun checkIfParametersDeclaration(
+        statement: FunctionCalls,
+        newFunctionDefinition: FunctionDefinition,
+        parameter: ParameterDeclaration
+    ): Boolean {
+        var bool1 = false
+        if (statement.name is FieldReference) {
+            if ((statement.name as FieldReference).fieldOwner is IdExpression) {
+                if (((statement.name as FieldReference).fieldOwner as IdExpression).expression is
+                        Name
+                ) {
+                    if (parameter is ParameterDeclaration) {
+                        if (parameter.declarator is Declarator) {
+                            if ((parameter.declarator as Declarator).name!!.equals(
+                                    (((statement.name as FieldReference).fieldOwner as IdExpression)
+                                            .expression as
+                                            Name)
+                                        .name
+                                )
                             ) {
-                                if (parameter is ParameterDeclaration) {
-                                    if (parameter.declarator is Declarator) {
-                                        if ((parameter.declarator as Declarator).name!!.equals(
-                                                (((statement.name as FieldReference).fieldOwner as
-                                                            IdExpression)
-                                                        .expression as
-                                                        Name)
-                                                    .name
-                                            )
-                                        ) {
-                                            bool1 = true
-                                        }
-                                    }
-                                }
+                                val functionCallWithDeclaration =
+                                    FunctionCallWithDeclaration(statement, parameter, null)
+                                newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                                bool1 = true
                             }
                         }
                     }
                 }
             }
+        }
         return bool1
     }
 
