@@ -11,6 +11,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object SimpleDeclarationRegistry {
+
     var globalDeclaration: ArrayList<DeclarationWithParent>? = null
     var internDeclaration: ArrayList<DeclarationWithParent>? = null
 

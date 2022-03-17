@@ -68,13 +68,27 @@ object FunctionDefinitionRegistry {
         var bool1 = false
         SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration ->
             run {
-                bool1 =
-                    verifyIfFunctionCallDeclaration(
-                        statement,
-                        declaration,
-                        newFunctionDefinition,
-                        false
-                    )
+                if (declaration.parent is FunctionDefinition) {
+                    if ((declaration.parent as FunctionDefinition).declarator?.get(0) is
+                            FunctionDeclarator
+                    ) {
+                        if (((declaration.parent as FunctionDefinition).declarator?.get(0) as
+                                    FunctionDeclarator)
+                                .name?.equals(
+                                (newFunctionDefinition.declarator?.get(0) as FunctionDeclarator)
+                                    .name
+                            ) == true
+                        ) {
+                            bool1 =
+                                verifyIfFunctionCallDeclaration(
+                                    statement,
+                                    declaration,
+                                    newFunctionDefinition,
+                                    false
+                                )
+                        }
+                    }
+                }
             }
         }
         return bool1
