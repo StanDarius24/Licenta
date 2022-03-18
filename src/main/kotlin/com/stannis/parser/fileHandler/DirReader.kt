@@ -1,7 +1,6 @@
 package com.stannis.parser.fileHandler
 
 import java.io.File
-import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -9,18 +8,22 @@ class DirReader {
 
     companion object {
         //        val folder = "/home/stan/Desktop/Licenta/src/result/"
-        val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
+        const val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
         fun getAllFilesInResources(): ArrayList<String> {
             val list = ArrayList<String>()
             val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
             //            val resourcesPath = Paths.get(projectDirAbsolutePath,
             // "/src/main/resources/c++/rec")
-            val resourcesPath = Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec")
+            val resourcesPath =
+                Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec\\test-C\\xtest")
             Files.walk(resourcesPath)
                 .filter { item ->
-                    Files.isRegularFile(item) && isCOrCppFileRelated(item.fileName.toString())
+                    Files.isRegularFile(item) &&
+                            isCOrCppFileRelated(item.fileName.toString()) &&
+                            !item.toString().contains("cmake-build-debug")
                 }
                 .forEach { item -> list.add(item.toString()) }
+            list.sortDescending()
             return list
         }
 

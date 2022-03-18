@@ -9,4 +9,4 @@ interface IMethodSkeletonType :
     ITypeWithAttributes,
     ITypeWithMetrics,
     ITypeWithLinesOfCode,
-    ITypeWithLocalVariables {}
+    ITypeWithLocalVariables

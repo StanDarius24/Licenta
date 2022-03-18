@@ -1,7 +1,8 @@
 package com.stannis.services.astNodes
 
 import com.stannis.dataModel.Statement
-import com.stannis.dataModel.statementTypes.*
+import com.stannis.dataModel.statementTypes.AnonimStatement
+import com.stannis.dataModel.statementTypes.FunctionCalls
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
