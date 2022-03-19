@@ -16,76 +16,76 @@ import org.eclipse.cdt.core.parser.*
 class Parser {
     fun justDoSmth() {
         val reader = Reader()
-        val filesname = DirReader.getAllFilesInResources()
-        filesname.iterator().forEachRemaining { filepath ->
-            run {
-                val astVisitorOverride = ASTVisitorOverride()
-                if(filepath.contains(".h")) {
-                    ASTVisitorOverride.setCheck(true)
-                } else {
-                    ASTVisitorOverride.setCheck(false)
-                }
-                CompositeTypeRegistry.setPath(filepath)
-                var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
-                dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
-                //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
-                DirReader.makedir(dir)
-                val data = reader.readFileAsLinesUsingBufferedReader(filepath)
-                val translationUnit: IASTTranslationUnit =
-                    getIASTTranslationUnit(data.toCharArray())
-
-                astVisitorOverride.shouldVisitNames = true
-                astVisitorOverride.shouldVisitDeclarations = true
-                astVisitorOverride.shouldVisitInitializers = true
-                astVisitorOverride.shouldVisitParameterDeclarations = true
-                astVisitorOverride.shouldVisitDeclarators = true
-                astVisitorOverride.shouldVisitDeclSpecifiers = true
-                astVisitorOverride.shouldVisitArrayModifiers = true
-                astVisitorOverride.shouldVisitPointerOperators = true
-                astVisitorOverride.shouldVisitAttributes = true
-                astVisitorOverride.shouldVisitTokens = true
-                astVisitorOverride.shouldVisitExpressions = true
-                astVisitorOverride.shouldVisitStatements = true
-                astVisitorOverride.shouldVisitTypeIds = true
-                astVisitorOverride.shouldVisitEnumerators = true
-                astVisitorOverride.shouldVisitTranslationUnit = true
-                astVisitorOverride.shouldVisitProblems = true
-                astVisitorOverride.shouldVisitDesignators = true
-                astVisitorOverride.shouldVisitBaseSpecifiers = true
-                astVisitorOverride.shouldVisitNamespaces = true
-                astVisitorOverride.shouldVisitTemplateParameters = true
-                astVisitorOverride.shouldVisitCaptures = true
-                astVisitorOverride.shouldVisitVirtSpecifiers = true
-                astVisitorOverride.shouldVisitDecltypeSpecifiers = true
-                astVisitorOverride.includeInactiveNodes = true
-                astVisitorOverride.shouldVisitAmbiguousNodes = true
-                astVisitorOverride.shouldVisitImplicitNames = true
-                astVisitorOverride.shouldVisitImplicitNameAlternates = true
-                astVisitorOverride.shouldVisitImplicitDestructorNames = true
-                println("DATA::: $filepath")
-                val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
-                translationUnit.accept(astVisitorOverride)
-                TranslationUnitRegistry.createTranslationUnit()
-                val builder = JsonBuilder()
-                val fileToWrite =
-                    DirReader.createfile(
-                        dir +
-                            "\\" +
-                            filepath
-                                .subSequence(filepath.lastIndexOf("\\") + 1, filepath.length)
-                                .toString() +
-                            extension
-                    )
-                //                    val fileToWrite = DirReader.createfile(dir + "/" +
-                // filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() +
-                // extension)
-                classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
-                fileToWrite.bufferedWriter().use { out ->
-                    out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
-                }
-                println(builder.createJson(FunctionDefinitionRegistry.list))
-                //                println(ExceptionHandler.mapOfProblemStatement)
+        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources())
+        var filepath = FileSelector.getHeaderClassFirst()
+        while (filepath != "") {
+            val astVisitorOverride = ASTVisitorOverride()
+            if (filepath.contains(".h")) {
+                ASTVisitorOverride.setCheck(true)
+            } else {
+                ASTVisitorOverride.setCheck(false)
             }
+            CompositeTypeRegistry.setPath(filepath)
+            var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
+            dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
+            //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
+            DirReader.makedir(dir)
+            val data = reader.readFileAsLinesUsingBufferedReader(filepath)
+            val translationUnit: IASTTranslationUnit =
+                getIASTTranslationUnit(data.toCharArray())
+
+            astVisitorOverride.shouldVisitNames = true
+            astVisitorOverride.shouldVisitDeclarations = true
+            astVisitorOverride.shouldVisitInitializers = true
+            astVisitorOverride.shouldVisitParameterDeclarations = true
+            astVisitorOverride.shouldVisitDeclarators = true
+            astVisitorOverride.shouldVisitDeclSpecifiers = true
+            astVisitorOverride.shouldVisitArrayModifiers = true
+            astVisitorOverride.shouldVisitPointerOperators = true
+            astVisitorOverride.shouldVisitAttributes = true
+            astVisitorOverride.shouldVisitTokens = true
+            astVisitorOverride.shouldVisitExpressions = true
+            astVisitorOverride.shouldVisitStatements = true
+            astVisitorOverride.shouldVisitTypeIds = true
+            astVisitorOverride.shouldVisitEnumerators = true
+            astVisitorOverride.shouldVisitTranslationUnit = true
+            astVisitorOverride.shouldVisitProblems = true
+            astVisitorOverride.shouldVisitDesignators = true
+            astVisitorOverride.shouldVisitBaseSpecifiers = true
+            astVisitorOverride.shouldVisitNamespaces = true
+            astVisitorOverride.shouldVisitTemplateParameters = true
+            astVisitorOverride.shouldVisitCaptures = true
+            astVisitorOverride.shouldVisitVirtSpecifiers = true
+            astVisitorOverride.shouldVisitDecltypeSpecifiers = true
+            astVisitorOverride.includeInactiveNodes = true
+            astVisitorOverride.shouldVisitAmbiguousNodes = true
+            astVisitorOverride.shouldVisitImplicitNames = true
+            astVisitorOverride.shouldVisitImplicitNameAlternates = true
+            astVisitorOverride.shouldVisitImplicitDestructorNames = true
+            println("DATA::: $filepath")
+            val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
+            translationUnit.accept(astVisitorOverride)
+            TranslationUnitRegistry.createTranslationUnit()
+            val builder = JsonBuilder()
+            val fileToWrite =
+                DirReader.createfile(
+                    dir +
+                        "\\" +
+                        filepath
+                            .subSequence(filepath.lastIndexOf("\\") + 1, filepath.length)
+                            .toString() +
+                        extension
+                )
+            //                    val fileToWrite = DirReader.createfile(dir + "/" +
+            // filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() +
+            // extension)
+            classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
+            fileToWrite.bufferedWriter().use { out ->
+                out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+            }
+            println(builder.createJson(FunctionDefinitionRegistry.list))
+            //                println(ExceptionHandler.mapOfProblemStatement)
+            filepath = FileSelector.getCppFile()
         }
         ClassToDeclarationLinker.linkClassDeclarationsToDeclarator()
         println()
