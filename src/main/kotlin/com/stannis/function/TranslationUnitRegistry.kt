@@ -4,8 +4,6 @@ import com.stannis.dataModel.complexStatementTypes.FinalTranslation
 
 object TranslationUnitRegistry {
 
-    var check = false
-
     fun createTranslationUnit() {
         val finalTranslation = FinalTranslation(null, null, null, null, null)
         finalTranslation.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration

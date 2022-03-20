@@ -18,6 +18,10 @@ object FileSelector {
     }
 
     fun getHeaderClassFirst(): String {
+        if (listOfNames.isEmpty())
+        {
+            return ""
+        }
         val name = listOfNames.first()
         nameSet = name.split(".")[0] + ".cpp"
         val data = sendCorespondingFileName(name, false)
@@ -27,7 +31,7 @@ object FileSelector {
 
     fun getCppFile(): String {
         val data = sendCorespondingFileName(nameSet!!, true)
-        listOfNames.drop(listOfNames.indexOf("$nameSet"))
+        listOfNames.remove(nameSet)
         return data
     }
 
