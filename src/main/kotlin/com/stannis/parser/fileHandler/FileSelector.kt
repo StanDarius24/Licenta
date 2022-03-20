@@ -12,7 +12,7 @@ object FileSelector {
         this.listOfPaths = list
         this.listOfNames = list.map { data ->
             run {
-                data.split("\\").last()
+                data.split(OperatingSystem.getOPSystem()).last()
             }
         }.toArray()
     }
@@ -23,13 +23,21 @@ object FileSelector {
             return ""
         }
         val name = listOfNames.first()
-        nameSet = name.split(".")[0] + ".cpp"
+        val datax = name.split(".")
+        nameSet = datax.get(datax.lastIndex - 1) + ".cpp"
         val data = sendCorespondingFileName(name, false)
         listOfNames.remove(name)
+        checkIfCppExists(name)
         return data
     }
 
-    fun getCppFile(): String {
+    private fun checkIfCppExists(path: String) {
+        val x = path.split(OperatingSystem.getSeparator())
+        val ras = x.get(x.size -1).split(".")[0]
+        nameSet = listOfNames.find { pathName -> pathName.contains(ras) }
+    }
+
+    fun getCppFile(): String { // C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\rec\test-C\Test.cpp
         val data = sendCorespondingFileName(nameSet!!, true)
         listOfNames.remove(nameSet)
         return data

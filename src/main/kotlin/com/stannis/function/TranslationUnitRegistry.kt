@@ -11,6 +11,5 @@ object TranslationUnitRegistry {
         finalTranslation.methodsWithFunctionCalls =
             FunctionDefinitionRegistry.listOfComplexFunctionCalls
         finalTranslation.functionCallsWithoutImplementation = FunctionDeclaratorRegistry.list
-        println()
     }
 }

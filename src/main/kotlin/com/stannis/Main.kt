@@ -22,5 +22,7 @@ In the case of source files different endings will cause the compiler to assume 
 
 fun main() {
     val parser = Parser()
-    parser.justDoSmth()
+    parser.justDoSmth(
+        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\rec\\test-C"
+    )
 }

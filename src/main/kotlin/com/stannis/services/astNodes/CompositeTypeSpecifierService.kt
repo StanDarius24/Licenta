@@ -24,7 +24,7 @@ object CompositeTypeSpecifierService {
                 }
             }
         }
-        CompositeTypeRegistry.addCompositeTypeSpecifier(data)
+        CompositeTypeRegistry.addCompositeTypeSpecifier(cppastCompositeTypeSpecifier, data)
         StatementMapper.addStatementToStatement(statement!!, data)
     }
 

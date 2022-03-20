@@ -17,7 +17,6 @@ object FunctionDefinitionRegistry {
             listOfComplexFunctionCalls = ArrayList()
         }
         listOfComplexFunctionCalls!!.add(functionDefinition)
-        println()
     }
 
     fun clearList() {
@@ -38,10 +37,31 @@ object FunctionDefinitionRegistry {
         if (!checkInternDeclaration(statement, newFunctionDefinition)) {
             if (!checkGlobalDeclaration(statement, newFunctionDefinition)) {
                 if (!checkMethodArgument(statement, newFunctionDefinition)) {
-                    libraryMethodCall(statement, newFunctionDefinition)
+                    if (!checkInternMethodCall(statement, newFunctionDefinition)) {
+                        libraryMethodCall(statement, newFunctionDefinition)
+                    }
                 }
             }
         }
+    }
+
+    private fun checkInternMethodCall(statement: FunctionCalls, newFunctionDefinition: FunctionDefinition): Boolean {
+        var bool1 = false
+        FunctionDeclaratorRegistry.list!!.iterator().forEachRemaining { functionDeclarator ->
+            run {
+                if (statement.name is IdExpression) {
+                    if (functionDeclarator.name == (statement.name as IdExpression).expression) {
+                        bool1 = true
+                        val decl =
+                            DeclarationWithParent(SimpleDeclaration(null, null), Name("Internal Method Declaration"))
+                        val functionCallWithDeclaration =
+                            FunctionCallWithDeclaration(statement, decl, null)
+                        newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                    }
+                }
+            }
+        }
+        return bool1
     }
 
     private fun libraryMethodCall(
@@ -49,6 +69,7 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ) {
         // check data
+        println()
     }
 
     private fun checkMethodArgument(
@@ -56,17 +77,19 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
-            .forEachRemaining { parameter ->
-                run {
-                    bool1 =
-                        checkIfParametersDeclaration(
-                            statement,
-                            newFunctionDefinition,
-                            parameter as ParameterDeclaration
-                        )
+        if ((newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter != null) {
+            (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
+                .forEachRemaining { parameter ->
+                    run {
+                        bool1 =
+                            checkIfParametersDeclaration(
+                                statement,
+                                newFunctionDefinition,
+                                parameter as ParameterDeclaration
+                            )
+                    }
                 }
-            }
+        }
         return bool1
     }
 
@@ -81,20 +104,17 @@ object FunctionDefinitionRegistry {
                 if (((statement.name as FieldReference).fieldOwner as IdExpression).expression is
                         Name
                 ) {
-                    if (parameter is ParameterDeclaration) {
-                        if (parameter.declarator is Declarator) {
-                            if ((parameter.declarator as Declarator).name!!.equals(
-                                    (((statement.name as FieldReference).fieldOwner as IdExpression)
-                                            .expression as
-                                            Name)
-                                        .name
-                                )
-                            ) {
-                                val functionCallWithDeclaration =
-                                    FunctionCallWithDeclaration(statement, parameter, null)
-                                newFunctionDefinition.addToBody(functionCallWithDeclaration)
-                                bool1 = true
-                            }
+                    if (parameter.declarator is Declarator) {
+                        if ((parameter.declarator as Declarator).name!! ==
+                            (((statement.name as FieldReference).fieldOwner as IdExpression)
+                                .expression as
+                                    Name)
+                                .name
+                        ) {
+                            val functionCallWithDeclaration =
+                                FunctionCallWithDeclaration(statement, parameter, null)
+                            newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                            bool1 = true
                         }
                     }
                 }
