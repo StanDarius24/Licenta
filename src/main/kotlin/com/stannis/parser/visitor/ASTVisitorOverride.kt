@@ -8,6 +8,7 @@ import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.function.SimpleDeclarationRegistry
 import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.error.MultipleDeclarationWhenComposite
+import com.stannis.parser.fileHandler.Parser
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -29,7 +30,6 @@ class ASTVisitorOverride : ASTVisitor() {
             return primaryBlock
         }
         private var checkHeader: Boolean = false
-        private var lastCheckHeader: Boolean = false
         fun setCheck(bol: Boolean) {
             checkHeader = bol
         }
@@ -61,17 +61,14 @@ class ASTVisitorOverride : ASTVisitor() {
     }
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
-        if (TranslationUnitRegistry.check && !lastCheckHeader) {
+        if (Parser.bool) {
             TranslationUnitRegistry.createTranslationUnit()
             SimpleDeclarationRegistry.clearList()
             FunctionDeclaratorRegistry.clearList()
             FunctionDefinitionRegistry.clearList()
-        } else {
-            TranslationUnitRegistry.check = true
         }
         println("Found a translationUnit: " + translationUnit.rawSignature)
         primaryBlock = PrimaryBlock(null)
-        lastCheckHeader = checkHeader
         return PROCESS_CONTINUE
     }
     override fun visit(name: IASTName): Int {

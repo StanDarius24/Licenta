@@ -14,15 +14,22 @@ import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
 
 class Parser {
+
+    companion object {
+        var bool = false
+    }
+
     fun justDoSmth() {
         val reader = Reader()
+        val astVisitorOverride = ASTVisitorOverride()
         FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources())
         var filepath = FileSelector.getHeaderClassFirst()
         while (filepath != "") {
-            val astVisitorOverride = ASTVisitorOverride()
             if (filepath.contains(".h")) {
+                bool = true
                 ASTVisitorOverride.setCheck(true)
             } else {
+                bool = false
                 ASTVisitorOverride.setCheck(false)
             }
             CompositeTypeRegistry.setPath(filepath)
@@ -31,8 +38,7 @@ class Parser {
             //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
             DirReader.makedir(dir)
             val data = reader.readFileAsLinesUsingBufferedReader(filepath)
-            val translationUnit: IASTTranslationUnit =
-                getIASTTranslationUnit(data.toCharArray())
+            val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
             astVisitorOverride.shouldVisitNames = true
             astVisitorOverride.shouldVisitDeclarations = true
@@ -85,7 +91,11 @@ class Parser {
             }
             println(builder.createJson(FunctionDefinitionRegistry.list))
             //                println(ExceptionHandler.mapOfProblemStatement)
-            filepath = FileSelector.getCppFile()
+            filepath = if (bool) {
+                FileSelector.getCppFile()
+            } else {
+                FileSelector.getHeaderClassFirst()
+            }
         }
         ClassToDeclarationLinker.linkClassDeclarationsToDeclarator()
         println()

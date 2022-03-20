@@ -4,7 +4,6 @@ import com.stannis.dataModel.complexStatementTypes.FunctionCallWithDeclaration
 import com.stannis.dataModel.statementTypes.*
 
 object ClassToDeclarationLinker {
-    // TODO wrong file parsing first header file then cpp
     fun linkClassDeclarationsToDeclarator() {
         if (FunctionDefinitionRegistry.listOfComplexFunctionCalls != null) {
             FunctionDefinitionRegistry.listOfComplexFunctionCalls!!.iterator().forEachRemaining {
@@ -22,14 +21,13 @@ object ClassToDeclarationLinker {
                                                 .declaration is
                                                 Declarator
                                         ) {
-                                            if ((((functionCallWithDeclaration as
-                                                                FunctionCallWithDeclaration)
-                                                            .declaration as
-                                                            Declarator)
-                                                        .initialization as
+                                            if (((functionCallWithDeclaration
+                                                    .declaration as
+                                                        Declarator)
+                                                    .initialization as
                                                         EqualsInitializer)
                                                     .functionName is
-                                                    IdExpression
+                                                        IdExpression
                                             ) {
                                                 if ((complexClass.our_class.name as Name).name
                                                         .equals(
