@@ -30,7 +30,6 @@ object FunctionCallsService {
     }
 
     private fun findParent(functionCalls: FunctionCalls, node: ASTNode) {
-        println()
         var parent = node
         while (!(parent is CPPASTFunctionDefinition) && !(parent is CPPASTTranslationUnit)) {
             parent = parent.parent as ASTNode

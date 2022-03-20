@@ -19,10 +19,10 @@ class Parser {
         var bool = false
     }
 
-    fun justDoSmth() {
+    fun justDoSmth(absolutPath: String) {
         val reader = Reader()
         val astVisitorOverride = ASTVisitorOverride()
-        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources())
+        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources(absolutPath))
         var filepath = FileSelector.getHeaderClassFirst()
         while (filepath != "") {
             if (filepath.contains(".h")) {
@@ -33,10 +33,9 @@ class Parser {
                 ASTVisitorOverride.setCheck(false)
             }
             CompositeTypeRegistry.setPath(filepath)
-            var dir = filepath.subSequence(filepath.indexOf("resources"), filepath.length)
-            dir = dir.subSequence(0, dir.lastIndexOf("\\")).toString()
-            //                    dir = dir.subSequence(0, dir.lastIndexOf("/")).toString()
-            DirReader.makedir(dir)
+            val dir = filepath.split(absolutPath)[1]
+            dir.subSequence(1, dir.length)
+            val pathToWrite = DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
             val data = reader.readFileAsLinesUsingBufferedReader(filepath)
             val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
@@ -69,33 +68,23 @@ class Parser {
             astVisitorOverride.shouldVisitImplicitNameAlternates = true
             astVisitorOverride.shouldVisitImplicitDestructorNames = true
             println("DATA::: $filepath")
-            val extension = filepath.subSequence(filepath.lastIndexOf("."), filepath.length)
             translationUnit.accept(astVisitorOverride)
             TranslationUnitRegistry.createTranslationUnit()
             val builder = JsonBuilder()
-            val fileToWrite =
-                DirReader.createfile(
-                    dir +
-                        "\\" +
-                        filepath
-                            .subSequence(filepath.lastIndexOf("\\") + 1, filepath.length)
-                            .toString() +
-                        extension
-                )
-            //                    val fileToWrite = DirReader.createfile(dir + "/" +
-            // filepath.subSequence(filepath.lastIndexOf("/") + 1, filepath.length).toString() +
-            // extension)
+            val newPath = absolutPath.split(OperatingSystem.getSeparator())
+            newPath.dropLast(1)
+            val fileToWrite = DirReader.createfile("$pathToWrite$dir.json")
             classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
             fileToWrite.bufferedWriter().use { out ->
                 out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
             }
             println(builder.createJson(FunctionDefinitionRegistry.list))
-            //                println(ExceptionHandler.mapOfProblemStatement)
-            filepath = if (bool) {
-                FileSelector.getCppFile()
-            } else {
-                FileSelector.getHeaderClassFirst()
-            }
+            filepath =
+                if (bool) {
+                    FileSelector.getCppFile()
+                } else {
+                    FileSelector.getHeaderClassFirst()
+                }
         }
         ClassToDeclarationLinker.linkClassDeclarationsToDeclarator()
         println()

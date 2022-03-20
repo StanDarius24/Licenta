@@ -4,18 +4,18 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 
-class DirReader {
+object DirReader {
 
-    companion object {
-        //        val folder = "/home/stan/Desktop/Licenta/src/result/"
-        const val folder = "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\result\\"
-        fun getAllFilesInResources(): ArrayList<String> {
+        lateinit var folder: String
+
+        fun getAllFilesInResources(finalPath: String): ArrayList<String> {
+            folder = finalPath
+            OperatingSystem.getOPSystem()
             val list = ArrayList<String>()
-            val projectDirAbsolutePath = Paths.get("").toAbsolutePath().toString()
-            //            val resourcesPath = Paths.get(projectDirAbsolutePath,
-            // "/src/main/resources/c++/rec")
-            val resourcesPath =
-                Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec\\test-C")
+            val data = (finalPath.split(OperatingSystem.getSeparator()) as java.util.ArrayList)
+            data.remove(data.last())
+            data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() +"result"
+            val resourcesPath = Paths.get(finalPath)
             Files.walk(resourcesPath)
                 .filter { item ->
                     Files.isRegularFile(item) &&
@@ -39,18 +39,21 @@ class DirReader {
                 text.endsWith(".tcc")
         }
 
-        fun makedir(path: String) {
-            val pathNew = folder + path
-            val dir = File(pathNew)
+        fun makedir(path: String): String {
+            var data = folder.split(OperatingSystem.getSeparator())
+            data = data.dropLast(1)
+            val x = data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() + "result"
+            val pathNew = x + path
+            val dir = File(pathNew.split(OperatingSystem.getSeparator()).dropLast(1).joinToString(OperatingSystem.getSeparator()))
             if (!dir.exists()) {
                 dir.mkdirs()
             }
+            return x
         }
 
         fun createfile(p: String): File {
-            val path = folder + p.subSequence(0, p.lastIndexOf(".")) + ".json"
-            val file = File(path)
-            println(path)
+            val file = File(p)
+            println(p)
             try {
                 if (file.createNewFile()) {
                     println("File created!")
@@ -62,5 +65,4 @@ class DirReader {
             }
             return file
         }
-    }
 }
