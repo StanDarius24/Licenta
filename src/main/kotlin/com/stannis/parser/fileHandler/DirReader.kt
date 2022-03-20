@@ -15,7 +15,7 @@ class DirReader {
             //            val resourcesPath = Paths.get(projectDirAbsolutePath,
             // "/src/main/resources/c++/rec")
             val resourcesPath =
-                Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec\\test-C\\xtest")
+                Paths.get(projectDirAbsolutePath, "src\\main\\resources\\c++\\rec\\test-C")
             Files.walk(resourcesPath)
                 .filter { item ->
                     Files.isRegularFile(item) &&

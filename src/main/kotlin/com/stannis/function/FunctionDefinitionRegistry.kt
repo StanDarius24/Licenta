@@ -56,17 +56,16 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
-            .forEachRemaining { parameter ->
-                run {
-                    bool1 =
-                        checkIfParametersDeclaration(
-                            statement,
-                            newFunctionDefinition,
-                            parameter as ParameterDeclaration
+        if ((newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter != null) {
+            (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
+                .forEachRemaining { parameter ->
+                    run {
+                        bool1 = checkIfParametersDeclaration(
+                            statement, newFunctionDefinition, parameter as ParameterDeclaration
                         )
+                    }
                 }
-            }
+        }
         return bool1
     }
 
@@ -81,7 +80,6 @@ object FunctionDefinitionRegistry {
                 if (((statement.name as FieldReference).fieldOwner as IdExpression).expression is
                         Name
                 ) {
-                    if (parameter is ParameterDeclaration) {
                         if (parameter.declarator is Declarator) {
                             if ((parameter.declarator as Declarator).name!!.equals(
                                     (((statement.name as FieldReference).fieldOwner as IdExpression)
@@ -96,7 +94,6 @@ object FunctionDefinitionRegistry {
                                 bool1 = true
                             }
                         }
-                    }
                 }
             }
         }
