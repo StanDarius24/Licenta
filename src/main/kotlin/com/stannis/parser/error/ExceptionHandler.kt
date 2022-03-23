@@ -12,8 +12,8 @@ object ExceptionHandler {
         var data = ""
         if (text != "") {
             try {
-                val reader = Reader()
-                data = reader.readFileAsLinesUsingBufferedReader(filepath)
+
+                data = Reader.readFileAsLinesUsingBufferedReader(filepath)
                 data = data.replace(text, "parser$contor;\n")
                 mapOfProblemStatement = mapOfProblemStatement + mapOf(text to "parser$contor;\n")
                 contor++
@@ -31,8 +31,8 @@ object ExceptionHandler {
             var data = ""
             if (text != "") {
                 try {
-                    val reader = Reader()
-                    data = reader.readFileAsLinesUsingBufferedReader(filepath)
+
+                    data = Reader.readFileAsLinesUsingBufferedReader(filepath)
                     data = data.replace(text, "//parser$contor;\n")
                     mapOfProblemStatement =
                         mapOfProblemStatement + mapOf(text to "//parser$contor;\n")

@@ -39,6 +39,12 @@ object DirReader {
                 text.endsWith(".tcc")
         }
 
+        private fun isHeaderFile(text: String): Boolean {
+            return text.endsWith(".h") ||
+                    text.endsWith(".hh") ||
+                    text.endsWith(".hpp")
+        }
+
         fun makedir(path: String): String {
             var data = folder.split(OperatingSystem.getSeparator())
             data = data.dropLast(1)
@@ -65,4 +71,21 @@ object DirReader {
             }
             return file
         }
+
+    fun getHeadersFilesFromProject(absolutPath: String): ArrayList<String> {
+        OperatingSystem.getOPSystem()
+        val list = ArrayList<String>()
+        val data = (absolutPath.split(OperatingSystem.getSeparator()) as java.util.ArrayList<*>)
+        data.remove(data.last())
+        data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() +"result"
+        val resourcesPath = Paths.get(absolutPath)
+        Files.walk(resourcesPath)
+            .filter { item ->
+                Files.isRegularFile(item) &&
+                        isHeaderFile(item.fileName.toString()) &&
+                        !item.toString().contains("cmake-build-debug")
+            }
+            .forEach { item -> list.add(item.toString()) }
+        return list
+    }
 }

@@ -19,9 +19,8 @@ class Parser {
         var bool = false
     }
 
-    fun justDoSmth(absolutPath: String) {
-        val reader = Reader()
-        val astVisitorOverride = ASTVisitorOverride()
+    fun justDoSmth(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
+
         FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources(absolutPath))
         var filepath = FileSelector.getHeaderClassFirst()
         while (filepath != "") {
@@ -36,7 +35,7 @@ class Parser {
             val dir = filepath.split(absolutPath)[1]
             dir.subSequence(1, dir.length)
             val pathToWrite = DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
-            val data = reader.readFileAsLinesUsingBufferedReader(filepath)
+            val data = Reader.readFileAsLinesUsingBufferedReader(filepath)
             val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
             astVisitorOverride.shouldVisitNames = true
@@ -100,6 +99,63 @@ class Parser {
         val options: Int = ILanguage.OPTION_IS_SOURCE_UNIT
         val log: IParserLogService = DefaultLogService()
         return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, options, log)
+    }
+
+    private fun parseProject(filesPath: ArrayList<String>, astVisitorOverride: ASTVisitorOverride, absolutPath: String) {
+
+        filesPath.iterator().forEachRemaining { filepath -> run {
+            CompositeTypeRegistry.setPath(filepath)
+            val dir = filepath.split(absolutPath)[1]
+            dir.subSequence(1, dir.length)
+            val pathToWrite = DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
+            val data = Reader.readFileAsLinesUsingBufferedReader(filepath)
+            val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
+            astVisitorOverride.shouldVisitNames = true
+            astVisitorOverride.shouldVisitDeclarations = true
+            astVisitorOverride.shouldVisitInitializers = true
+            astVisitorOverride.shouldVisitParameterDeclarations = true
+            astVisitorOverride.shouldVisitDeclarators = true
+            astVisitorOverride.shouldVisitDeclSpecifiers = true
+            astVisitorOverride.shouldVisitArrayModifiers = true
+            astVisitorOverride.shouldVisitPointerOperators = true
+            astVisitorOverride.shouldVisitAttributes = true
+            astVisitorOverride.shouldVisitTokens = true
+            astVisitorOverride.shouldVisitExpressions = true
+            astVisitorOverride.shouldVisitStatements = true
+            astVisitorOverride.shouldVisitTypeIds = true
+            astVisitorOverride.shouldVisitEnumerators = true
+            astVisitorOverride.shouldVisitTranslationUnit = true
+            astVisitorOverride.shouldVisitProblems = true
+            astVisitorOverride.shouldVisitDesignators = true
+            astVisitorOverride.shouldVisitBaseSpecifiers = true
+            astVisitorOverride.shouldVisitNamespaces = true
+            astVisitorOverride.shouldVisitTemplateParameters = true
+            astVisitorOverride.shouldVisitCaptures = true
+            astVisitorOverride.shouldVisitVirtSpecifiers = true
+            astVisitorOverride.shouldVisitDecltypeSpecifiers = true
+            astVisitorOverride.includeInactiveNodes = true
+            astVisitorOverride.shouldVisitAmbiguousNodes = true
+            astVisitorOverride.shouldVisitImplicitNames = true
+            astVisitorOverride.shouldVisitImplicitNameAlternates = true
+            astVisitorOverride.shouldVisitImplicitDestructorNames = true
+            translationUnit.accept(astVisitorOverride)
+            TranslationUnitRegistry.createTranslationUnit()
+
+            val builder = JsonBuilder()
+            val newPath = absolutPath.split(OperatingSystem.getSeparator())
+            newPath.dropLast(1)
+            val fileToWrite = DirReader.createfile("$pathToWrite$dir.json")
+
+            fileToWrite.bufferedWriter().use { out ->
+                out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+            }
+        } }
+    }
+
+    fun parseHeaderFiles(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
+        var headerList = DirReader.getHeadersFilesFromProject(absolutPath)
+        FileSelector.setListOfPathsParam(headerList)
+        parseProject(headerList, astVisitorOverride, absolutPath)
     }
 }
 
