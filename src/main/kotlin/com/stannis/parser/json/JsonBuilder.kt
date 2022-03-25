@@ -15,7 +15,7 @@ class JsonBuilder {
         if (list != null) {
             val gson = GsonBuilder().setPrettyPrinting().create()
             list.iterator().forEachRemaining { element ->
-                run { jsonString = jsonString + gson.toJson(element) }
+                run { jsonString += gson.toJson(element) }
             }
         }
         return jsonString
