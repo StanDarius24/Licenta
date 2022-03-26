@@ -3,10 +3,11 @@ package com.stannis.parser.sln
 import com.stannis.parser.fileHandler.Reader
 
 object SlnParser {
-    private var bool1 = false
     private lateinit var startSplitString: String
-    var list: ArrayList<String> = ArrayList()
+    private var slnDataList: List<SlnStructure>? = null
     fun solveSln(pathToSln: String) {
+        var bool1 = false
+        val list: ArrayList<String> = ArrayList()
         val file = Reader.readFileAsLinesUsingBufferedReader(pathToSln)
         val pattern = Regex("Project[a-zA-Z0-9(){}.,\\\\ =\\-\"\t_]+(\\r\\n|\\r|\\n)EndProject")
         val sss = pattern.findAll(file)
@@ -26,6 +27,30 @@ object SlnParser {
                 oldValue = data.value
             }
         }
+        parseFieldsForSlnFile(list)
+    }
+
+    private fun parseFieldsForSlnFile(list: ArrayList<String>) {
+        list.iterator().forEachRemaining { element -> run {
+            val map = mutableMapOf<String, String?>()
+            val token = element.split("\"")[1]
+            val name = element.split("\"")[3]
+            val path = element.split("\"")[5]
+            val alias = element.split("\"")[7]
+            if(slnDataList == null) {
+                slnDataList = ArrayList()
+            }
+            if(element.contains("ProjectSection(ProjectDependencies)")) {
+                var dependencylist: List<String>?
+                val dependency = element.split("ProjectSection(ProjectDependencies) = postProject\r\n\t\t")[1].split("\tEndProjectSection")[0]
+                dependencylist = (dependency.split("{") as ArrayList).filter { elem -> elem.contains("} = ") }
+                dependencylist = dependencylist.map { elem -> elem.removeSuffix("} = ") }
+                dependencylist.iterator().forEachRemaining { iter -> run {
+                    map += Pair(iter, null)
+                } }
+            }
+            (slnDataList!! as ArrayList).add(SlnStructure(token, name, path, alias, map))
+        } }
         println()
     }
 

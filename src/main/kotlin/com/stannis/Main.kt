@@ -22,7 +22,7 @@ In the case of source files different endings will cause the compiler to assume 
 
 fun main() {
     SlnParser.solveSln(
-        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln"
+        "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Project64.sln"
     )
     //    val parser = Parser()
     //    val astVisitorOverride = ASTVisitorOverride()
