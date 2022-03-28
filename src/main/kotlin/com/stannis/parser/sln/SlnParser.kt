@@ -27,15 +27,15 @@ object SlnParser {
                 oldValue = data.value
             }
         }
-        parseFieldsForSlnFile(list)
+        parseFieldsForSlnFile(list, pathToSln)
     }
 
-    private fun parseFieldsForSlnFile(list: ArrayList<String>) {
+    private fun parseFieldsForSlnFile(list: ArrayList<String>, path: String) {
         list.iterator().forEachRemaining { element -> run {
             val map = mutableMapOf<String, String?>()
             val token = element.split("\"")[1]
             val name = element.split("\"")[3]
-            val path = element.split("\"")[5]
+            val pathx = element.split("\"")[5]
             val alias = element.split("\"")[7]
             if(slnDataList == null) {
                 slnDataList = ArrayList()
@@ -49,9 +49,9 @@ object SlnParser {
                     map += Pair(iter, null)
                 } }
             }
-            (slnDataList!! as ArrayList).add(SlnStructure(token, name, path, alias, map))
+            (slnDataList!! as ArrayList).add(SlnStructure(token, name, pathx, alias, map))
         } }
-        println()
+        VcxprojParser.solveProjectComplexity(slnDataList, path)
     }
 
     private fun solveWrongRegex(value: String, file: String, list: ArrayList<String>) {

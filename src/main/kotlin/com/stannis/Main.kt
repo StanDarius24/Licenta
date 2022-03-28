@@ -1,5 +1,6 @@
 package com.stannis
 
+import com.stannis.parser.fileHandler.OperatingSystem
 import com.stannis.parser.sln.SlnParser
 
 /*
@@ -21,8 +22,9 @@ In the case of source files different endings will cause the compiler to assume 
  */
 
 fun main() {
+    OperatingSystem.getOPSystem()
     SlnParser.solveSln(
-        "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Project64.sln"
+        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln"
     )
     //    val parser = Parser()
     //    val astVisitorOverride = ASTVisitorOverride()

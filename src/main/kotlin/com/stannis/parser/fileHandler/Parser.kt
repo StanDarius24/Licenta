@@ -12,6 +12,8 @@ import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
+import java.nio.file.Files
+import java.nio.file.Path
 
 class Parser {
 
@@ -19,9 +21,15 @@ class Parser {
         var bool = false
     }
 
+    private fun testFunction(): (Path) -> Boolean {
+        return { item -> !item.toString().contains("cmake-build-debug")
+            DirReader.isCOrCppFileRelated(item.fileName.toString()) &&
+                    Files.isRegularFile(item)
+        }
+    }
     fun justDoSmth(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
 
-        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources(absolutPath))
+        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources(absolutPath, testFunction()))
         var filepath = FileSelector.getHeaderClassFirst()
         while (filepath != "") {
             if (filepath.contains(".h")) {
@@ -153,7 +161,7 @@ class Parser {
     }
 
     fun parseHeaderFiles(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
-        var headerList = DirReader.getHeadersFilesFromProject(absolutPath)
+        val headerList = DirReader.getHeadersFilesFromProject(absolutPath)
         FileSelector.setListOfPathsParam(headerList)
         parseProject(headerList, astVisitorOverride, absolutPath)
     }

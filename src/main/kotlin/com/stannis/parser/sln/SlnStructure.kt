@@ -5,5 +5,5 @@ data class SlnStructure(
     var name: String,
     var path: String,
     var alias: String,
-    var dependency: Map<String, String?>
+    var antebuild: Map<String, String?>
 )
