@@ -1,6 +1,7 @@
 package com.stannis
 
-import com.stannis.parser.fileHandler.Parser
+import com.stannis.parser.fileHandler.OperatingSystem
+import com.stannis.parser.sln.SlnParser
 
 /*
 Historically, the suffix for a C++ source file was .C. This caused a few problems the first time C++ was ported to a system where case wasn't significant in the filename.
@@ -21,8 +22,16 @@ In the case of source files different endings will cause the compiler to assume 
  */
 
 fun main() {
-    val parser = Parser()
-    parser.justDoSmth(
-        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\rec\\test-C"
+    OperatingSystem.getOPSystem()
+    SlnParser.solveSln(
+        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln"
     )
+    //    val parser = Parser()
+    //    val astVisitorOverride = ASTVisitorOverride()
+    //
+    // parser.parseHeaderFiles("C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\rec\\test-C", astVisitorOverride)
+    //    parser.justDoSmth(
+    //        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\rec\\test-C",
+    // astVisitorOverride
+    //    )
 }
