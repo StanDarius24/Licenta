@@ -17,3 +17,8 @@ tends to get yet another set of conventions (.inl, .tcc and probably a lot of ot
 In the case of headers it makes absolutely no difference to the compiler.
 
 In the case of source files different endings will cause the compiler to assume a different language. But this can normally be overridden.
+
+In this project I tried to cover all types of suffixes for this language.
+
+___
+Still in development...

@@ -32,24 +32,26 @@ object SlnParser {
 
     private fun parseFieldsForSlnFile(list: ArrayList<String>, path: String) {
         list.iterator().forEachRemaining { element -> run {
-            val map = mutableMapOf<String, String?>()
-            val token = element.split("\"")[1]
-            val name = element.split("\"")[3]
-            val pathx = element.split("\"")[5]
-            val alias = element.split("\"")[7]
-            if(slnDataList == null) {
-                slnDataList = ArrayList()
+            if (!element.contains("ProjectSection(SolutionItems)")) {
+                val map = mutableMapOf<String, String?>()
+                val token = element.split("\"")[1]
+                val name = element.split("\"")[3]
+                val pathx = element.split("\"")[5]
+                val alias = element.split("\"")[7]
+                if (slnDataList == null) {
+                    slnDataList = ArrayList()
+                }
+                if (element.contains("ProjectSection(ProjectDependencies)")) {
+                    var dependencylist: List<String>?
+                    val dependency = element.split("ProjectSection(ProjectDependencies) = postProject\r\n\t\t")[1].split("\tEndProjectSection")[0]
+                    dependencylist = (dependency.split("{") as ArrayList).filter { elem -> elem.contains("} = ") }
+                    dependencylist = dependencylist.map { elem -> elem.removeSuffix("} = ") }
+                    dependencylist.iterator().forEachRemaining { iter -> run {
+                        map += Pair(iter, null)
+                    } }
+                }
+                (slnDataList!! as ArrayList).add(SlnStructure(token, name, pathx, alias, map))
             }
-            if(element.contains("ProjectSection(ProjectDependencies)")) {
-                var dependencylist: List<String>?
-                val dependency = element.split("ProjectSection(ProjectDependencies) = postProject\r\n\t\t")[1].split("\tEndProjectSection")[0]
-                dependencylist = (dependency.split("{") as ArrayList).filter { elem -> elem.contains("} = ") }
-                dependencylist = dependencylist.map { elem -> elem.removeSuffix("} = ") }
-                dependencylist.iterator().forEachRemaining { iter -> run {
-                    map += Pair(iter, null)
-                } }
-            }
-            (slnDataList!! as ArrayList).add(SlnStructure(token, name, pathx, alias, map))
         } }
         VcxprojParser.solveProjectComplexity(slnDataList, path)
     }
