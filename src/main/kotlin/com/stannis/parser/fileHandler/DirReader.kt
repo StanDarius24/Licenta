@@ -75,6 +75,7 @@ object DirReader {
         }
 
     fun getHeadersFilesFromProject(absolutPath: String): ArrayList<String> {
+        folder = absolutPath
         OperatingSystem.getOPSystem()
         val list = ArrayList<String>()
         val data = (absolutPath.split(OperatingSystem.getSeparator()) as java.util.ArrayList<*>)

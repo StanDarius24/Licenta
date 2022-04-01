@@ -6,6 +6,7 @@ import com.stannis.function.CompositeTypeRegistry
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
+import com.stannis.parser.sln.VcxprojParser
 import com.stannis.parser.visitor.ASTVisitorOverride
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
@@ -148,16 +149,20 @@ class Parser {
             astVisitorOverride.shouldVisitImplicitDestructorNames = true
             translationUnit.accept(astVisitorOverride)
             TranslationUnitRegistry.createTranslationUnit()
-
             val builder = JsonBuilder()
             val newPath = absolutPath.split(OperatingSystem.getSeparator())
             newPath.dropLast(1)
             val fileToWrite = DirReader.createfile("$pathToWrite$dir.json")
-
             fileToWrite.bufferedWriter().use { out ->
                 out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
             }
-        } }
+        }
+        }
+    }
+
+    fun lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride: ASTVisitorOverride) {
+        println()
+//        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter { lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
     }
 
     fun parseHeaderFiles(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
