@@ -6,14 +6,13 @@ import com.stannis.parser.sln.SlnParser
 import com.stannis.parser.visitor.ASTVisitorOverride
 
 fun main() {
-    OperatingSystem.getOPSystem()
+    val path = "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Project64.sln"
+    val projectPath = path.subSequence(0, path.lastIndexOf("/")).toString()
 
-    SlnParser.solveSln(
-        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln"
-    )
+    SlnParser.solveSln(path)
     val parser = Parser()
     val astVisitorOverride = ASTVisitorOverride()
-    parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride)
+    parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride, projectPath)
 //    parser.parseHeaderFiles(
 //        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln",
 //        astVisitorOverride

@@ -1,5 +1,7 @@
 package com.stannis.parser.fileHandler
 
+import java.util.function.Predicate.not
+
 object OperatingSystem {
 
     lateinit var operatingType: String
@@ -17,6 +19,9 @@ object OperatingSystem {
     }
 
     fun getSeparator(): String{
+        if(!this::operatingType.isInitialized) {
+            getOPSystem()
+        }
         if (operatingType == "Windows") {
             return "\\"
         } else if (operatingType == "Linux") {

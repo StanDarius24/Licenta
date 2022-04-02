@@ -6,7 +6,6 @@ object SlnParser {
     private lateinit var startSplitString: String
     private var slnDataList: List<SlnStructure>? = null
     fun solveSln(pathToSln: String) {
-        val list: ArrayList<String> = ArrayList()
         val file = Reader.readFileAsLinesUsingBufferedReader(pathToSln)
         val sss = file.split("Project(\"{").filter { element -> element.contains("EndProject") } as ArrayList
         parseFieldsForSlnFile(sss, pathToSln)
@@ -47,7 +46,4 @@ object SlnParser {
         VcxprojParser.solveProjectComplexity(slnDataList, path)
     }
 
-    private fun solveWrongRegex(value: String, file: String, list: ArrayList<String>) {
-        list.add(file.split(startSplitString)[1].split(value)[0])
-    }
 }

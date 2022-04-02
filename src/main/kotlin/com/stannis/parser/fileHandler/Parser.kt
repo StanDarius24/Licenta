@@ -110,14 +110,17 @@ class Parser {
         return GPPLanguage.getDefault().getASTTranslationUnit(fc, si, ifcp, idx, options, log)
     }
 
-    private fun parseProject(filesPath: ArrayList<String>, astVisitorOverride: ASTVisitorOverride, absolutPath: String) {
-
+    private fun parseProject(
+        filesPath: ArrayList<String>,
+        astVisitorOverride: ASTVisitorOverride,
+        absolutPath: String,
+        projectPath: String
+    ) {
+        DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath -> run {
-            CompositeTypeRegistry.setPath(filepath)
-            val dir = filepath.split(absolutPath)[1]
-            dir.subSequence(1, dir.length)
-            val pathToWrite = DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
-            val data = Reader.readFileAsLinesUsingBufferedReader(filepath)
+            CompositeTypeRegistry.setPath(absolutPath + OperatingSystem.getSeparator() + filepath)
+            DirReader.makedir(absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath)
+            val data = Reader.readFileAsLinesUsingBufferedReader(absolutPath + OperatingSystem.getSeparator() + filepath)
             val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
             astVisitorOverride.shouldVisitNames = true
             astVisitorOverride.shouldVisitDeclarations = true
@@ -152,7 +155,8 @@ class Parser {
             val builder = JsonBuilder()
             val newPath = absolutPath.split(OperatingSystem.getSeparator())
             newPath.dropLast(1)
-            val fileToWrite = DirReader.createfile("$pathToWrite$dir.json")
+            val dawdsa = absolutPath.split(projectPath)[1]
+            val fileToWrite = DirReader.createfile(dawdsa + OperatingSystem.getSeparator() +"$filepath.json")
             fileToWrite.bufferedWriter().use { out ->
                 out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
             }
@@ -160,15 +164,27 @@ class Parser {
         }
     }
 
-    fun lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride: ASTVisitorOverride) {
-        println()
+    private fun parseFiles(
+        listOfFiles: ArrayList<String>?,
+        absoluteProjectPath: String,
+        astVisitorOverride: ASTVisitorOverride,
+        projectPath: String
+    ) {
+        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath)
+    }
+
+    fun lookUpForVcxProjAndParseHeaderFiles(
+        astVisitorOverride: ASTVisitorOverride,
+        projectPath: String
+    ) {
+        VcxprojParser.mapOfData.iterator().forEachRemaining { element -> run {
+            element.value.iterator().forEachRemaining { valueElement -> run {
+                val absolutProjectPath = valueElement.path.subSequence(0, valueElement.path.lastIndexOf(OperatingSystem.getSeparator())).toString()
+                parseFiles(valueElement.listOfHeaderFiles as ArrayList<String>?, absolutProjectPath, astVisitorOverride, projectPath)
+            } }
+        } }
 //        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter { lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
     }
 
-    fun parseHeaderFiles(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
-        val headerList = DirReader.getHeadersFilesFromProject(absolutPath)
-        FileSelector.setListOfPathsParam(headerList)
-        parseProject(headerList, astVisitorOverride, absolutPath)
-    }
 }
 

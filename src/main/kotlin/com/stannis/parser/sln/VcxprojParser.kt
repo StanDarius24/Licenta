@@ -16,13 +16,15 @@ object VcxprojParser {
         val projectPath = path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator())).toString()
         list!!.iterator().forEachRemaining { element ->
             run {
-
                 if (element.path.contains(".vcxproj")) {
-                    println()
+                    if(OperatingSystem.getOPSystem().equals("Linux")) {
+                        element.path = element.path.replace("\\", "/")
+                    }
                     try {
+                        val absolutPath = projectPath + OperatingSystem.getSeparator() + element.path
                         createVcxproj(
-                            getFileData(projectPath + OperatingSystem.getSeparator() + element.path),
-                            projectPath + OperatingSystem.getSeparator() + element.path,
+                            getFileData(absolutPath),
+                            absolutPath,
                             element
                         )
                     } catch (e: FileNotFoundException) {
@@ -95,14 +97,14 @@ object VcxprojParser {
         if (mapOfData[slnStructure] != null && !mapOfData[slnStructure]?.isEmpty()!!) {
             (mapOfData as MutableMap).put(slnStructure, mapOfData[slnStructure]!!.plus(structure))
         } else {
-            var listOfStructureX = listOf(structure)
+            val listOfStructureX = listOf(structure)
             mapOfData = mutableMapOf(slnStructure to listOfStructureX) + mapOfData
         }
         println(structure)
     }
 
     private fun solveProjectReference(structure: VcxprojStructure, text: String) {
-        var listOfData =
+        val listOfData =
             text.split("ProjectReference Include=").filter { element -> element.contains("</ProjectReference>") }
         structure.listofIncludedModules = listOfData.map { elem -> elem.split("\"")[1] }
     }

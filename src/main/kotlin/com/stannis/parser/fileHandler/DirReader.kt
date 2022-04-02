@@ -8,6 +8,7 @@ import java.nio.file.Paths
 object DirReader {
 
         lateinit var folder: String
+        lateinit var newFolderPath: String
 
         fun getAllFilesInResources(finalPath: String, test: (input: Path) -> Boolean): ArrayList<String> {
             folder = finalPath
@@ -49,8 +50,10 @@ object DirReader {
 
         fun makedir(path: String): String {
             var data = folder.split(OperatingSystem.getSeparator())
+            val last = data.last()
             data = data.dropLast(1)
-            val x = data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() + "result"
+            val x = data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() + "result" + OperatingSystem.getSeparator() + last
+            newFolderPath = x
             val pathNew = x + path
             val dir = File(pathNew.split(OperatingSystem.getSeparator()).dropLast(1).joinToString(OperatingSystem.getSeparator()))
             if (!dir.exists()) {
@@ -60,8 +63,7 @@ object DirReader {
         }
 
         fun createfile(p: String): File {
-            val file = File(p)
-            println(p)
+            val file = File(newFolderPath + OperatingSystem.getSeparator() + p)
             try {
                 if (file.createNewFile()) {
                     println("File created!")
