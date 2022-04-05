@@ -40,6 +40,11 @@ object SimpleDeclarationRegistry {
             } else {
                 internDeclaration!!.add(declarationWithParent)
             }
+        } else if (data.declSpecifier is EnumerationSpecifier) {
+            if (globalDeclaration == null) {
+                globalDeclaration = ArrayList()
+            }
+                globalDeclaration!!.add(DeclarationWithParent(data, null))
         }
     }
 

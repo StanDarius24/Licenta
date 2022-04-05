@@ -5,7 +5,7 @@ import com.stannis.dataModel.statementTypes.FunctionDeclarator
 import com.stannis.dataModel.statementTypes.FunctionDefinition
 
 data class FinalTranslation(
-    var directives: ArrayList<Statement>?,
+    var directives: ArrayList<String>?,
     var globalDeclaration: ArrayList<DeclarationWithParent>?,
     var internDeclaration: ArrayList<DeclarationWithParent>?,
     var methodsWithFunctionCalls: ArrayList<FunctionDefinition>?,

@@ -1,6 +1,6 @@
 package com.stannis.parser.fileHandler
 
-import com.stannis.callHierarchy.classParser
+import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
 import com.stannis.function.ClassToDeclarationLinker
 import com.stannis.function.CompositeTypeRegistry
 import com.stannis.function.FunctionDefinitionRegistry
@@ -82,7 +82,6 @@ class Parser {
             val newPath = absolutPath.split(OperatingSystem.getSeparator())
             newPath.dropLast(1)
             val fileToWrite = DirReader.createfile("$pathToWrite$dir.json")
-            classParser.getDeclarationAndMethod(ASTVisitorOverride.getPrimaryBlock())
             fileToWrite.bufferedWriter().use { out ->
                 out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
             }
@@ -119,6 +118,7 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath -> run {
             CompositeTypeRegistry.setPath(absolutPath + OperatingSystem.getSeparator() + filepath)
+            ProjectVcxprojComplexRegistry.setFilePath(absolutPath + OperatingSystem.getSeparator() + filepath)
             DirReader.makedir(absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath)
             val data = Reader.readFileAsLinesUsingBufferedReader(absolutPath + OperatingSystem.getSeparator() + filepath)
             val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
@@ -150,8 +150,10 @@ class Parser {
             astVisitorOverride.shouldVisitImplicitNames = true
             astVisitorOverride.shouldVisitImplicitNameAlternates = true
             astVisitorOverride.shouldVisitImplicitDestructorNames = true
+            TranslationUnitRegistry.listOfDirectives = translationUnit.includeDirectives.map { element -> element.toString() }
             translationUnit.accept(astVisitorOverride)
             TranslationUnitRegistry.createTranslationUnit()
+            TranslationUnitRegistry.clearAllData()
             val builder = JsonBuilder()
             val newPath = absolutPath.split(OperatingSystem.getSeparator())
             newPath.dropLast(1)
@@ -162,6 +164,7 @@ class Parser {
             }
         }
         }
+        println()
     }
 
     private fun parseFiles(
@@ -179,8 +182,19 @@ class Parser {
     ) {
         VcxprojParser.mapOfData.iterator().forEachRemaining { element -> run {
             element.value.iterator().forEachRemaining { valueElement -> run {
-                val absolutProjectPath = valueElement.path.subSequence(0, valueElement.path.lastIndexOf(OperatingSystem.getSeparator())).toString()
-                parseFiles(valueElement.listOfHeaderFiles as ArrayList<String>?, absolutProjectPath, astVisitorOverride, projectPath)
+                ProjectVcxprojComplexRegistry.setVcxProj(valueElement)
+                if (valueElement.listofIncludedModules != null) {
+                    println()
+                }
+                val absolutProjectPath =
+                    valueElement.path.subSequence(0, valueElement.path.lastIndexOf(OperatingSystem.getSeparator()))
+                        .toString()
+                parseFiles(
+                    valueElement.listOfHeaderFiles as ArrayList<String>?,
+                    absolutProjectPath,
+                    astVisitorOverride,
+                    projectPath
+                )
             } }
         } }
 //        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter { lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
