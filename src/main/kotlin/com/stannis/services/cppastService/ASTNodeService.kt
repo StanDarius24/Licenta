@@ -226,7 +226,7 @@ object ASTNodeService {
                 throw Exception()
             }
             is CPPASTConversionName -> {
-                throw Exception()
+                ConversionNameService.solveConversionName(node, statement)
             }
             is IASTPreprocessorIncludeStatement -> {
                 InclusionStatementService.solveInclusionStatement(node, statement)
