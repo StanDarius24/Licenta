@@ -58,17 +58,21 @@ object FunctionDeclaratorRegistry {
         if (elementFromList.parameter != null) {
             elementFromList.parameter!!.iterator().forEachRemaining { element ->
                 run {
-                    functionDeclarator.parameter!!.iterator().forEachRemaining { parameter ->
-                        run {
-                            if (element == parameter) {
-                                number += 1
+                    if (functionDeclarator.parameter != null) {
+                        functionDeclarator.parameter!!.iterator().forEachRemaining { parameter ->
+                            run {
+                                if (element == parameter) {
+                                    number += 1
+                                }
                             }
                         }
                     }
                 }
             }
-            if (number == functionDeclarator.parameter!!.size) {
-                return true
+            if (functionDeclarator.parameter != null) {
+                if (number == functionDeclarator.parameter!!.size) {
+                    return true
+                }
             }
         }
         return false
