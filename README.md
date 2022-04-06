@@ -2,6 +2,8 @@
 C/C++ Code EXtractor (***CEX***) is a code analysis tool used to find irregularities with C/C++ based software
 projects.
 
+![](image/WildebeestKeeper.png)
+
 Historically, the suffix for a C++ source file was .C. This caused a few problems the first time C++ was ported to a system where case wasn't significant in the filename.
 
 Different users adopted different solutions: .cc, .cpp, .cxx and possibly others. Today, outside of the Unix world, it's mostly .cpp. Unix seems to use .cc more often.
