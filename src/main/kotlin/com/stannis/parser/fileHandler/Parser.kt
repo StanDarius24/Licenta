@@ -23,14 +23,16 @@ class Parser {
     }
 
     private fun testFunction(): (Path) -> Boolean {
-        return { item -> !item.toString().contains("cmake-build-debug")
-            DirReader.isCOrCppFileRelated(item.fileName.toString()) &&
-                    Files.isRegularFile(item)
+        return { item ->
+            !item.toString().contains("cmake-build-debug")
+            DirReader.isCOrCppFileRelated(item.fileName.toString()) && Files.isRegularFile(item)
         }
     }
     fun justDoSmth(absolutPath: String, astVisitorOverride: ASTVisitorOverride) {
 
-        FileSelector.setListOfPathsParam(DirReader.getAllFilesInResources(absolutPath, testFunction()))
+        FileSelector.setListOfPathsParam(
+            DirReader.getAllFilesInResources(absolutPath, testFunction())
+        )
         var filepath = FileSelector.getHeaderClassFirst()
         while (filepath != "") {
             if (filepath.contains(".h")) {
@@ -43,7 +45,8 @@ class Parser {
             CompositeTypeRegistry.setPath(filepath)
             val dir = filepath.split(absolutPath)[1]
             dir.subSequence(1, dir.length)
-            val pathToWrite = DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
+            val pathToWrite =
+                DirReader.makedir(OperatingSystem.getSeparator() + dir.subSequence(1, dir.length))
             val data = Reader.readFileAsLinesUsingBufferedReader(filepath)
             val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
 
@@ -116,53 +119,71 @@ class Parser {
         projectPath: String
     ) {
         DirReader.folder = projectPath
-        filesPath.iterator().forEachRemaining { filepath -> run {
-            CompositeTypeRegistry.setPath(absolutPath + OperatingSystem.getSeparator() + filepath)
-            ProjectVcxprojComplexRegistry.setFilePath(absolutPath + OperatingSystem.getSeparator() + filepath)
-            DirReader.makedir(absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath)
-            val data = Reader.readFileAsLinesUsingBufferedReader(absolutPath + OperatingSystem.getSeparator() + filepath)
-            val translationUnit: IASTTranslationUnit = getIASTTranslationUnit(data.toCharArray())
-            astVisitorOverride.shouldVisitNames = true
-            astVisitorOverride.shouldVisitDeclarations = true
-            astVisitorOverride.shouldVisitInitializers = true
-            astVisitorOverride.shouldVisitParameterDeclarations = true
-            astVisitorOverride.shouldVisitDeclarators = true
-            astVisitorOverride.shouldVisitDeclSpecifiers = true
-            astVisitorOverride.shouldVisitArrayModifiers = true
-            astVisitorOverride.shouldVisitPointerOperators = true
-            astVisitorOverride.shouldVisitAttributes = true
-            astVisitorOverride.shouldVisitTokens = true
-            astVisitorOverride.shouldVisitExpressions = true
-            astVisitorOverride.shouldVisitStatements = true
-            astVisitorOverride.shouldVisitTypeIds = true
-            astVisitorOverride.shouldVisitEnumerators = true
-            astVisitorOverride.shouldVisitTranslationUnit = true
-            astVisitorOverride.shouldVisitProblems = true
-            astVisitorOverride.shouldVisitDesignators = true
-            astVisitorOverride.shouldVisitBaseSpecifiers = true
-            astVisitorOverride.shouldVisitNamespaces = true
-            astVisitorOverride.shouldVisitTemplateParameters = true
-            astVisitorOverride.shouldVisitCaptures = true
-            astVisitorOverride.shouldVisitVirtSpecifiers = true
-            astVisitorOverride.shouldVisitDecltypeSpecifiers = true
-            astVisitorOverride.includeInactiveNodes = true
-            astVisitorOverride.shouldVisitAmbiguousNodes = true
-            astVisitorOverride.shouldVisitImplicitNames = true
-            astVisitorOverride.shouldVisitImplicitNameAlternates = true
-            astVisitorOverride.shouldVisitImplicitDestructorNames = true
-            TranslationUnitRegistry.listOfDirectives = translationUnit.includeDirectives.map { element -> element.toString() }
-            translationUnit.accept(astVisitorOverride)
-            TranslationUnitRegistry.createTranslationUnit()
-            TranslationUnitRegistry.clearAllData()
-            val builder = JsonBuilder()
-            val newPath = absolutPath.split(OperatingSystem.getSeparator())
-            newPath.dropLast(1)
-            val dawdsa = absolutPath.split(projectPath)[1]
-            val fileToWrite = DirReader.createfile(dawdsa + OperatingSystem.getSeparator() +"$filepath.json")
-            fileToWrite.bufferedWriter().use { out ->
-                out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+        filesPath.iterator().forEachRemaining { filepath ->
+            run {
+                CompositeTypeRegistry.setPath(
+                    absolutPath + OperatingSystem.getSeparator() + filepath
+                )
+                ProjectVcxprojComplexRegistry.setFilePath(
+                    absolutPath + OperatingSystem.getSeparator() + filepath
+                )
+                DirReader.makedir(
+                    absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath
+                )
+                if (Reader.checkIfFileExist(absolutPath + OperatingSystem.getSeparator() + filepath)
+                ) {
+                    val data =
+                        Reader.readFileAsLinesUsingBufferedReader(
+                            absolutPath + OperatingSystem.getSeparator() + filepath
+                        )
+                    val translationUnit: IASTTranslationUnit =
+                        getIASTTranslationUnit(data.toCharArray())
+                    astVisitorOverride.shouldVisitNames = true
+                    astVisitorOverride.shouldVisitDeclarations = true
+                    astVisitorOverride.shouldVisitInitializers = true
+                    astVisitorOverride.shouldVisitParameterDeclarations = true
+                    astVisitorOverride.shouldVisitDeclarators = true
+                    astVisitorOverride.shouldVisitDeclSpecifiers = true
+                    astVisitorOverride.shouldVisitArrayModifiers = true
+                    astVisitorOverride.shouldVisitPointerOperators = true
+                    astVisitorOverride.shouldVisitAttributes = true
+                    astVisitorOverride.shouldVisitTokens = true
+                    astVisitorOverride.shouldVisitExpressions = true
+                    astVisitorOverride.shouldVisitStatements = true
+                    astVisitorOverride.shouldVisitTypeIds = true
+                    astVisitorOverride.shouldVisitEnumerators = true
+                    astVisitorOverride.shouldVisitTranslationUnit = true
+                    astVisitorOverride.shouldVisitProblems = true
+                    astVisitorOverride.shouldVisitDesignators = true
+                    astVisitorOverride.shouldVisitBaseSpecifiers = true
+                    astVisitorOverride.shouldVisitNamespaces = true
+                    astVisitorOverride.shouldVisitTemplateParameters = true
+                    astVisitorOverride.shouldVisitCaptures = true
+                    astVisitorOverride.shouldVisitVirtSpecifiers = true
+                    astVisitorOverride.shouldVisitDecltypeSpecifiers = true
+                    astVisitorOverride.includeInactiveNodes = true
+                    astVisitorOverride.shouldVisitAmbiguousNodes = true
+                    astVisitorOverride.shouldVisitImplicitNames = true
+                    astVisitorOverride.shouldVisitImplicitNameAlternates = true
+                    astVisitorOverride.shouldVisitImplicitDestructorNames = true
+                    TranslationUnitRegistry.listOfDirectives =
+                        translationUnit.includeDirectives.map { element -> element.toString() }
+                    translationUnit.accept(astVisitorOverride)
+                    TranslationUnitRegistry.createTranslationUnit()
+                    TranslationUnitRegistry.clearAllData()
+                    val builder = JsonBuilder()
+                    val newPath = absolutPath.split(OperatingSystem.getSeparator())
+                    newPath.dropLast(1)
+                    val dawdsa = absolutPath.split(projectPath)[1]
+                    val fileToWrite =
+                        DirReader.createfile(
+                            dawdsa + OperatingSystem.getSeparator() + "$filepath.json"
+                        )
+//                    fileToWrite.bufferedWriter().use { out ->
+//                        out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+//                    }
+                }
             }
-        }
         }
         println()
     }
@@ -180,25 +201,38 @@ class Parser {
         astVisitorOverride: ASTVisitorOverride,
         projectPath: String
     ) {
-        VcxprojParser.mapOfData.iterator().forEachRemaining { element -> run {
-            element.value.iterator().forEachRemaining { valueElement -> run {
-                ProjectVcxprojComplexRegistry.setVcxProj(valueElement)
-                if (valueElement.listofIncludedModules != null) {
-                    println()
+        VcxprojParser.mapOfData.iterator().forEachRemaining { element ->
+            run {
+                println()
+                element.value.iterator().forEachRemaining { valueElement ->
+                    run {
+                        ProjectVcxprojComplexRegistry.setVcxProj(valueElement)
+                        if (valueElement.listofIncludedModules != null) {
+                            println()
+                        }
+                        val absolutProjectPath =
+                            valueElement
+                                .path
+                                .subSequence(
+                                    0,
+                                    valueElement.path.lastIndexOf(OperatingSystem.getSeparator())
+                                )
+                                .toString()
+                        if (valueElement.listOfHeaderFiles != null) {
+                            parseFiles(
+                                valueElement.listOfHeaderFiles as ArrayList<String>?,
+                                absolutProjectPath,
+                                astVisitorOverride,
+                                projectPath
+                            )
+                        }
+                    }
                 }
-                val absolutProjectPath =
-                    valueElement.path.subSequence(0, valueElement.path.lastIndexOf(OperatingSystem.getSeparator()))
-                        .toString()
-                parseFiles(
-                    valueElement.listOfHeaderFiles as ArrayList<String>?,
-                    absolutProjectPath,
-                    astVisitorOverride,
-                    projectPath
-                )
-            } }
-        } }
-//        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter { lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
+            }
+        }
+        println()
+        //        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter {
+        // lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
     }
-
 }
 
