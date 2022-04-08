@@ -3,7 +3,7 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.SimpleDeclaration
-import com.stannis.function.DeclaratorParentExtractor
+import com.stannis.function.ParentExtractor
 import com.stannis.function.SimpleDeclarationRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -27,7 +27,7 @@ object SimpleDeclarationService {
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
         SimpleDeclarationRegistry.addToList(
             simpleDeclaration,
-            DeclaratorParentExtractor.extractParentasFunctionCall(declaration)
+            ParentExtractor.extractParentasFunctionCall(declaration)
         )
         return true
     }

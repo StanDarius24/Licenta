@@ -16,7 +16,6 @@ object TranslationUnitRegistry {
         finalTranslation.functionCallsWithoutImplementation = FunctionDeclaratorRegistry.list
         finalTranslation.classList = CompositeTypeRegistry.list
         ProjectVcxprojComplexRegistry.addFinalTranslation(finalTranslation)
-        println()
     }
 
     fun clearAllData() {
