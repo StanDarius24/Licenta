@@ -14,6 +14,7 @@ fun main() {
     val parser = Parser()
     val astVisitorOverride = ASTVisitorOverride()
     parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride, projectPath)
+    println()
     //    parser.parseHeaderFiles(
     //
     // "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln",

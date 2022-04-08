@@ -17,40 +17,25 @@ object ProjectVcxprojComplexRegistry {
             parsedList = ArrayList()
             val list = ArrayList<TranslationWithPath>()
             list.add(TranslationWithPath(finalTranslation, filePath))
-            (parsedList as ArrayList).add(
-                ComplexFinalTranslation(
-                    list,
-                    vcxprojStructure
-                )
-            )
+            (parsedList as ArrayList).add(ComplexFinalTranslation(list, vcxprojStructure))
         } else {
             var bool1 = false
             parsedList.iterator().forEachRemaining { complexFinalTranslation ->
                 run {
                     if (complexFinalTranslation.vcxprojStructure.equals(vcxprojStructure)) {
-                        complexFinalTranslation.listOfTranslation.add(
-                            TranslationWithPath(
-                                finalTranslation,
-                                filePath
-                            )
-                        )
+                        val translationWithPath = TranslationWithPath(finalTranslation, filePath)
+                        if (!complexFinalTranslation.listOfTranslation.contains(translationWithPath)
+                        ) {
+                            complexFinalTranslation.listOfTranslation.add(translationWithPath)
+                        }
                         bool1 = true
                     }
                 }
             }
             if (!bool1) {
                 val listx = ArrayList<TranslationWithPath>()
-                listx.add(
-                    TranslationWithPath(
-                        finalTranslation,
-                        filePath
-                    )
-                )
-                (parsedList as ArrayList).add(
-                    ComplexFinalTranslation(
-                        listx, vcxprojStructure
-                    )
-                )
+                listx.add(TranslationWithPath(finalTranslation, filePath))
+                (parsedList as ArrayList).add(ComplexFinalTranslation(listx, vcxprojStructure))
             }
         }
         println()
@@ -63,5 +48,4 @@ object ProjectVcxprojComplexRegistry {
     fun setFilePath(s: String) {
         filePath = s
     }
-
 }
