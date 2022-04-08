@@ -10,5 +10,6 @@ data class FinalTranslation(
     var internDeclaration: ArrayList<DeclarationWithParent>?,
     var methodsWithFunctionCalls: ArrayList<FunctionDefinition>?,
     var functionCallsWithoutImplementation: ArrayList<FunctionDeclarator>?,
+    var classList: ArrayList<ComplexCompositeTypeSpecifier>?,
     override val type: String = "FinalTranslation"
 ) : Statement

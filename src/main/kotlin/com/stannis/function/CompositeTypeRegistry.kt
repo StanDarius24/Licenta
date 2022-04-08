@@ -24,6 +24,10 @@ object CompositeTypeRegistry {
             parent = parent.parent as ASTNode
         }
         val datax = (parent.allPreprocessorStatements).map { library -> Name(library.rawSignature) }
+        if (node.declarations != null) {
+            SimpleDeclarationRegistry.removeDeclarationBecouseClassDetected(node.declarations)
+            SimpleDeclarationRegistry.removeGlobalClassDetected(node)
+        }
         list!!.add(ComplexCompositeTypeSpecifier(node, this.filepath, datax))
     }
 
