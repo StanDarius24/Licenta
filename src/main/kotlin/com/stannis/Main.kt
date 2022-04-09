@@ -7,7 +7,7 @@ import com.stannis.parser.visitor.ASTVisitorOverride
 
 fun main() {
     val path =
-        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\project64-develop\\Project64.sln"
+        "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Project64.sln"
     val projectPath = path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator())).toString()
 
     SlnParser.solveSln(path)

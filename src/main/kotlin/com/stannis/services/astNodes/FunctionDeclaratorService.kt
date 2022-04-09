@@ -17,7 +17,7 @@ object FunctionDeclaratorService {
             ASTNodeService.solveASTNode(node.name as ASTNode, anonimStatement)
             functionDeclarator.name = anonimStatement.statement
         }
-        if (node.parameters.size > 0) {
+        if (node.parameters.isNotEmpty()) {
             node.parameters.iterator().forEachRemaining { param ->
                 run {
                     val anonimStatement1 = AnonimStatement(null)
@@ -27,6 +27,6 @@ object FunctionDeclaratorService {
             }
         }
         StatementMapper.addStatementToStatement(statement!!, functionDeclarator)
-        FunctionDeclaratorRegistry.addToList(functionDeclarator)
+        FunctionDeclaratorRegistry.addToList(functionDeclarator, node)
     }
 }

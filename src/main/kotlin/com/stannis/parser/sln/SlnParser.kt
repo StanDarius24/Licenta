@@ -27,7 +27,7 @@ object SlnParser {
                         var dependencylist: List<String>?
                         val dependency =
                             element.split(
-                                "ProjectSection(ProjectDependencies) = postProject\r\n\t\t"
+                                "ProjectSection(ProjectDependencies) = postProject"
                             )[1]
                                 .split("\tEndProjectSection")[0]
                         dependencylist =

@@ -3,6 +3,8 @@ package com.stannis.function
 import com.stannis.dataModel.statementTypes.FunctionDeclarator
 import com.stannis.dataModel.statementTypes.Name
 import com.stannis.dataModel.statementTypes.QualifiedName
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator
 
 object FunctionDeclaratorRegistry {
 
@@ -15,20 +17,25 @@ object FunctionDeclaratorRegistry {
     var sw: Boolean = false
 
     fun addToList(
-        functionDeclarator: FunctionDeclarator
+        functionDeclarator: FunctionDeclarator,
+        node: CPPASTFunctionDeclarator
     ) { // declarari de functii, fara body. metode fara implementare, interfete etc.
-        if (list == null) { // here
-            list = ArrayList()
-        } else {
-            if (functionDeclarator.name is Name) {
-                sw = solveName(functionDeclarator)
-            } else if (functionDeclarator.name is QualifiedName) {
-                sw = solveQualifiedName(functionDeclarator)
+        if (ParentExtractor.extractParentForFunctionDeclarator(node) !is
+                    CPPASTCompositeTypeSpecifier
+        ) {
+            if (list == null) { // here
+                list = ArrayList()
+            } else {
+                if (functionDeclarator.name is Name) {
+                    sw = solveName(functionDeclarator)
+                } else if (functionDeclarator.name is QualifiedName) {
+                    sw = solveQualifiedName(functionDeclarator)
+                }
             }
-        }
-        if (!sw) {
-            list!!.add(functionDeclarator)
-            println()
+            if (!sw) {
+                list!!.add(functionDeclarator)
+                println()
+            }
         }
     }
 

@@ -50,19 +50,22 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        FunctionDeclaratorRegistry.list!!.iterator().forEachRemaining { functionDeclarator ->
-            run {
-                if (statement.name is IdExpression) {
-                    if (functionDeclarator.name == (statement.name as IdExpression).expression) {
-                        bool1 = true
-                        val decl =
-                            DeclarationWithParent(
-                                SimpleDeclaration(null, null),
-                                Name("Internal Method Declaration")
-                            )
-                        val functionCallWithDeclaration =
-                            FunctionCallWithDeclaration(statement, decl, null)
-                        newFunctionDefinition.addToBody(functionCallWithDeclaration)
+        if (FunctionDeclaratorRegistry.list != null) {
+            FunctionDeclaratorRegistry.list!!.iterator().forEachRemaining { functionDeclarator ->
+                run {
+                    if (statement.name is IdExpression) {
+                        if (functionDeclarator.name == (statement.name as IdExpression).expression
+                        ) {
+                            bool1 = true
+                            val decl =
+                                DeclarationWithParent(
+                                    SimpleDeclaration(null, null),
+                                    Name("Internal Method Declaration")
+                                )
+                            val functionCallWithDeclaration =
+                                FunctionCallWithDeclaration(statement, decl, null)
+                            newFunctionDefinition.addToBody(functionCallWithDeclaration)
+                        }
                     }
                 }
             }

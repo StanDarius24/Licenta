@@ -6,6 +6,7 @@ import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
 import com.stannis.parser.sln.VcxprojParser
 import com.stannis.parser.visitor.ASTVisitorOverride
+import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
@@ -39,20 +40,25 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
+                ASTNodeService.modifier = "public"
+                val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
+                if(fileCorectedPath == "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Source/3rdParty/discord-rpc/backoff.h") {
+                    println()
+                }
                 CompositeTypeRegistry.setPath(
-                    absolutPath + OperatingSystem.getSeparator() + filepath
+                    fileCorectedPath
                 )
                 ProjectVcxprojComplexRegistry.setFilePath(
-                    absolutPath + OperatingSystem.getSeparator() + filepath
+                    fileCorectedPath
                 )
                 DirReader.makedir(
                     absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath
                 )
-                if (Reader.checkIfFileExist(absolutPath + OperatingSystem.getSeparator() + filepath)
+                if (Reader.checkIfFileExist(fileCorectedPath)
                 ) {
                     val data =
                         Reader.readFileAsLinesUsingBufferedReader(
-                            absolutPath + OperatingSystem.getSeparator() + filepath
+                            fileCorectedPath
                         )
                     val translationUnit: IASTTranslationUnit =
                         getIASTTranslationUnit(data.toCharArray())
