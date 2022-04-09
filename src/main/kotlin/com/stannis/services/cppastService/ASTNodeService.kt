@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object ASTNodeService {
 
-    private var modifier = "public"
+    var modifier = "public"
 
     fun solveASTNode(node: ASTNode, statement: Statement?) {
         when (node) {

@@ -9,6 +9,7 @@ import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTranslationUnit
 
 object SimpleDeclarationRegistry {
 
@@ -25,16 +26,18 @@ object SimpleDeclarationRegistry {
                         solveFunctionDefinition(parent, anonimStatement)
                         declarationWithParent.parent =
                             anonimStatement.statement as FunctionDefinition
-                        if (globalDeclaration == null) {
-                            globalDeclaration = ArrayList()
-                        }
-                        if (internDeclaration == null) {
-                            internDeclaration = ArrayList()
-                        }
-                        if (declarationWithParent.parent == null) {
-                            globalDeclaration!!.add(declarationWithParent)
-                        } else {
-                            internDeclaration!!.add(declarationWithParent)
+                        if(!checkIfClassStructure(parent)) {
+                            if (globalDeclaration == null) {
+                                globalDeclaration = ArrayList()
+                            }
+                            if (internDeclaration == null) {
+                                internDeclaration = ArrayList()
+                            }
+                            if (declarationWithParent.parent == null) {
+                                globalDeclaration!!.add(declarationWithParent)
+                            } else {
+                                internDeclaration!!.add(declarationWithParent)
+                            }
                         }
                     }
                     //                else if (parent is CPPASTCompositeTypeSpecifier) {
@@ -51,6 +54,14 @@ object SimpleDeclarationRegistry {
                 globalDeclaration!!.add(DeclarationWithParent(data, null))
             }
         }
+    }
+
+    private fun checkIfClassStructure(parent: CPPASTFunctionDefinition): Boolean {
+        var newparent = parent.parent
+        while (newparent != null && !(newparent is CPPASTCompositeTypeSpecifier) && !(newparent is CPPASTTranslationUnit)) {
+            newparent = newparent.parent
+        }
+        return newparent is CPPASTCompositeTypeSpecifier
     }
 
     fun clearList() {
@@ -71,36 +82,6 @@ object SimpleDeclarationRegistry {
         StatementMapper.addStatementToStatement(statement!!, composite)
     }
 
-    fun removeDeclarationBecouseClassDetected(list: ArrayList<Statement>?) {
-        list!!.iterator().forEachRemaining { element ->
-            run {
-                var cacheData: DeclarationWithParent? = null
-                if (internDeclaration != null) {
-                    internDeclaration!!.iterator().forEachRemaining { internDecl ->
-                        run {
-                            if (cacheData == null && internDecl.declaration == element) {
-                                cacheData = internDecl
-                            }
-                        }
-                    }
-                    if (cacheData != null) {
-                        internDeclaration!!.remove(cacheData)
-                    }
-                }
-                //                if (globalDeclaration != null && cacheData == null) {
-                //                    globalDeclaration!!.iterator().forEachRemaining { globalDecl
-                // ->
-                //                        run {
-                //                            if (globalDecl.declaration.equals(element)) {
-                //                                cacheData = globalDecl
-                //                            }
-                //                        }
-                //                    }
-                //                    if(cacheData != null) {
-                //                        globalDeclaration!!.remove(cacheData)
-                //                    }
-                //                }
-            }
-        }
-    }
+
+
 }

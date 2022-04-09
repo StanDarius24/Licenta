@@ -55,6 +55,24 @@ object FileSelector {
         }
     }
 
+    fun solvePath(s: String, filepath: String): String {
+        val finalvalue = s.split("/")
+        if(filepath.contains("\\")) {
+            filepath.split("\\").forEach { element -> run {
+                if(element == "..") {
+                    (finalvalue as ArrayList).removeAt(finalvalue.size-1)
+                } else {
+                    (finalvalue as ArrayList).add(element)
+                }
+            } }
+            return finalvalue.joinToString(OperatingSystem.getSeparator())
+        }
+        filepath.split(OperatingSystem.getSeparator()).forEach { elem -> run {
+            (finalvalue as ArrayList).add(elem)
+        } }
+        return finalvalue.joinToString(OperatingSystem.getSeparator())
+    }
+
 }
 
 private fun <E> List<E>.toArray(): ArrayList<String> {

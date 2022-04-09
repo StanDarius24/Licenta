@@ -34,9 +34,19 @@ object FunctionCallsService {
         while (!(parent is CPPASTFunctionDefinition) && !(parent is CPPASTTranslationUnit)) {
             parent = parent.parent as ASTNode
         }
-        if (parent is CPPASTFunctionDefinition) {
-            FunctionDefinitionRegistry.addFunctionCallToFunctionDefinition(functionCalls, parent)
+        if(!checkIfClassDefinition(parent)) {
+            if (parent is CPPASTFunctionDefinition) {
+                FunctionDefinitionRegistry.addFunctionCallToFunctionDefinition(functionCalls, parent)
+            }
         }
+    }
+
+    private fun checkIfClassDefinition(parent: ASTNode): Boolean {
+        var newparent = parent.parent
+        while (newparent != null && !(newparent is CPPASTCompositeTypeSpecifier) && !(newparent is CPPASTTranslationUnit)) {
+            newparent = newparent.parent
+        }
+        return newparent is CPPASTCompositeTypeSpecifier
     }
 
     private fun declarationStatementForArgumentType(
