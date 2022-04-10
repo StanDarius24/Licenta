@@ -1,5 +1,7 @@
 package com.stannis
 
+import com.stannis.linker.DeclarationLinkToClassService
+import com.stannis.linker.LinkClassDeclarationsService
 import com.stannis.parser.fileHandler.OperatingSystem
 import com.stannis.parser.fileHandler.Parser
 import com.stannis.parser.sln.SlnParser
@@ -14,6 +16,8 @@ fun main() {
     val parser = Parser()
     val astVisitorOverride = ASTVisitorOverride()
     parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride, projectPath)
+    LinkClassDeclarationsService.declarationsToClass()
+    DeclarationLinkToClassService.link()
     println()
     //    parser.parseHeaderFiles(
     //
