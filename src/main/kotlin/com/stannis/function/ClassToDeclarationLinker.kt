@@ -21,13 +21,12 @@ object ClassToDeclarationLinker {
                                                 .declaration is
                                                 Declarator
                                         ) {
-                                            if (((functionCallWithDeclaration
-                                                    .declaration as
-                                                        Declarator)
-                                                    .initialization as
+                                            if (((functionCallWithDeclaration.declaration as
+                                                            Declarator)
+                                                        .initialization as
                                                         EqualsInitializer)
                                                     .functionName is
-                                                        IdExpression
+                                                    IdExpression
                                             ) {
                                                 if ((complexClass.our_class.name as Name).name
                                                         .equals(

@@ -42,7 +42,7 @@ class Parser {
             run {
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
-                if(fileCorectedPath == "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Source/3rdParty/discord-rpc/backoff.h") {
+                if(fileCorectedPath == "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Source/3rdParty/discord-rpc/include/discord_rpc.h") {
                     println()
                 }
                 CompositeTypeRegistry.setPath(

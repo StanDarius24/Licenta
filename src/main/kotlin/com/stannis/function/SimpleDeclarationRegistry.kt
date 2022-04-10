@@ -3,7 +3,6 @@ package com.stannis.function
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.complexStatementTypes.DeclarationWithParent
 import com.stannis.dataModel.statementTypes.*
-import com.stannis.services.astNodes.CompositeTypeSpecifierService
 import com.stannis.services.astNodes.FunctionDefinitionService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -26,7 +25,7 @@ object SimpleDeclarationRegistry {
                         solveFunctionDefinition(parent, anonimStatement)
                         declarationWithParent.parent =
                             anonimStatement.statement as FunctionDefinition
-                        if(!checkIfClassStructure(parent)) {
+                        if (!checkIfClassStructure(parent)) {
                             if (globalDeclaration == null) {
                                 globalDeclaration = ArrayList()
                             }
@@ -40,12 +39,6 @@ object SimpleDeclarationRegistry {
                             }
                         }
                     }
-                    //                else if (parent is CPPASTCompositeTypeSpecifier) {
-                    //                    solveClassDefinition(parent, anonimStatement)
-                    //                    declarationWithParent.parent =
-                    //                        anonimStatement.statement as CompositeTypeSpecifier
-                    //                }
-
                 }
             } else if (data.declSpecifier is EnumerationSpecifier) {
                 if (globalDeclaration == null) {
@@ -58,7 +51,9 @@ object SimpleDeclarationRegistry {
 
     private fun checkIfClassStructure(parent: CPPASTFunctionDefinition): Boolean {
         var newparent = parent.parent
-        while (newparent != null && !(newparent is CPPASTCompositeTypeSpecifier) && !(newparent is CPPASTTranslationUnit)) {
+        while (newparent != null &&
+            !(newparent is CPPASTCompositeTypeSpecifier) &&
+            !(newparent is CPPASTTranslationUnit)) {
             newparent = newparent.parent
         }
         return newparent is CPPASTCompositeTypeSpecifier
@@ -73,15 +68,4 @@ object SimpleDeclarationRegistry {
         val functionDefinition = FunctionDefinitionService.setFunction(funcDef)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
     }
-
-    private fun solveClassDefinition(
-        classDef: CPPASTCompositeTypeSpecifier,
-        statement: Statement?
-    ) {
-        val composite = CompositeTypeSpecifierService.setClassDefinitions(classDef)
-        StatementMapper.addStatementToStatement(statement!!, composite)
-    }
-
-
-
 }
