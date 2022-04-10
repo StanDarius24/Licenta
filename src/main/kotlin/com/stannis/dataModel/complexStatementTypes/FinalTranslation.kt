@@ -3,6 +3,7 @@ package com.stannis.dataModel.complexStatementTypes
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.FunctionDeclarator
 import com.stannis.dataModel.statementTypes.FunctionDefinition
+import com.stannis.dataModel.statementTypes.LinkageSpecification
 
 data class FinalTranslation(
     var directives: ArrayList<String>?,
@@ -11,5 +12,6 @@ data class FinalTranslation(
     var methodsWithFunctionCalls: ArrayList<FunctionDefinition>?,
     var functionCallsWithoutImplementation: ArrayList<FunctionDeclarator>?,
     var classList: ArrayList<ComplexCompositeTypeSpecifier>?,
+    var linkageSpecification: ArrayList<LinkageSpecification>?,
     override val type: String = "FinalTranslation"
 ) : Statement

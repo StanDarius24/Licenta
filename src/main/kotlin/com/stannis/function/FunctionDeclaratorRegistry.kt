@@ -5,6 +5,7 @@ import com.stannis.dataModel.statementTypes.Name
 import com.stannis.dataModel.statementTypes.QualifiedName
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification
 
 object FunctionDeclaratorRegistry {
 
@@ -21,7 +22,9 @@ object FunctionDeclaratorRegistry {
         node: CPPASTFunctionDeclarator
     ) { // declarari de functii, fara body. metode fara implementare, interfete etc.
         if (ParentExtractor.extractParentForFunctionDeclarator(node) !is
-                    CPPASTCompositeTypeSpecifier
+                CPPASTCompositeTypeSpecifier &&
+                ParentExtractor.extractParentForFunctionDeclarator(node) !is
+                    CPPASTLinkageSpecification
         ) {
             if (list == null) { // here
                 list = ArrayList()
