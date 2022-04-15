@@ -13,9 +13,6 @@ object DirReader {
         fun getAllFilesInResources(finalPath: String, test: (input: Path) -> Boolean): ArrayList<String> {
             folder = finalPath
             OperatingSystem.getOPSystem()
-            val data = (finalPath.split(OperatingSystem.getSeparator()) as java.util.ArrayList)
-            data.remove(data.last())
-            data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() +"result"
             return getFilesFromDir(finalPath, test)
         }
 

@@ -42,9 +42,6 @@ class Parser {
             run {
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
-                if(fileCorectedPath == "/home/stan/Desktop/Licenta/src/main/resources/project64-develop/Source/3rdParty/discord-rpc/include/discord_rpc.h") {
-                    println()
-                }
                 CompositeTypeRegistry.setPath(
                     fileCorectedPath
                 )
@@ -95,7 +92,6 @@ class Parser {
                     translationUnit.accept(astVisitorOverride)
                     TranslationUnitRegistry.createTranslationUnit()
                     TranslationUnitRegistry.clearAllData()
-                    val builder = JsonBuilder()
                     val newPath = absolutPath.split(OperatingSystem.getSeparator())
                     newPath.dropLast(1)
                     val dawdsa = absolutPath.split(projectPath)[1]
@@ -151,14 +147,15 @@ class Parser {
                                 astVisitorOverride,
                                 projectPath
                             )
+                        } else {
+                            println()
                         }
                     }
                 }
             }
         }
         println()
-        //        VcxprojParser.mapOfData.filter { element -> element.value.size == 1 }.filter {
-        // lastElem -> lastElem.value[0].listofIncludedModules.size == 0 } // Primitive functions
+
     }
 }
 

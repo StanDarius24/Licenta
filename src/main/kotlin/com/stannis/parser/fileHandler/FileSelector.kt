@@ -10,16 +10,12 @@ object FileSelector {
 
     fun setListOfPathsParam(list: ArrayList<String>) {
         this.listOfPaths = list
-        this.listOfNames = list.map { data ->
-            run {
-                data.split(OperatingSystem.getOPSystem()).last()
-            }
-        }.toArray()
+        this.listOfNames =
+            list.map { data -> run { data.split(OperatingSystem.getOPSystem()).last() } }.toArray()
     }
 
     fun getHeaderClassFirst(): String {
-        if (listOfNames.isEmpty())
-        {
+        if (listOfNames.isEmpty()) {
             return ""
         }
         val name = listOfNames.first()
@@ -33,11 +29,12 @@ object FileSelector {
 
     private fun checkIfCppExists(path: String) {
         val x = path.split(OperatingSystem.getSeparator())
-        val ras = x.get(x.size -1).split(".")[0]
+        val ras = x.get(x.size - 1).split(".")[0]
         nameSet = listOfNames.find { pathName -> pathName.contains(ras) }
     }
 
-    fun getCppFile(): String { // C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\rec\test-C\Test.cpp
+    fun getCppFile():
+            String { // C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\rec\test-C\Test.cpp
         val data = sendCorespondingFileName(nameSet!!, true)
         listOfNames.remove(nameSet)
         return data
@@ -45,41 +42,45 @@ object FileSelector {
 
     private fun sendCorespondingFileName(name: String, type: Boolean): String {
         return if (type) {
-            val x = listOfPaths.find { requestedString -> requestedString.contains(name) }.toString()
+            val x =
+                listOfPaths.find { requestedString -> requestedString.contains(name) }.toString()
             listOfPaths.remove(x)
             x
         } else {
-            val x = listOfPaths.find { requestedString -> requestedString.contains(name) }.toString()
+            val x =
+                listOfPaths.find { requestedString -> requestedString.contains(name) }.toString()
             listOfPaths.remove(x)
             x
         }
     }
 
     fun solvePath(s: String, filepath: String): String {
-        val finalvalue = s.split("/")
-        if(filepath.contains("\\")) {
-            filepath.split("\\").forEach { element -> run {
-                if(element == "..") {
-                    (finalvalue as ArrayList).removeAt(finalvalue.size-1)
-                } else {
-                    (finalvalue as ArrayList).add(element)
+        val finalvalue = s.split("/").toArray()
+        if (filepath.contains("\\")) {
+            filepath.split("\\").forEach { element ->
+                run {
+                    if (element == "..") {
+                        finalvalue.removeAt(finalvalue.size - 1)
+                    } else {
+                        finalvalue.add(element)
+                    }
                 }
-            } }
+            }
             return finalvalue.joinToString(OperatingSystem.getSeparator())
         }
-        filepath.split(OperatingSystem.getSeparator()).forEach { elem -> run {
-            (finalvalue as ArrayList).add(elem)
-        } }
+        if (finalvalue.size > 1) {
+            filepath.split(OperatingSystem.getSeparator()).forEach { elem ->
+                run { finalvalue.add(elem) }
+            }
+        } else {
+            return finalvalue[0] + OperatingSystem.getSeparator() + filepath
+        }
         return finalvalue.joinToString(OperatingSystem.getSeparator())
     }
-
 }
 
 private fun <E> List<E>.toArray(): ArrayList<String> {
     val data = ArrayList<String>()
-    this.iterator().forEachRemaining { value -> run {
-        data.add(value.toString())
-    } }
+    this.iterator().forEachRemaining { value -> run { data.add(value.toString()) } }
     return data
 }
-
