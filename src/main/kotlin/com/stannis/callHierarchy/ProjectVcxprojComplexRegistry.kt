@@ -23,9 +23,6 @@ object ProjectVcxprojComplexRegistry {
             parsedList.iterator().forEachRemaining { complexFinalTranslation ->
                 run {
                     if (complexFinalTranslation.vcxprojStructure.equals(vcxprojStructure)) {
-                        if (complexFinalTranslation.listOfTranslation.size == 42) {
-                            println()
-                        }
                         val translationWithPath = TranslationWithPath(finalTranslation, filePath)
                         var bool2 = false
                         complexFinalTranslation.listOfTranslation.iterator().forEachRemaining { translationWParent ->

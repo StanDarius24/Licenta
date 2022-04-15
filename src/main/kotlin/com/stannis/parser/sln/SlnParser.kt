@@ -1,6 +1,9 @@
 package com.stannis.parser.sln
 
+import com.stannis.parser.fileHandler.DirReader
 import com.stannis.parser.fileHandler.Reader
+import java.nio.file.Files
+import java.nio.file.Path
 
 object SlnParser {
     private lateinit var startSplitString: String
@@ -44,6 +47,17 @@ object SlnParser {
             }
         }
         VcxprojParser.solveProjectComplexity(slnDataList, path)
+    }
+
+
+    fun locateAllSlnFiles(pathToProject: String): List<String>? {
+        return DirReader.getAllFilesInResources(pathToProject, testx())
+    }
+
+    private fun testx(): (Path) -> Boolean {
+        return { it -> it.fileName.toString().contains(".sln") &&
+                Files.isRegularFile(it)
+        }
     }
 
 }
