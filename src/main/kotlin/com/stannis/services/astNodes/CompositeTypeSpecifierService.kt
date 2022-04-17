@@ -31,7 +31,7 @@ object CompositeTypeSpecifierService {
     fun setClassDefinitions(
         cppastCompositeTypeSpecifier: CPPASTCompositeTypeSpecifier
     ): CompositeTypeSpecifier {
-        val data = CompositeTypeSpecifier(null, null, null)
+        val data = CompositeTypeSpecifier(null, null, null, cppastCompositeTypeSpecifier.key)
         val anonimStatement1 = AnonimStatement(null)
         ASTNodeService.solveASTNode(cppastCompositeTypeSpecifier.name as ASTNode, anonimStatement1)
         data.name = anonimStatement1.statement

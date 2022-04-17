@@ -35,28 +35,25 @@ class Parser {
         filesPath: ArrayList<String>,
         astVisitorOverride: ASTVisitorOverride,
         absolutPath: String,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>
     ) {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
-                CompositeTypeRegistry.setPath(
-                    fileCorectedPath
-                )
-                ProjectVcxprojComplexRegistry.setFilePath(
-                    fileCorectedPath
-                )
-                DirReader.makedir(
-                    absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath
-                )
-                if (Reader.checkIfFileExist(fileCorectedPath)
-                ) {
-                    val data =
-                        Reader.readFileAsLinesUsingBufferedReader(
-                            fileCorectedPath
-                        )
+                CompositeTypeRegistry.setPath(fileCorectedPath)
+                ProjectVcxprojComplexRegistry.setFilePath(fileCorectedPath)
+                if (listOf.contains("parse")) {
+                    DirReader.makedir(
+                        absolutPath.split(projectPath)[1] +
+                            OperatingSystem.getSeparator() +
+                            filepath
+                    )
+                }
+                if (Reader.checkIfFileExist(fileCorectedPath)) {
+                    val data = Reader.readFileAsLinesUsingBufferedReader(fileCorectedPath)
                     val translationUnit: IASTTranslationUnit =
                         getIASTTranslationUnit(data.toCharArray())
                     astVisitorOverride.shouldVisitNames = true
@@ -92,16 +89,19 @@ class Parser {
                     translationUnit.accept(astVisitorOverride)
                     TranslationUnitRegistry.createTranslationUnit()
                     TranslationUnitRegistry.clearAllData()
-                    val newPath = absolutPath.split(OperatingSystem.getSeparator())
-                    newPath.dropLast(1)
-                    val dawdsa = absolutPath.split(projectPath)[1]
-                    val fileToWrite =
-                        DirReader.createfile(
-                            dawdsa + OperatingSystem.getSeparator() + "$filepath.json"
-                        )
-//                    fileToWrite.bufferedWriter().use { out ->
-//                        out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
-//                    }
+                    if (listOf.contains("parse")) {
+                        val newPath = absolutPath.split(OperatingSystem.getSeparator())
+                        newPath.dropLast(1)
+                        val dawdsa = absolutPath.split(projectPath)[1]
+                        val fileToWrite =
+                            DirReader.createfile(
+                                dawdsa + OperatingSystem.getSeparator() + "$filepath.json",
+                                null
+                            )
+                        fileToWrite?.bufferedWriter()?.use { out ->
+                            out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+                        }
+                    }
                 } else {
                     println()
                 }
@@ -114,15 +114,18 @@ class Parser {
         listOfFiles: ArrayList<String>?,
         absoluteProjectPath: String,
         astVisitorOverride: ASTVisitorOverride,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>
     ) {
-        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath)
+        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath, listOf)
     }
 
     fun lookUpForVcxProjAndParseHeaderFiles(
         astVisitorOverride: ASTVisitorOverride,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>
     ) {
+        ProjectVcxprojComplexRegistry.parsedList = ArrayList()
         VcxprojParser.mapOfData.iterator().forEachRemaining { element ->
             run {
                 println()
@@ -145,7 +148,8 @@ class Parser {
                                 valueElement.listOfHeaderFiles as ArrayList<String>?,
                                 absolutProjectPath,
                                 astVisitorOverride,
-                                projectPath
+                                projectPath,
+                                listOf
                             )
                         } else {
                             println()
@@ -155,7 +159,6 @@ class Parser {
             }
         }
         println()
-
     }
 }
 

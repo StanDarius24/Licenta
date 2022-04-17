@@ -1,9 +1,13 @@
 package com.stannis.parser.sln
 
+import com.stannis.parser.fileHandler.DirReader
+import com.stannis.parser.fileHandler.LogicHandler
 import com.stannis.parser.fileHandler.OperatingSystem
 import com.stannis.parser.fileHandler.Reader
 import java.io.File
 import java.io.FileNotFoundException
+import java.nio.file.Files
+import java.nio.file.Path
 
 object VcxprojParser {
 
@@ -13,43 +17,50 @@ object VcxprojParser {
     var mapOfData: Map<SlnStructure, List<VcxprojStructure>> = emptyMap()
 
     fun solveProjectComplexity(list: List<SlnStructure>?, path: String) {
-        val projectPath = path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator())).toString()
+        val projectPath =
+            path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator())).toString()
         list!!.iterator().forEachRemaining { element ->
             run {
-                if (element.path.contains(".vcxproj")) {
-                    if(OperatingSystem.getOPSystem().equals("Linux")) {
+                if (element.path.contains(".vcxproj") || element.path.contains(".vcproj")) {
+                    if (OperatingSystem.getOPSystem().equals("Linux")) {
                         element.path = element.path.replace("\\", "/")
                     }
                     try {
-                        val absolutPath = projectPath + OperatingSystem.getSeparator() + element.path
-                        createVcxproj(
-                            getFileData(absolutPath),
-                            absolutPath,
-                            element
-                        )
+                        val absolutPath =
+                            projectPath + OperatingSystem.getSeparator() + element.path
+                        if (Reader.checkIfFileExist(absolutPath)) {
+                            createVcxproj(getFileData(absolutPath), absolutPath, element)
+                        } else {
+                            val listw = listOf<String>(element.path.split(".")[0], "vcxproj")
+                            val datax = listw.joinToString(".")
+                            val pathToLostVcxproj = DirReader.getAllFilesInResources(LogicHandler.projectPath, testx(datax))
+                            if(!pathToLostVcxproj.isEmpty()) {
+                                createVcxproj(getFileData(pathToLostVcxproj[0]), absolutPath, element)
+                            }
+
+                        }
                     } catch (e: FileNotFoundException) {
                         println(e.printStackTrace())
                     }
                 } else {
                     val listOfDirectoryVcxproj = ArrayList<String>()
-                    File(path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator())).toString()).walk()
+                    File(
+                            path.subSequence(0, path.lastIndexOf(OperatingSystem.getSeparator()))
+                                .toString()
+                        )
+                        .walk()
                         .forEach { elem ->
-                            if (elem.toString().contains(
-                                    element.path.replace(
-                                        "\\s".toRegex(),
-                                        ""
-                                    )
-                                ) && elem.toString().contains(".vcxproj")
-                                && !elem.toString().contains(".user")
-                                && !elem.toString().contains(".filters")
+                            if (elem.toString()
+                                    .contains(element.path.replace("\\s".toRegex(), "")) &&
+                                    elem.toString().contains(".vcxproj") &&
+                                    !elem.toString().contains(".user") &&
+                                    !elem.toString().contains(".filters")
                             ) {
                                 listOfDirectoryVcxproj.add(elem.toString())
                             }
                         }
                     listOfDirectoryVcxproj.iterator().forEachRemaining { elementList ->
-                        run {
-                            createVcxproj(getFileData(elementList), elementList, element)
-                        }
+                        run { createVcxproj(getFileData(elementList), elementList, element) }
                     }
                 }
             }
@@ -59,8 +70,10 @@ object VcxprojParser {
 
     private fun createVcxproj(text: String, path: String, slnStructure: SlnStructure) {
         var bool1 = false
-        val list = text.split("<ItemGroup>")
-            .filter { element -> element.contains("<ClInclude ") || element.contains("<ClCompile ") }
+        val list =
+            text.split("<ItemGroup>").filter { element ->
+                element.contains("<ClInclude ") || element.contains("<ClCompile ")
+            }
         val structure = VcxprojStructure(path, null, null, null)
         solveProjectReference(structure, text)
         if (list.size > 1) {
@@ -105,18 +118,23 @@ object VcxprojParser {
 
     private fun solveProjectReference(structure: VcxprojStructure, text: String) {
         val listOfData =
-            text.split("ProjectReference Include=").filter { element -> element.contains("</ProjectReference>") }
+            text.split("ProjectReference Include=").filter { element ->
+                element.contains("</ProjectReference>")
+            }
         structure.listofIncludedModules = listOfData.map { elem -> elem.split("\"")[1] }
     }
 
     private fun solveVcxprojInternalFiles(headerFile: String): List<String> {
-        val fileList = if (headerFile.split("<ClInclude Include=\"").size > 1) {
-            headerFile.split("<ClInclude Include=\"")
-        } else {
-            headerFile.split("<ClCompile Include=\"")
+        val fileList =
+            if (headerFile.split("<ClInclude Include=\"").size > 1) {
+                headerFile.split("<ClInclude Include=\"")
+            } else {
+                headerFile.split("<ClCompile Include=\"")
+            }
+        return fileList.drop(1).filter { element -> checkExtension(element, listOfEnd) }.map {
+            element ->
+            element.subSequence(0, element.indexOf("\"")).toString()
         }
-        return fileList.drop(1).filter { element -> checkExtension(element, listOfEnd) }
-            .map { element -> element.subSequence(0, element.indexOf("\"")).toString() }
     }
 
     private fun checkExtension(text: String, termination: List<String>): Boolean {
@@ -133,5 +151,9 @@ object VcxprojParser {
 
     private fun getFileData(finalPath: String): String {
         return Reader.readFileAsLinesUsingBufferedReader(finalPath)
+    }
+
+    private fun testx(test: String): (Path) -> Boolean {
+        return { it -> it.fileName.toString().contains(test) && Files.isRegularFile(it) }
     }
 }
