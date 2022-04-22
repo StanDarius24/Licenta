@@ -4,9 +4,9 @@ import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
 
 object DeclarationLinkToClassService {
     fun link() {
-        ProjectVcxprojComplexRegistry.parsedList.forEach { complexFinalTranslation ->
+        ProjectVcxprojComplexRegistry.parsedFiles.forEach { complexFinalTranslation ->
             run {
-                complexFinalTranslation.listOfTranslation.forEach { translationWithPath ->
+                complexFinalTranslation.listOfHeaderFiles!!.forEach { translationWithPath ->
                     run {
                         println()
                     }

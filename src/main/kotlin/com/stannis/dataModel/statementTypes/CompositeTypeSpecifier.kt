@@ -6,6 +6,7 @@ data class CompositeTypeSpecifier(
     var name: Statement?,
     var baseSpec: ArrayList<Statement>?,
     var declarations: ArrayList<Statement>?,
+    var key: Int?,
     override val type: String? = "CompositeTypeSpecifier"
 ) : Statement {
     fun addStatement(statement: Statement) {

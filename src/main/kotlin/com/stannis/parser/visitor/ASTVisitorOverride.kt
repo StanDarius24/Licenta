@@ -3,12 +3,7 @@ package com.stannis.parser.visitor
 import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
-import com.stannis.function.FunctionDeclaratorRegistry
-import com.stannis.function.FunctionDefinitionRegistry
-import com.stannis.function.SimpleDeclarationRegistry
-import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.error.MultipleDeclarationWhenComposite
-import com.stannis.parser.fileHandler.Parser
 import com.stannis.services.cppastService.ASTNodeService
 import org.eclipse.cdt.core.dom.ast.*
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator
@@ -30,9 +25,6 @@ class ASTVisitorOverride : ASTVisitor() {
             return primaryBlock
         }
         private var checkHeader: Boolean = false
-        fun setCheck(bol: Boolean) {
-            checkHeader = bol
-        }
     }
 
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {
@@ -61,12 +53,6 @@ class ASTVisitorOverride : ASTVisitor() {
     }
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
-        if (Parser.bool) {
-            TranslationUnitRegistry.createTranslationUnit()
-            SimpleDeclarationRegistry.clearList()
-            FunctionDeclaratorRegistry.clearList()
-            FunctionDefinitionRegistry.clearList()
-        }
         println("Found a translationUnit: " + translationUnit.rawSignature)
         primaryBlock = PrimaryBlock(null)
         return PROCESS_CONTINUE

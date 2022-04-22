@@ -8,7 +8,7 @@ import java.nio.file.Paths
 object DirReader {
 
         lateinit var folder: String
-        lateinit var newFolderPath: String
+        private var newFolderPath: String? = null
 
         fun getAllFilesInResources(finalPath: String, test: (input: Path) -> Boolean): ArrayList<String> {
             folder = finalPath
@@ -16,7 +16,7 @@ object DirReader {
             return getFilesFromDir(finalPath, test)
         }
 
-        fun getFilesFromDir(finalPath: String, test: (input: Path) -> Boolean) :ArrayList<String> {
+        private fun getFilesFromDir(finalPath: String, test: (input: Path) -> Boolean) :ArrayList<String> {
             val list = ArrayList<String>()
             val resourcesPath = Paths.get(finalPath)
             Files.walk(resourcesPath)
@@ -59,19 +59,28 @@ object DirReader {
             return x
         }
 
-        fun createfile(p: String): File {
+        fun createfile(p: String, joinToString: String?): File? {
+            if (newFolderPath == null) {
+                newFolderPath = joinToString
+            }
             val file = File(newFolderPath + OperatingSystem.getSeparator() + p)
+            val dir = File(newFolderPath)
             try {
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
                 if (file.createNewFile()) {
                     println("File created!")
                 } else {
                     println("File alredy exists")
+                    return null
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return file
         }
+
 
     fun getHeadersFilesFromProject(absolutPath: String): ArrayList<String> {
         folder = absolutPath

@@ -35,28 +35,26 @@ class Parser {
         filesPath: ArrayList<String>,
         astVisitorOverride: ASTVisitorOverride,
         absolutPath: String,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>,
+        boolean: Boolean
     ) {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
-                CompositeTypeRegistry.setPath(
-                    fileCorectedPath
-                )
-                ProjectVcxprojComplexRegistry.setFilePath(
-                    fileCorectedPath
-                )
-                DirReader.makedir(
-                    absolutPath.split(projectPath)[1] + OperatingSystem.getSeparator() + filepath
-                )
-                if (Reader.checkIfFileExist(fileCorectedPath)
-                ) {
-                    val data =
-                        Reader.readFileAsLinesUsingBufferedReader(
-                            fileCorectedPath
-                        )
+                CompositeTypeRegistry.setPath(fileCorectedPath)
+                ProjectVcxprojComplexRegistry.setFilePath(fileCorectedPath)
+                if (listOf.contains("parse")) {
+                    DirReader.makedir(
+                        absolutPath.split(projectPath)[1] +
+                            OperatingSystem.getSeparator() +
+                            filepath
+                    )
+                }
+                if (Reader.checkIfFileExist(fileCorectedPath)) {
+                    val data = Reader.readFileAsLinesUsingBufferedReader(fileCorectedPath)
                     val translationUnit: IASTTranslationUnit =
                         getIASTTranslationUnit(data.toCharArray())
                     astVisitorOverride.shouldVisitNames = true
@@ -90,18 +88,22 @@ class Parser {
                     TranslationUnitRegistry.listOfDirectives =
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
-                    TranslationUnitRegistry.createTranslationUnit()
+                    TranslationUnitRegistry.createTranslationUnit(boolean) //here
                     TranslationUnitRegistry.clearAllData()
-                    val newPath = absolutPath.split(OperatingSystem.getSeparator())
-                    newPath.dropLast(1)
-                    val dawdsa = absolutPath.split(projectPath)[1]
-                    val fileToWrite =
-                        DirReader.createfile(
-                            dawdsa + OperatingSystem.getSeparator() + "$filepath.json"
-                        )
-//                    fileToWrite.bufferedWriter().use { out ->
-//                        out.write(builder.createJson(ASTVisitorOverride.getPrimaryBlock()))
-//                    }
+                    if (listOf.contains("parse")) {
+                        val newPath = absolutPath.split(OperatingSystem.getSeparator())
+                        newPath.dropLast(1)
+                        val dawdsa = absolutPath.split(projectPath)[1]
+                        val fileToWrite =
+                            DirReader.createfile(
+                                dawdsa + OperatingSystem.getSeparator() + "$filepath.json",
+                                null
+                            )
+                        fileToWrite?.bufferedWriter()?.use { out ->
+                            out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+                        }
+                    }
+                    println()
                 } else {
                     println()
                 }
@@ -114,24 +116,24 @@ class Parser {
         listOfFiles: ArrayList<String>?,
         absoluteProjectPath: String,
         astVisitorOverride: ASTVisitorOverride,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>,
+        boolean: Boolean
     ) {
-        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath)
+        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath, listOf, boolean)
     }
 
     fun lookUpForVcxProjAndParseHeaderFiles(
         astVisitorOverride: ASTVisitorOverride,
-        projectPath: String
+        projectPath: String,
+        listOf: List<String>
     ) {
+        ProjectVcxprojComplexRegistry.parsedFiles = ArrayList()
         VcxprojParser.mapOfData.iterator().forEachRemaining { element ->
             run {
-                println()
                 element.value.iterator().forEachRemaining { valueElement ->
                     run {
                         ProjectVcxprojComplexRegistry.setVcxProj(valueElement)
-                        if (valueElement.listofIncludedModules != null) {
-                            println()
-                        }
                         val absolutProjectPath =
                             valueElement
                                 .path
@@ -145,7 +147,9 @@ class Parser {
                                 valueElement.listOfHeaderFiles as ArrayList<String>?,
                                 absolutProjectPath,
                                 astVisitorOverride,
-                                projectPath
+                                projectPath,
+                                listOf,
+                                true
                             )
                         } else {
                             println()
@@ -155,7 +159,33 @@ class Parser {
             }
         }
         println()
+    }
 
+    fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
+        println()
+        VcxprojParser.mapOfData.forEach { slnStructure, vcxprojStructures -> run {
+            vcxprojStructures.forEach { element -> run {
+                ProjectVcxprojComplexRegistry.setVcxProj(element)
+                val absolutProjectPath =
+                    element
+                        .path
+                        .subSequence(
+                            0,
+                            element.path.lastIndexOf(OperatingSystem.getSeparator())
+                        )
+                        .toString()
+                if (element.listOfCppFiles != null) {
+                    parseFiles(
+                        element.listOfCppFiles as ArrayList<String>?,
+                        absolutProjectPath,
+                        astVisitorOverride,
+                        projectPath,
+                        listOf,
+                        false
+                    )
+                }
+            } }
+        } }
     }
 }
 

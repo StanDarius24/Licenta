@@ -6,11 +6,13 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 object SlnParser {
-    private lateinit var startSplitString: String
-    private var slnDataList: List<SlnStructure>? = null
+    var slnDataList: List<SlnStructure>? = null
+
     fun solveSln(pathToSln: String) {
         val file = Reader.readFileAsLinesUsingBufferedReader(pathToSln)
-        val sss = file.split("Project(\"{").filter { element -> element.contains("EndProject") } as ArrayList
+        val sss =
+            file.split("Project(\"{").filter { element -> element.contains("EndProject") } as
+                ArrayList
         parseFieldsForSlnFile(sss, pathToSln)
     }
 
@@ -29,17 +31,18 @@ object SlnParser {
                     if (element.contains("ProjectSection(ProjectDependencies)")) {
                         var dependencylist: List<String>?
                         val dependency =
-                            element.split(
-                                "ProjectSection(ProjectDependencies) = postProject"
-                            )[1]
+                            element.split("ProjectSection(ProjectDependencies) = postProject")[1]
                                 .split("\tEndProjectSection")[0]
-                        dependencylist =
-                            (dependency.split("{") as ArrayList).filter { elem ->
-                                elem.contains("} = ")
+                        if (dependency.contains("{") && dependency.contains("} = ")) {
+                            dependencylist =
+                                (dependency.split("{") as ArrayList).filter { elem ->
+                                    elem.contains("} = ")
+                                }
+                            dependencylist =
+                                dependencylist.map { elem -> elem.removeSuffix("} = ") }
+                            dependencylist.iterator().forEachRemaining { iter ->
+                                run { map += Pair(iter, null) }
                             }
-                        dependencylist = dependencylist.map { elem -> elem.removeSuffix("} = ") }
-                        dependencylist.iterator().forEachRemaining { iter ->
-                            run { map += Pair(iter, null) }
                         }
                     }
                     (slnDataList!! as ArrayList).add(SlnStructure(token, name, pathx, alias, map))
@@ -49,15 +52,11 @@ object SlnParser {
         VcxprojParser.solveProjectComplexity(slnDataList, path)
     }
 
-
-    fun locateAllSlnFiles(pathToProject: String): List<String>? {
+    fun locateAllSlnFiles(pathToProject: String): List<String> {
         return DirReader.getAllFilesInResources(pathToProject, testx())
     }
 
     private fun testx(): (Path) -> Boolean {
-        return { it -> it.fileName.toString().contains(".sln") &&
-                Files.isRegularFile(it)
-        }
+        return { it -> it.fileName.toString().contains(".sln") && Files.isRegularFile(it) }
     }
-
 }

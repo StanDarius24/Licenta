@@ -214,7 +214,7 @@ object ASTNodeService {
                 LambdaExpressionService.solveLambdaExpression(node, statement)
             }
             is CPPASTProblemExpression -> {
-                throw Exception()
+                ProblemExpressionService.solveProblemExpression(node, statement)
             }
             is CPPASTTemplateId -> {
                 TemplateIdService.solveTemplateId(node, statement)

@@ -10,31 +10,35 @@ object ProjectVcxprojComplexRegistry {
     private lateinit var vcxprojStructure: VcxprojStructure
     private lateinit var filePath: String
 
-    lateinit var parsedList: List<ComplexFinalTranslation>
+    lateinit var parsedFiles: List<ComplexFinalTranslation>
 
-    fun addFinalTranslation(finalTranslation: FinalTranslation) {
-        if (!this::parsedList.isInitialized) {
-            parsedList = ArrayList()
+    fun addFinalTranslation(finalTranslation: FinalTranslation, boolean: Boolean) {
+        if (!this::parsedFiles.isInitialized) {
+            parsedFiles = ArrayList()
             val list = ArrayList<TranslationWithPath>()
             list.add(TranslationWithPath(finalTranslation, filePath))
-            (parsedList as ArrayList).add(ComplexFinalTranslation(list, vcxprojStructure))
+            (parsedFiles as ArrayList).add(ComplexFinalTranslation(list, ArrayList(), vcxprojStructure))
         } else {
             var bool1 = false
-            parsedList.iterator().forEachRemaining { complexFinalTranslation ->
+            parsedFiles.iterator().forEachRemaining { complexFinalTranslation ->
                 run {
                     if (complexFinalTranslation.vcxprojStructure.equals(vcxprojStructure)) {
                         val translationWithPath = TranslationWithPath(finalTranslation, filePath)
                         var bool2 = false
-                        complexFinalTranslation.listOfTranslation.iterator().forEachRemaining { translationWParent ->
+                        complexFinalTranslation.listOfHeaderFiles!!.iterator().forEachRemaining {
+                            translationWParent ->
                             run {
                                 if (translationWParent.path == filePath) {
                                     bool2 = true
                                 }
                             }
                         }
-                        if (!bool2
-                        ) {
-                            complexFinalTranslation.listOfTranslation.add(translationWithPath)
+                        if (!bool2) {
+                            if (boolean) {
+                                complexFinalTranslation.listOfHeaderFiles.add(translationWithPath)
+                            } else {
+                                complexFinalTranslation.listOfCppFiles!!.add(translationWithPath)
+                            }
                         }
                         bool1 = true
                     }
@@ -43,7 +47,9 @@ object ProjectVcxprojComplexRegistry {
             if (!bool1) {
                 val listx = ArrayList<TranslationWithPath>()
                 listx.add(TranslationWithPath(finalTranslation, filePath))
-                (parsedList as ArrayList).add(ComplexFinalTranslation(listx, vcxprojStructure))
+                (parsedFiles as ArrayList).add(
+                    ComplexFinalTranslation(listx, ArrayList(), vcxprojStructure)
+                )
             }
         }
         println()
