@@ -7,7 +7,7 @@ object TranslationUnitRegistry {
 
     lateinit var listOfDirectives: List<String>
 
-    fun createTranslationUnit() {
+    fun createTranslationUnit(boolean: Boolean) {
         val finalTranslation =
             FinalTranslation(listOfDirectives as ArrayList, null, null, null, null, null, null)
         finalTranslation.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
@@ -17,7 +17,7 @@ object TranslationUnitRegistry {
         finalTranslation.functionCallsWithoutImplementation = FunctionDeclaratorRegistry.list
         finalTranslation.classList = CompositeTypeRegistry.list
         finalTranslation.linkageSpecification = ExternDefinitionRegistry.listOfExtern
-        ProjectVcxprojComplexRegistry.addFinalTranslation(finalTranslation)
+        ProjectVcxprojComplexRegistry.addFinalTranslation(finalTranslation, boolean)
     }
 
     fun clearAllData() {

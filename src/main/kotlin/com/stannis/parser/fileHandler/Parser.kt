@@ -36,7 +36,8 @@ class Parser {
         astVisitorOverride: ASTVisitorOverride,
         absolutPath: String,
         projectPath: String,
-        listOf: List<String>
+        listOf: List<String>,
+        boolean: Boolean
     ) {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
@@ -87,7 +88,7 @@ class Parser {
                     TranslationUnitRegistry.listOfDirectives =
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
-                    TranslationUnitRegistry.createTranslationUnit()
+                    TranslationUnitRegistry.createTranslationUnit(boolean) //here
                     TranslationUnitRegistry.clearAllData()
                     if (listOf.contains("parse")) {
                         val newPath = absolutPath.split(OperatingSystem.getSeparator())
@@ -102,6 +103,7 @@ class Parser {
                             out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                         }
                     }
+                    println()
                 } else {
                     println()
                 }
@@ -115,9 +117,10 @@ class Parser {
         absoluteProjectPath: String,
         astVisitorOverride: ASTVisitorOverride,
         projectPath: String,
-        listOf: List<String>
+        listOf: List<String>,
+        boolean: Boolean
     ) {
-        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath, listOf)
+        parseProject(listOfFiles!!, astVisitorOverride, absoluteProjectPath, projectPath, listOf, boolean)
     }
 
     fun lookUpForVcxProjAndParseHeaderFiles(
@@ -125,16 +128,12 @@ class Parser {
         projectPath: String,
         listOf: List<String>
     ) {
-        ProjectVcxprojComplexRegistry.parsedList = ArrayList()
+        ProjectVcxprojComplexRegistry.parsedFiles = ArrayList()
         VcxprojParser.mapOfData.iterator().forEachRemaining { element ->
             run {
-                println()
                 element.value.iterator().forEachRemaining { valueElement ->
                     run {
                         ProjectVcxprojComplexRegistry.setVcxProj(valueElement)
-                        if (valueElement.listofIncludedModules != null) {
-                            println()
-                        }
                         val absolutProjectPath =
                             valueElement
                                 .path
@@ -149,7 +148,8 @@ class Parser {
                                 absolutProjectPath,
                                 astVisitorOverride,
                                 projectPath,
-                                listOf
+                                listOf,
+                                true
                             )
                         } else {
                             println()
@@ -159,6 +159,33 @@ class Parser {
             }
         }
         println()
+    }
+
+    fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
+        println()
+        VcxprojParser.mapOfData.forEach { slnStructure, vcxprojStructures -> run {
+            vcxprojStructures.forEach { element -> run {
+                ProjectVcxprojComplexRegistry.setVcxProj(element)
+                val absolutProjectPath =
+                    element
+                        .path
+                        .subSequence(
+                            0,
+                            element.path.lastIndexOf(OperatingSystem.getSeparator())
+                        )
+                        .toString()
+                if (element.listOfCppFiles != null) {
+                    parseFiles(
+                        element.listOfCppFiles as ArrayList<String>?,
+                        absolutProjectPath,
+                        astVisitorOverride,
+                        projectPath,
+                        listOf,
+                        false
+                    )
+                }
+            } }
+        } }
     }
 }
 

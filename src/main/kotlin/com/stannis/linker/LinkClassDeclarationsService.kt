@@ -38,7 +38,7 @@ object LinkClassDeclarationsService {
     private lateinit var vcxprojStructure: VcxprojStructure
 
     fun declarationsToClass() {
-        ProjectVcxprojComplexRegistry.parsedList.forEach { complexFinalTranslation ->
+        ProjectVcxprojComplexRegistry.parsedFiles.forEach { complexFinalTranslation ->
             run {
                 vcxprojStructure = complexFinalTranslation.vcxprojStructure
                 solveComplexFinalTranslation(complexFinalTranslation)
@@ -47,7 +47,7 @@ object LinkClassDeclarationsService {
     }
 
     private fun solveComplexFinalTranslation(complexFinalTranslation: ComplexFinalTranslation) {
-        complexFinalTranslation.listOfTranslation.forEach { translationWithPath ->
+        complexFinalTranslation.listOfHeaderFiles!!.forEach { translationWithPath ->
             run { solveTranslationWithPath(translationWithPath) }
         }
     }

@@ -28,7 +28,7 @@ object CompositeTypeSpecifierService {
         StatementMapper.addStatementToStatement(statement!!, data)
     }
 
-    fun setClassDefinitions(
+    private fun setClassDefinitions(
         cppastCompositeTypeSpecifier: CPPASTCompositeTypeSpecifier
     ): CompositeTypeSpecifier {
         val data = CompositeTypeSpecifier(null, null, null, cppastCompositeTypeSpecifier.key)

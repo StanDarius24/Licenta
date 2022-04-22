@@ -11,7 +11,7 @@ import java.nio.file.Path
 
 object VcxprojParser {
 
-    private var listOfEnd = listOf(".h", ".hh", ".hhp", ".cpp", ".cc", ".c", ".cxx")
+    private var listOfCpp = listOf(".cpp", ".cc", ".c", ".cxx")
     private var listOfH = listOf(".h", ".hh", ".hhp")
 
     var mapOfData: Map<SlnStructure, List<VcxprojStructure>> = emptyMap()
@@ -33,11 +33,18 @@ object VcxprojParser {
                         } else {
                             val listw = listOf<String>(element.path.split(".")[0], "vcxproj")
                             val datax = listw.joinToString(".")
-                            val pathToLostVcxproj = DirReader.getAllFilesInResources(LogicHandler.projectPath, testx(datax))
-                            if(!pathToLostVcxproj.isEmpty()) {
-                                createVcxproj(getFileData(pathToLostVcxproj[0]), absolutPath, element)
+                            val pathToLostVcxproj =
+                                DirReader.getAllFilesInResources(
+                                    LogicHandler.projectPath,
+                                    testx(datax)
+                                )
+                            if (!pathToLostVcxproj.isEmpty()) {
+                                createVcxproj(
+                                    getFileData(pathToLostVcxproj[0]),
+                                    absolutPath,
+                                    element
+                                )
                             }
-
                         }
                     } catch (e: FileNotFoundException) {
                         println(e.printStackTrace())
@@ -94,17 +101,37 @@ object VcxprojParser {
         if (list.isNotEmpty()) {
             bool1 = false
             val listx = solveVcxprojInternalFiles(list[0])
-            listOfH.forEach { elem ->
+            listx.forEach { element ->
                 run {
-                    if (listx[0].contains(elem)) {
-                        bool1 = true
+                    var boolean1 = false
+                    listOfH.forEach { termination ->
+                        run {
+                            if (element.contains(termination)) {
+                                boolean1 = true
+                                if (structure.listOfHeaderFiles == null) {
+                                    structure.listOfHeaderFiles = ArrayList()
+                                }
+                                (structure.listOfHeaderFiles as ArrayList).add(element)
+                            }
+                        }
+                    }
+                    if (!boolean1) {
+                        listOfCpp.forEach { termination ->
+                            run {
+                                if (element.contains(termination)) {
+                                    boolean1 = true
+                                    if (structure.listOfCppFiles == null) {
+                                       structure.listOfCppFiles = ArrayList()
+                                    }
+                                    (structure.listOfCppFiles as ArrayList).add(element)
+                                }
+                            }
+                        }
+                    }
+                    if (!boolean1) {
+                        println()
                     }
                 }
-            }
-            if (bool1) {
-                structure.listOfHeaderFiles = listx
-            } else {
-                structure.listOfCppFiles = listx
             }
         }
         if (mapOfData[slnStructure] != null && !mapOfData[slnStructure]?.isEmpty()!!) {
@@ -131,7 +158,7 @@ object VcxprojParser {
             } else {
                 headerFile.split("<ClCompile Include=\"")
             }
-        return fileList.drop(1).filter { element -> checkExtension(element, listOfEnd) }.map {
+        return fileList.drop(1).filter { element -> checkExtension(element, listOfCpp + listOfH) }.map {
             element ->
             element.subSequence(0, element.indexOf("\"")).toString()
         }

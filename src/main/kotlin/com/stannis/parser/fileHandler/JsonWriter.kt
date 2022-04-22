@@ -8,7 +8,7 @@ object JsonWriter {
     fun writeData(element: String, joinToString: String) {
         val fileToWrite = DirReader.createfile("$element.json", joinToString)
         fileToWrite?.bufferedWriter()?.use { out ->
-            out.write(JsonBuilder.createComplexJson(ProjectVcxprojComplexRegistry.parsedList))
+            JsonBuilder.createComplexJson(ProjectVcxprojComplexRegistry.parsedFiles)?.let { out.write(it) }
         }
     }
 }
