@@ -29,7 +29,6 @@ object LogicHandler {
                         newPath.joinToString(OperatingSystem.getSeparator())
                     )
                 }
-                println()
                 ProjectVcxprojComplexRegistry.parsedFiles = ArrayList()
                 SlnParser.slnDataList = null
                 VcxprojParser.mapOfData = emptyMap()

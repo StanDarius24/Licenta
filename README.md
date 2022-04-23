@@ -1,5 +1,5 @@
 # Wildebeest Keeper
-C/C++ Code EXtractor (***CEX***) is a code analysis tool used to find irregularities with C/C++ based software
+***Wildebeest Keeper*** is a code analysis tool used to find irregularities with C/C++ based software
 projects.
 
 ![](image/WildebeestKeeper.png)
@@ -23,4 +23,5 @@ In the case of source files different endings will cause the compiler to assume 
 In this project I tried to cover all types of suffixes for this language.
 
 ___
+
 Still in development...

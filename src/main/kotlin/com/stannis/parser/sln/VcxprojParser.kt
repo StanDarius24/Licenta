@@ -72,7 +72,7 @@ object VcxprojParser {
                 }
             }
         }
-        println()
+        CheckForUnusedClasses.check(mapOfData)
     }
 
     private fun createVcxproj(text: String, path: String, slnStructure: SlnStructure) {
@@ -81,7 +81,7 @@ object VcxprojParser {
             text.split("<ItemGroup>").filter { element ->
                 element.contains("<ClInclude ") || element.contains("<ClCompile ")
             }
-        val structure = VcxprojStructure(path, null, null, null)
+        val structure = VcxprojStructure(path, null, null, null, null)
         solveProjectReference(structure, text)
         if (list.size > 1) {
             val listx = solveVcxprojInternalFiles(list[1])
@@ -121,9 +121,11 @@ object VcxprojParser {
                                 if (element.contains(termination)) {
                                     boolean1 = true
                                     if (structure.listOfCppFiles == null) {
-                                       structure.listOfCppFiles = ArrayList()
+                                        structure.listOfCppFiles = ArrayList()
                                     }
-                                    (structure.listOfCppFiles as ArrayList).add(element)
+                                    if (!structure.listOfCppFiles!!.contains(element)) {
+                                        (structure.listOfCppFiles as ArrayList).add(element)
+                                    }
                                 }
                             }
                         }
@@ -158,10 +160,10 @@ object VcxprojParser {
             } else {
                 headerFile.split("<ClCompile Include=\"")
             }
-        return fileList.drop(1).filter { element -> checkExtension(element, listOfCpp + listOfH) }.map {
-            element ->
-            element.subSequence(0, element.indexOf("\"")).toString()
-        }
+        return fileList
+            .drop(1)
+            .filter { element -> checkExtension(element, listOfCpp + listOfH) }
+            .map { element -> element.subSequence(0, element.indexOf("\"")).toString() }
     }
 
     private fun checkExtension(text: String, termination: List<String>): Boolean {

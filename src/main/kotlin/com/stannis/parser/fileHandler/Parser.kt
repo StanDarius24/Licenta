@@ -162,7 +162,6 @@ class Parser {
     }
 
     fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
-        println()
         VcxprojParser.mapOfData.forEach { slnStructure, vcxprojStructures -> run {
             vcxprojStructures.forEach { element -> run {
                 ProjectVcxprojComplexRegistry.setVcxProj(element)
