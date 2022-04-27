@@ -12,7 +12,7 @@ object ElaboratedTypeSpecifierService {
     ) {
         StatementMapper.addStatementToStatement(
             statement!!,
-            ElaboratedTypeSpecifier(cppastElaboratedTypeSpecifier.name.rawSignature)
+            ElaboratedTypeSpecifier(name = cppastElaboratedTypeSpecifier.name.rawSignature)
         )
     }
 }

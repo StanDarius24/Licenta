@@ -11,8 +11,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression
 object UnaryExpressionService {
 
     fun solveUneryExpression(data: CPPASTUnaryExpression, statement: Statement?) {
-        val unaryExpression = UnaryExpression(null)
-        val anonimStatement = AnonimStatement(null)
+        val unaryExpression = UnaryExpression(operand = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(data.operand as ASTNode, anonimStatement)
         unaryExpression.operand = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, unaryExpression)

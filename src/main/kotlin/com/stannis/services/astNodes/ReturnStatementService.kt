@@ -11,10 +11,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReturnStatement
 object ReturnStatementService {
 
     fun solveReturnStatement(data: CPPASTReturnStatement, statement: Statement?) {
-        val returnStructure = Return(null)
+        val returnStructure = Return(retValue = null)
 
         if (data.returnValue != null) {
-            val anonimStatement1 = AnonimStatement(null)
+            val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.returnValue as ASTNode, anonimStatement1)
             returnStructure.retValue = anonimStatement1.statement
         }

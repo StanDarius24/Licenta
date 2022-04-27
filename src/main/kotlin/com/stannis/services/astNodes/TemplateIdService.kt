@@ -10,12 +10,12 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId
 
 object TemplateIdService {
     fun solveTemplateId(templateIdcpp: CPPASTTemplateId, statement: Statement?) {
-        val templateData = TemplateId(null, null)
-        val anonimStatement = AnonimStatement(null)
+        val templateData = TemplateId(templateName = null, templateArguments = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(templateIdcpp.templateName as ASTNode, anonimStatement)
         templateData.templateName = anonimStatement.statement
         templateIdcpp.templateArguments.iterator().forEachRemaining { template -> run {
-            val anonimStatement1 = AnonimStatement(null)
+            val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(template as ASTNode, anonimStatement1)
             templateData.addStatement(anonimStatement1.statement as Statement)
         } }

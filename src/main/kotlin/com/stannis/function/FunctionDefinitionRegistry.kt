@@ -59,11 +59,11 @@ object FunctionDefinitionRegistry {
                             bool1 = true
                             val decl =
                                 DeclarationWithParent(
-                                    SimpleDeclaration(null, null),
-                                    Name("Internal Method Declaration")
+                                    declaration = SimpleDeclaration(declarators = null, declSpecifier = null),
+                                    parent = Name(name ="Internal Method Declaration")
                                 )
                             val functionCallWithDeclaration =
-                                FunctionCallWithDeclaration(statement, decl, null)
+                                FunctionCallWithDeclaration(functionCalls = statement, declaration = decl, complexClass = null)
                             newFunctionDefinition.addToBody(functionCallWithDeclaration)
                         }
                     }
@@ -121,7 +121,7 @@ object FunctionDefinitionRegistry {
                                     .name
                         ) {
                             val functionCallWithDeclaration =
-                                FunctionCallWithDeclaration(statement, parameter, null)
+                                FunctionCallWithDeclaration(functionCalls = statement, declaration = parameter, complexClass = null)
                             newFunctionDefinition.addToBody(functionCallWithDeclaration)
                             bool1 = true
                         }
@@ -203,7 +203,7 @@ object FunctionDefinitionRegistry {
                     if ((declarator as Declarator).name.equals(getStatementName(statement, boolean))
                     ) {
                         val functionCallWithDeclaration =
-                            FunctionCallWithDeclaration(statement, declarator, null)
+                            FunctionCallWithDeclaration(functionCalls = statement, declaration = declarator, complexClass = null)
                         newFunctionDefinition.addToBody(functionCallWithDeclaration)
                         bool = true
                     }

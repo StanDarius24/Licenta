@@ -10,10 +10,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTInitializerList
 
 object InitializerListService {
     fun solveInitializerList(initList: CPPASTInitializerList, statement: Statement?) {
-        val initializerList = InitializerList(null)
+        val initializerList = InitializerList(initializers = null)
         initList.children.iterator().forEachRemaining { iastNode ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(iastNode as ASTNode, anonimStatement)
                 initializerList.addInitializers(anonimStatement.statement as Statement)
             }

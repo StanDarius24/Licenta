@@ -10,13 +10,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName
 
 object QualifiedNameService {
     fun solveQualifiedNameService(cppastQualifiedName: CPPASTQualifiedName, statement: Statement?) {
-        val qualifiedName = QualifiedName(null, null)
-        val anonimStatement1 = AnonimStatement(null)
+        val qualifiedName = QualifiedName(qualifier = null, lastName = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastQualifiedName.lastName as ASTNode, anonimStatement1)
         qualifiedName.lastName = anonimStatement1.statement
         cppastQualifiedName.qualifier.iterator().forEachRemaining { qualifier ->
             run {
-                val anonimStatement2 = AnonimStatement(null)
+                val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(qualifier as ASTNode, anonimStatement2)
                 if (anonimStatement2.statement != null) {
                     qualifiedName.addQualifier(anonimStatement2.statement as Statement)

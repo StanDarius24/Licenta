@@ -13,8 +13,8 @@ object PackExpansionExpressionService {
         packExpansion: CPPASTPackExpansionExpression,
         statement: Statement?
     ) {
-        val packExpansionExpression = PackEpansionExpression(null)
-        val anonimStatement = AnonimStatement(null)
+        val packExpansionExpression = PackEpansionExpression(pattern = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(packExpansion.pattern as ASTNode, anonimStatement)
         packExpansionExpression.pattern = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, packExpansionExpression)

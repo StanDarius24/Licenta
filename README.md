@@ -1,5 +1,5 @@
 # Wildebeest Keeper
-C/C++ Code EXtractor (***CEX***) is a code analysis tool used to find irregularities with C/C++ based software
+***Wildebeest Keeper*** is a code analysis tool used to find irregularities with C/C++ based software
 projects.
 
 Historically, the suffix for a C++ source file was .C. This caused a few problems the first time C++ was ported to a system where case wasn't significant in the filename.
@@ -21,4 +21,5 @@ In the case of source files different endings will cause the compiler to assume 
 In this project I tried to cover all types of suffixes for this language.
 
 ___
+
 Still in development...

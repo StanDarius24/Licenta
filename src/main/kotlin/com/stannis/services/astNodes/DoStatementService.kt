@@ -12,8 +12,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDoStatement
 object DoStatementService {
 
     fun solveDoStatement(doStatement: CPPASTDoStatement, statement: Statement?) {
-        val doStm = DoStatement(null, null)
-        val anonimStm = AnonimStatement(null)
+        val doStm = DoStatement(condition = null, body = null)
+        val anonimStm = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(doStatement.condition as ASTNode, doStm)
         if (doStatement.body is CPPASTCompoundStatement) {
             (doStatement.body as CPPASTCompoundStatement).statements.iterator().forEachRemaining {
@@ -24,7 +24,7 @@ object DoStatementService {
                 }
             }
         } else {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(doStatement.body as ASTNode, anonimStatement)
             doStm.addToBody(anonimStatement.statement as Statement)
         }

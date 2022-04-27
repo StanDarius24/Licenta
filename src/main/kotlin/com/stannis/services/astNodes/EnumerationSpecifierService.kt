@@ -14,10 +14,10 @@ object EnumerationSpecifierService {
         statement: Statement?
     ) {
         val enumerationSpecifier =
-            EnumerationSpecifier(cppastEnumerationSpecifier.name.rawSignature, null)
+            EnumerationSpecifier(name = cppastEnumerationSpecifier.name.rawSignature, enumerators = null)
         cppastEnumerationSpecifier.enumerators.iterator().forEachRemaining { enumerator ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(enumerator as ASTNode, anonimStatement)
                 enumerationSpecifier.addEnumerators(anonimStatement.statement as Statement)
             }

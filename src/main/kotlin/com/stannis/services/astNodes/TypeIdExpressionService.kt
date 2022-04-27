@@ -11,8 +11,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeIdExpression
 object TypeIdExpressionService {
 
     fun solveTypeIdExpression(typeId: CPPASTTypeIdExpression, statement: Statement?) {
-        val typeIdExpression = TypeIdExpression(null)
-        val anonimStatement = AnonimStatement(null)
+        val typeIdExpression = TypeIdExpression(typeId = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.typeId as ASTNode, anonimStatement)
         typeIdExpression.typeId = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, typeIdExpression)

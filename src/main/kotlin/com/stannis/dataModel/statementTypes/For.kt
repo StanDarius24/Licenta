@@ -3,12 +3,12 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class For(
+    override val type: String? = "For",
     var initializer: ArrayList<Statement>?,
     var conditionExpr: ArrayList<Statement>?,
     var conditionDecl: ArrayList<Statement>?,
     var iteration: ArrayList<Statement>?,
-    var body: ArrayList<Statement>?,
-    override val type: String? = "For"
+    var body: ArrayList<Statement>?
 ) : Statement {
 
     fun addInitializer(data: Statement) {

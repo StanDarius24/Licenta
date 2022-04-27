@@ -3,10 +3,10 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class RangeBasedForStatement(
+    override val type: String? = "RangeBaseForStatement",
     var declaration: ArrayList<Statement>?,
     var initClause: ArrayList<Statement>?,
-    var body: ArrayList<Statement>?,
-    override val type: String? = "RangeBaseForStatement"
+    var body: ArrayList<Statement>?
 ) : Statement {
 
     fun addDeclaration(statement: Statement) {

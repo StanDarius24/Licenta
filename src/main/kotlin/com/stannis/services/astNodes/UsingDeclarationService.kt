@@ -8,7 +8,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration
 object UsingDeclarationService {
 
     fun solveUnitDeclaration(unitDecl: CPPASTUsingDeclaration, statement: Statement?) {
-        val data = UsingDeclaration(unitDecl.name.rawSignature)
+        val data = UsingDeclaration(name = unitDecl.name.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, data)
     }
 }

@@ -20,8 +20,8 @@ object ConditionalExpressionService {
         conditionalExpression: CPPASTConditionalExpression,
         statement: Statement?
     ) {
-        val condExpr = ConditionalExpression(null, null, null)
-        val anonimStatement = AnonimStatement(null)
+        val condExpr = ConditionalExpression(condition = null, negativeResult = null, positiveResult = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         solveparameter(conditionalExpression.logicalConditionExpression as ASTNode, anonimStatement)
         condExpr.condition = anonimStatement
         solveparameter(conditionalExpression.positiveResultExpression as ASTNode, anonimStatement)

@@ -10,15 +10,15 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTryBlockStatement
 
 object TryBlockStatementService {
     fun solveTryBlockStatement(tryBlockStatement: CPPASTTryBlockStatement, statement: Statement?) {
-        val tryBlock = TryBlockStatement(null, null)
+        val tryBlock = TryBlockStatement(catchHandlers = null, tryBlock = null)
         tryBlockStatement.catchHandlers.iterator().forEachRemaining { catchHandler ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(catchHandler as ASTNode, anonimStatement)
                 tryBlock.addCatchHandlers(anonimStatement.statement as Statement)
             }
         }
-        val anonimStatement2 = AnonimStatement(null)
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(tryBlockStatement.tryBody as ASTNode, anonimStatement2)
         tryBlock.tryBlock = anonimStatement2.statement
         StatementMapper.addStatementToStatement(statement!!, tryBlock)

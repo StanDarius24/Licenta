@@ -10,7 +10,7 @@ object InclusionStatementService {
         inclusion: IASTPreprocessorIncludeStatement,
         statement: Statement?
     ) {
-        val inclusionStatement = InclusionStatement(inclusion.toString())
+        val inclusionStatement = InclusionStatement(directive = inclusion.toString())
         StatementMapper.addStatementToStatement(statement!!, inclusionStatement)
     }
 }

@@ -11,12 +11,12 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression
 object NewExpressionService {
 
     fun solveNewExpression(node: CPPASTNewExpression, statement: Statement) {
-        val newExpression = NewExpression(null, null)
-        val anonimStatement = AnonimStatement(null)
+        val newExpression = NewExpression(typeId = null, initializer = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(node.typeId as ASTNode, anonimStatement)
         newExpression.typeId = anonimStatement.statement
         if (node.initializer != null) {
-            val anonimStatement1 = AnonimStatement(null)
+            val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(node.initializer as ASTNode, anonimStatement1)
             newExpression.initializer = anonimStatement1.statement
         }

@@ -17,7 +17,7 @@ object CompositeTypeSpecifierService {
         val data = setClassDefinitions(cppastCompositeTypeSpecifier)
         cppastCompositeTypeSpecifier.members.iterator().forEachRemaining { declaration ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(declaration as ASTNode, anonimStatement)
                 if (anonimStatement.statement != null) {
                     data.addStatement(anonimStatement.statement as Statement)
@@ -31,13 +31,13 @@ object CompositeTypeSpecifierService {
     private fun setClassDefinitions(
         cppastCompositeTypeSpecifier: CPPASTCompositeTypeSpecifier
     ): CompositeTypeSpecifier {
-        val data = CompositeTypeSpecifier(null, null, null, cppastCompositeTypeSpecifier.key)
-        val anonimStatement1 = AnonimStatement(null)
+        val data = CompositeTypeSpecifier(name = null, baseSpec = null, declarations = null, key = cppastCompositeTypeSpecifier.key)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCompositeTypeSpecifier.name as ASTNode, anonimStatement1)
         data.name = anonimStatement1.statement
         cppastCompositeTypeSpecifier.baseSpecifiers.iterator().forEachRemaining { base ->
             run {
-                val anonimStatement2 = AnonimStatement(null)
+                val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(base as ASTNode, anonimStatement2)
                 data.addBase(anonimStatement2.statement!!)
             }

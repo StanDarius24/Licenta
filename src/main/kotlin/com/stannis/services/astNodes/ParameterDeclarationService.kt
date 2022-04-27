@@ -14,9 +14,9 @@ object ParameterDeclarationService {
         parameterDeclaration: CPPASTParameterDeclaration,
         statement: Statement?
     ) {
-        val parameterDecl = ParameterDeclaration(null, null)
-        val anonimStatement1 = AnonimStatement(null)
-        val anonimStatement2 = AnonimStatement(null)
+        val parameterDecl = ParameterDeclaration(declarationSpecifier = null, declarator = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(parameterDeclaration.declSpecifier as ASTNode, anonimStatement1)
         ASTNodeService.solveASTNode(parameterDeclaration.declarator as ASTNode, anonimStatement2)
         parameterDecl.declarationSpecifier = anonimStatement1.statement

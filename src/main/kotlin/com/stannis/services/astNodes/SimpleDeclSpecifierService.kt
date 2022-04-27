@@ -10,7 +10,7 @@ object SimpleDeclSpecifierService {
         simplDecl: CPPASTSimpleDeclSpecifier,
         statement: Statement?
     ) {
-        val simpleDeclaration = SimpleDeclSpecifier(simplDecl.rawSignature)
+        val simpleDeclaration = SimpleDeclSpecifier(declarationSpecifier = simplDecl.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
     }
 }

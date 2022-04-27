@@ -10,8 +10,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCatchHandler
 
 object CatchHandlerService {
     fun solveCatchHandler(cppastCatch: CPPASTCatchHandler, statement: Statement?) {
-        val catchHandler = CatchHandler(null)
-        val anonimStatement = AnonimStatement(null)
+        val catchHandler = CatchHandler(body = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCatch.catchBody as ASTNode, anonimStatement)
         catchHandler.body = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, catchHandler)

@@ -10,11 +10,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeId
 
 object TypeIdService {
     fun solveTypeId(typeId: CPPASTTypeId, statement: Statement?) {
-        val typeIdData = TypeId(null, null)
-        val anonimStatement = AnonimStatement(null)
+        val typeIdData = TypeId(declSpecifier = null, abstractDeclaration = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.declSpecifier as ASTNode, anonimStatement)
         typeIdData.declSpecifier = anonimStatement.statement
-        val anonimStatement1 = AnonimStatement(null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.abstractDeclarator as ASTNode, anonimStatement1)
         typeIdData.abstractDeclaration = anonimStatement1.statement
         StatementMapper.addStatementToStatement(statement!!, typeIdData)

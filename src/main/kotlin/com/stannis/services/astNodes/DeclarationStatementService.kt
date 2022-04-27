@@ -11,8 +11,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarationStatement
 object DeclarationStatementService {
 
     fun solveDeclarationStatement(node: CPPASTDeclarationStatement, statement: Statement?) {
-        val declarationStatement = DeclarationStatement(null)
-        val anonimStatement = AnonimStatement(null)
+        val declarationStatement = DeclarationStatement(declarations = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(node.declaration as ASTNode, anonimStatement)
         declarationStatement.addDeclaration(anonimStatement.statement as Statement)
         StatementMapper.addStatementToStatement(statement!!, declarationStatement)

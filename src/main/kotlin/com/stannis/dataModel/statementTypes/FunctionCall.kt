@@ -3,12 +3,12 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class FunctionCall(
+    override val type: String? = "FunctionCall",
     var returntype: String?,
     var name: String?,
     var parameters: ArrayList<String>?,
     var complexParameters: ArrayList<Statement>?,
-    var functionCalls: ArrayList<FunctionCall>?,
-    override val type: String? = "FunctionCall"
+    var functionCalls: ArrayList<FunctionCall>?
 ) : Statement {
     fun addComplexParameters(statement: Statement) {
         if (complexParameters == null) {

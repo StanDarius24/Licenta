@@ -9,7 +9,7 @@ object AliasDeclarationService {
     fun solveAliasDeclarationService(aliasDecl: CPPASTAliasDeclaration, statement: Statement?) {
         StatementMapper.addStatementToStatement(
             statement!!,
-            AliasDeclaration(aliasDecl.alias.rawSignature, aliasDecl.mappingTypeId.rawSignature)
+            AliasDeclaration(aliasName = aliasDecl.alias.rawSignature, mappingTypeId = aliasDecl.mappingTypeId.rawSignature)
         )
     }
 }

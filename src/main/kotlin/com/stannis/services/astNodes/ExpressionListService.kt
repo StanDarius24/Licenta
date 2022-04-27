@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionList
 object ExpressionListService {
 
     fun solveExpressionList(expression: CPPASTExpressionList, statement: Statement) {
-        val expressionList = ExpressionList(null)
+        val expressionList = ExpressionList(expressions = null)
         expression.expressions.iterator().forEachRemaining { expressionX ->
             run { ASTNodeService.solveASTNode(expressionX as ASTNode, expressionList) }
         }

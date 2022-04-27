@@ -3,9 +3,9 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class QualifiedName(
+    override val type: String? = "QualifiedName",
     var qualifier: ArrayList<Statement>?,
-    var lastName: Statement?,
-    override val type: String? = "QualifiedName"
+    var lastName: Statement?
 ) : Statement {
     fun addQualifier(statement: Statement) {
         if (qualifier == null) {

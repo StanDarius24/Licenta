@@ -27,24 +27,6 @@ object DirReader {
             return list
         }
 
-        fun isCOrCppFileRelated(text: String): Boolean {
-            return text.endsWith(".cpp") ||
-                text.endsWith(".cc") ||
-                text.endsWith(".c") ||
-                text.endsWith(".cxx") ||
-                text.endsWith(".h") ||
-                text.endsWith(".hh") ||
-                text.endsWith(".hpp") ||
-                text.endsWith(".inl") ||
-                text.endsWith(".tcc")
-        }
-
-        private fun isHeaderFile(text: String): Boolean {
-            return text.endsWith(".h") ||
-                    text.endsWith(".hh") ||
-                    text.endsWith(".hpp")
-        }
-
         fun makedir(path: String): String {
             var data = folder.split(OperatingSystem.getSeparator())
             val last = data.last()
@@ -64,10 +46,12 @@ object DirReader {
                 newFolderPath = joinToString
             }
             val file = File(newFolderPath + OperatingSystem.getSeparator() + p)
-            val dir = File(newFolderPath)
+            val dir = newFolderPath?.let { File(it) }
             try {
-                if (!dir.exists()) {
-                    dir.mkdirs()
+                if (dir != null) {
+                    if (!dir.exists()) {
+                        dir.mkdirs()
+                    }
                 }
                 if (file.createNewFile()) {
                     println("File created!")
@@ -81,22 +65,4 @@ object DirReader {
             return file
         }
 
-
-    fun getHeadersFilesFromProject(absolutPath: String): ArrayList<String> {
-        folder = absolutPath
-        OperatingSystem.getOPSystem()
-        val list = ArrayList<String>()
-        val data = (absolutPath.split(OperatingSystem.getSeparator()) as java.util.ArrayList<*>)
-        data.remove(data.last())
-        data.joinToString(OperatingSystem.getSeparator()) + OperatingSystem.getSeparator() +"result"
-        val resourcesPath = Paths.get(absolutPath)
-        Files.walk(resourcesPath)
-            .filter { item ->
-                Files.isRegularFile(item) &&
-                        isHeaderFile(item.fileName.toString()) &&
-                        !item.toString().contains("cmake-build-debug")
-            }
-            .forEach { item -> list.add(item.toString()) }
-        return list
-    }
 }

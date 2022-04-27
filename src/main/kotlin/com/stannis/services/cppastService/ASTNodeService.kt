@@ -99,7 +99,7 @@ object ASTNodeService {
                 DeclaratorService.solveDeclaratorService(node, statement, modifier)
             }
             is CPPASTBreakStatement -> {
-                val breaks = BreakStatement(node.rawSignature)
+                val breaks = BreakStatement(expression = node.rawSignature)
                 StatementMapper.addStatementToStatement(statement!!, breaks)
             }
             is CPPASTWhileStatement -> {
@@ -109,14 +109,14 @@ object ASTNodeService {
                 ConstructorInitializerService.solveConstructorInitializer(node, statement)
             }
             is CPPASTContinueStatement -> {
-                val continueStat = ContinueStatement(node.rawSignature)
+                val continueStat = ContinueStatement(expression = node.rawSignature)
                 StatementMapper.addStatementToStatement(statement!!, continueStat)
             }
             is CPPASTRangeBasedForStatement -> {
                 RangeBaseForStatementService.solveRangeBaseForStatement(node, statement)
             }
             is CPPASTGotoStatement -> {
-                val goto = GotoStatement(node.name.rawSignature)
+                val goto = GotoStatement(jumpTo = node.name.rawSignature)
                 StatementMapper.addStatementToStatement(statement!!, goto)
             }
             is CPPASTLabelStatement -> {
@@ -125,7 +125,7 @@ object ASTNodeService {
             is CPPASTNullStatement -> {
                 StatementMapper.addStatementToStatement(
                     statement!!,
-                    NullStatement(node.rawSignature)
+                    NullStatement(expression = node.rawSignature)
                 )
             }
             is CPPASTTemplateDeclaration -> {
@@ -156,7 +156,7 @@ object ASTNodeService {
                 EqualsInitializerService.solveEqualsInitializer(node, statement)
             }
             is CPPASTSimpleTypeTemplateParameter -> {
-                val simpleType = SimpleTypeTemplateParameter(node.name.rawSignature)
+                val simpleType = SimpleTypeTemplateParameter(expression = node.name.rawSignature)
                 StatementMapper.addStatementToStatement(statement!!, simpleType)
             }
             is CPPASTParameterDeclaration -> {

@@ -9,7 +9,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression
 
 object IdExpressionService {
     fun solveIdExpression(node: CPPASTIdExpression, statement: Statement?) {
-        val idExpression = IdExpression(null)
+        val idExpression = IdExpression(expression = null)
         ASTNodeService.solveASTNode(node.name as ASTNode, idExpression)
         StatementMapper.addStatementToStatement(statement!!, idExpression)
     }

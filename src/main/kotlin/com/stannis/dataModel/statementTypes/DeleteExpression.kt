@@ -3,6 +3,6 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class DeleteExpression(
-    var deletedExpression: String?,
-    override val type: String? = "DeleteExpression"
+    override val type: String? = "DeleteExpression",
+    var deletedExpression: String?
 ) : Statement

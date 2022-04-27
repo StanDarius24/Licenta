@@ -13,8 +13,8 @@ object ArraySubscriptExpressionService {
     ) {
         val arraySubscr =
             ArraySubscript(
-                cppastArraySubscriptExpression.arrayExpression.rawSignature,
-                cppastArraySubscriptExpression.argument.rawSignature
+                arrayValue = cppastArraySubscriptExpression.arrayExpression.rawSignature,
+                index = cppastArraySubscriptExpression.argument.rawSignature
             )
         StatementMapper.addStatementToStatement(statement, arraySubscr)
     }

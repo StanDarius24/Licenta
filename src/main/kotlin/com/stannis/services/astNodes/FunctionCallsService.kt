@@ -14,13 +14,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 object FunctionCallsService {
 
     fun solveFunctionCalls(node: CPPASTFunctionCallExpression, statement: Statement?) {
-        val functionCalls = FunctionCalls(null, null)
-        val anonimStatement1 = AnonimStatement(null)
+        val functionCalls = FunctionCalls(name = null, arguments = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(node.functionNameExpression as ASTNode, anonimStatement1)
         functionCalls.name = anonimStatement1.statement
         node.arguments.iterator().forEachRemaining { argument ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(argument as ASTNode, anonimStatement)
                 functionCalls.addArgument(anonimStatement.statement as Statement)
             }
@@ -55,7 +55,7 @@ object FunctionCallsService {
     ) {
         data!!.iterator().forEachRemaining { datax: IASTInitializerClause ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(datax as ASTNode, anonimStatement)
                 StatementMapper.addStatementToStatement(
                     statement!!,

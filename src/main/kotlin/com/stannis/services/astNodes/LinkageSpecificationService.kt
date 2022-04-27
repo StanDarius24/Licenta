@@ -14,9 +14,9 @@ object LinkageSpecificationService {
         cppastLinkageSpecification: CPPASTLinkageSpecification,
         statement: Statement?
     ) {
-        val linkageSpecification = LinkageSpecification(cppastLinkageSpecification.literal, ArrayList())
+        val linkageSpecification = LinkageSpecification(literal = cppastLinkageSpecification.literal, declarations =  ArrayList())
         cppastLinkageSpecification.declarations.iterator().forEachRemaining { decl -> run {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(decl as ASTNode, anonimStatement)
             anonimStatement.statement?.let { linkageSpecification.declarations?.add(it) }
         } }
