@@ -14,7 +14,7 @@ object LabelStatementService {
         val labelStatement = LabelStatement(name = labelCppast.name.rawSignature, expressions = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(labelCppast.nestedStatement as ASTNode, anonimStatement)
-        labelStatement.addExpression(anonimStatement)
+        labelStatement.addExpression(anonimStatement.statement as Statement)
         StatementMapper.addStatementToStatement(statement!!, labelStatement)
     }
 }

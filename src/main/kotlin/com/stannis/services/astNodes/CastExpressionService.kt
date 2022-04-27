@@ -19,7 +19,7 @@ object CastExpressionService {
 
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCastExpression.typeId as ASTNode, anonimStatement1)
-        castExpr.typeId = anonimStatement1
+        castExpr.typeId = anonimStatement1.statement
 
         StatementMapper.addStatementToStatement(statement!!, castExpr)
     }

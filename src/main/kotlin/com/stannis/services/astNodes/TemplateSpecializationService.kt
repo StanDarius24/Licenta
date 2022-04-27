@@ -16,7 +16,7 @@ object TemplateSpecializationService {
         val templSpec = TemplateSpecialization(declaration = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(templateSolver.declaration as ASTNode, anonimStatement)
-        templSpec.declaration = anonimStatement
+        templSpec.declaration = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, templSpec)
     }
 }

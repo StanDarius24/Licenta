@@ -18,8 +18,8 @@ object StaticAssertionDeclarationService {
         ASTNodeService.solveASTNode(staticAssertioncppast.condition as ASTNode, anonimStatement1)
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(staticAssertioncppast.message as ASTNode, anonimStatement2)
-        staticAssertion.addCondition(anonimStatement1)
-        staticAssertion.addMessage(anonimStatement2)
+        staticAssertion.addCondition(anonimStatement1.statement as Statement)
+        staticAssertion.addMessage(anonimStatement2.statement as Statement)
         StatementMapper.addStatementToStatement(statement!!, staticAssertion)
     }
 }

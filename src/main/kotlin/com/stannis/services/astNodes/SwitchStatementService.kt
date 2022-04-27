@@ -18,12 +18,12 @@ object SwitchStatementService {
                 switchStatement.controllerExpression as ASTNode,
                 anonimStatement
             )
-            data.addControllerExpression(anonimStatement)
+            data.addControllerExpression(anonimStatement.statement)
         }
         if (switchStatement.body != null) {
             val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(switchStatement.body as ASTNode, anonimStatement2)
-            data.addBody(anonimStatement2)
+            data.addBody(anonimStatement2.statement)
         }
         StatementMapper.addStatementToStatement(statement!!, data)
     }

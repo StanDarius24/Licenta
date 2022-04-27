@@ -20,7 +20,7 @@ object DoStatementService {
                 iastStatement ->
                 run {
                     ASTNodeService.solveASTNode(iastStatement as ASTNode, anonimStm)
-                    doStm.addToBody(anonimStm)
+                    doStm.addToBody(anonimStm.statement as Statement)
                 }
             }
         } else {

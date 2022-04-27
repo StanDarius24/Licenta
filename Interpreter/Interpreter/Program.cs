@@ -11,7 +11,7 @@ namespace Interpreter
         public static void Main(string[] args)
         {
             var text = Reader.ReadFromPath(
-                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\project64-develop\vstudio.sln.json");
+                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\project64-develop\Project64.sln.json");
             Console.WriteLine(text);
             var data = JsonConvert.DeserializeObject<IList<SolutionModel>>(text, new JsonSerializerSettings
             {
@@ -57,7 +57,7 @@ namespace Interpreter
                         typeof(Declarator),               
                         typeof(QualifiedName),
                         typeof(DefaultStatement),         
-                        typeof(RangeBasedForStatement),
+                        typeof(RangeBaseForStatement),
                         typeof(DeleteExpression),         
                         typeof(Return),
                         typeof(DoStatement),              
@@ -93,7 +93,6 @@ namespace Interpreter
                         typeof(InclusionStatement),      
                         typeof(While),
                         typeof(InitializerList)
-
                     }
                 }
             });
