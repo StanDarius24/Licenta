@@ -27,7 +27,7 @@ object JsonBuilder {
 
     fun createComplexJson(list: List<ComplexFinalTranslation>?): String? {
         if (list != null) {
-            val gson = GsonBuilder().create()
+            val gson = GsonBuilder().setPrettyPrinting().create()
             return gson.toJson(list)
         }
         return null

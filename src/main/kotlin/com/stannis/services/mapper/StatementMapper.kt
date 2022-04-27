@@ -8,9 +8,6 @@ class StatementMapper {
     companion object {
         fun addStatementToStatement(statementParent: Statement, statementChild: Statement) {
             when (statementParent) {
-                is FunctionCall -> {
-                    statementParent.addComplexParameters(statementChild)
-                }
                 is Return -> {
                     statementParent.retValue = statementChild
                 }
