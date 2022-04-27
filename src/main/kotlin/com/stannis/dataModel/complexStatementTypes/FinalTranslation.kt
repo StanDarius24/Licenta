@@ -6,7 +6,7 @@ import com.stannis.dataModel.statementTypes.FunctionDefinition
 import com.stannis.dataModel.statementTypes.LinkageSpecification
 
 data class FinalTranslation(
-    override val type: String = "FinalTranslation",
+    override val `$type`: String = "FinalTranslation",
     var directives: ArrayList<String>?,
     var globalDeclaration: ArrayList<DeclarationWithParent>?,
     var internDeclaration: ArrayList<DeclarationWithParent>?,

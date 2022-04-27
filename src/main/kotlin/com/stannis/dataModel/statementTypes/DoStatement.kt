@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class DoStatement(
-    override val type: String? = "DoStatement",
+    override val `$type`: String? = "DoStatement",
     var condition: ArrayList<Statement>?,
     var body: ArrayList<Statement>?
 ) : Statement {

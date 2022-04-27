@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class SimpleDeclaration(
-    override val type: String? = "SimpleDeclaration",
+    override val `$type`: String? = "SimpleDeclaration",
     var declarators: ArrayList<Statement>?,
     var declSpecifier: Statement?
 ) : Statement {

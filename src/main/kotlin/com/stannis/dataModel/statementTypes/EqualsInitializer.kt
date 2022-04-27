@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class EqualsInitializer(
-    override val type: String? = "EqualsInitializer",
+    override val `$type`: String? = "EqualsInitializer",
     var functionName: Statement?,
     var statements: ArrayList<Statement>?
 ) : Statement {

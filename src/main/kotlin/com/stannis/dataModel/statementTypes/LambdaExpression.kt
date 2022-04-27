@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class LambdaExpression(
-    override val type: String? = "LambdaExpression",
+    override val `$type`: String? = "LambdaExpression",
     var captureDefault: Statement?,
     var captures: Statement?,
     var declarator: Statement?,

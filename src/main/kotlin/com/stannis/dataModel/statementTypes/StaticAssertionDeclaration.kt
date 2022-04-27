@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class StaticAssertionDeclaration(
-    override val type: String? = "StaticAssertionDeclaration",
+    override val `$type`: String? = "StaticAssertionDeclaration",
     var condition: Statement?,
     var message: Statement?
 ) : Statement {

@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class For(
-    override val type: String? = "For",
+    override val `$type`: String? = "For",
     var initializer: ArrayList<Statement>?,
     var conditionExpr: ArrayList<Statement>?,
     var conditionDecl: ArrayList<Statement>?,

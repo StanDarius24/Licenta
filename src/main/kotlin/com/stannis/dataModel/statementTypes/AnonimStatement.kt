@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class AnonimStatement(
-    override val type: String = "AnonimStatement",
+    override val `$type`: String = "AnonimStatement",
     var statement: Statement?
 ) : Statement {
 

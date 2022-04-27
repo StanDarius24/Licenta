@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class FunctionDefinition(
-    override val type: String? = "FunctionDefinition",
+    override val `$type`: String? = "FunctionDefinition",
     var declaratorSpecifier: Statement?,
     var declarator: ArrayList<Statement>?,
     var body: ArrayList<Statement>?

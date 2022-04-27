@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class CompositeTypeSpecifier(
-    override val type: String? = "CompositeTypeSpecifier",
+    override val `$type`: String? = "CompositeTypeSpecifier",
     var name: Statement?,
     var baseSpec: ArrayList<Statement>?,
     var declarations: ArrayList<Statement>?,

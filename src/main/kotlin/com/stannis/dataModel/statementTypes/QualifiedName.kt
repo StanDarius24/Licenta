@@ -3,7 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class QualifiedName(
-    override val type: String? = "QualifiedName",
+    override val `$type`: String? = "QualifiedName",
     var qualifier: ArrayList<Statement>?,
     var lastName: Statement?
 ) : Statement {
