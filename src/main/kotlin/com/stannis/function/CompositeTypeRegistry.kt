@@ -27,7 +27,7 @@ object CompositeTypeRegistry {
         if (parent is CPPASTTranslationUnit) {
             val datax =
                 (parent.allPreprocessorStatements).map { library -> Name(name = library.rawSignature) }
-            list!!.add(ComplexCompositeTypeSpecifier(node, this.filepath, datax))
+            list!!.add(ComplexCompositeTypeSpecifier(our_class = node, path = this.filepath, library = datax))
         }
     }
 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Interpreter.Models;
 
-public class ComplexCompositeTypeSpecifier
+public class ComplexCompositeTypeSpecifier: IStatement
 {
     public CompositeTypeSpecifier our_Class;
 

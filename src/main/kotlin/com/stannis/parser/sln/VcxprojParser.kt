@@ -81,7 +81,7 @@ object VcxprojParser {
             text.split("<ItemGroup>").filter { element ->
                 element.contains("<ClInclude ") || element.contains("<ClCompile ")
             }
-        val structure = VcxprojStructure(path, null, null, null, null)
+        val structure = VcxprojStructure(path = path, listOfCppFiles = null, listOfHeaderFiles = null, listOfUnusedFiles = null, listOfIncludedModules = null)
         solveProjectReference(structure, text)
         if (list.size > 1) {
             val listx = solveVcxprojInternalFiles(list[1])
@@ -150,7 +150,7 @@ object VcxprojParser {
             text.split("ProjectReference Include=").filter { element ->
                 element.contains("</ProjectReference>")
             }
-        structure.listofIncludedModules = listOfData.map { elem -> elem.split("\"")[1] }
+        structure.listOfIncludedModules = listOfData.map { elem -> elem.split("\"")[1] }
     }
 
     private fun solveVcxprojInternalFiles(headerFile: String): List<String> {

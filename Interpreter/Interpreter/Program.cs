@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Interpreter.Models;
+using Interpreter.services;
 using Interpreter.Utility;
 using Newtonsoft.Json;
 
@@ -11,11 +12,12 @@ namespace Interpreter
         public static void Main(string[] args)
         {
             var text = Reader.ReadFromPath(
-                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\project64-develop\Project64.sln.json");
+                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\project64-develop\vstudio.sln.json");
             Console.WriteLine(text);
-            var data = JsonConvert.DeserializeObject<IList<SolutionModel>>(text, new JsonSerializerSettings
+            DataRegistry.deserializedData = JsonConvert.DeserializeObject<IList<ComplexFinalTranslation>>(text, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
+                NullValueHandling = NullValueHandling.Ignore,
                 SerializationBinder = new KnownTypesBinder
                 {
                     KnownTypes = new List<Type>
@@ -92,7 +94,11 @@ namespace Interpreter
                         typeof(UsingDirective),
                         typeof(InclusionStatement),      
                         typeof(While),
-                        typeof(InitializerList)
+                        typeof(InitializerList),
+                        typeof(ComplexCompositeTypeSpecifier),
+                        typeof(ComplexFinalTranslation),
+                        typeof(SlnStructure),
+                        typeof(VcxprojStructure)
                     }
                 }
             });

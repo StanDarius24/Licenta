@@ -1,11 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Interpreter.Models
-{
-
-    public class VcxProjStructure
+namespace Interpreter.Models{
+    public class VcxprojStructure
     {
-        public string path;
+        
+        public string path { set; get; }
 
         public IList<string> listOfCppFiles = new List<string>();
 
@@ -16,5 +15,4 @@ namespace Interpreter.Models
         public IList<string> listOfUnusedFiles = new List<string>();
 
     }
-
 };

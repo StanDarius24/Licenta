@@ -1,7 +1,7 @@
 namespace Interpreter.Models
 {
 
-    public class TranslationWithPath
+    public class TranslationWithPath : IStatement
     {
         public string path;
 

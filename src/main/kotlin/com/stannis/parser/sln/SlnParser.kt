@@ -45,7 +45,7 @@ object SlnParser {
                             }
                         }
                     }
-                    (slnDataList!! as ArrayList).add(SlnStructure(token, name, pathx, alias, map))
+                    (slnDataList!! as ArrayList).add(SlnStructure(token = token,name = name, path = pathx, alias= alias, antebuild = map))
                 }
             }
         }
