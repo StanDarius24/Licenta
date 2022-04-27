@@ -16,14 +16,14 @@ object ProjectVcxprojComplexRegistry {
         if (!this::parsedFiles.isInitialized) {
             parsedFiles = ArrayList()
             val list = ArrayList<TranslationWithPath>()
-            list.add(TranslationWithPath(finalTranslation, filePath))
-            (parsedFiles as ArrayList).add(ComplexFinalTranslation(list, ArrayList(), vcxprojStructure))
+            list.add(TranslationWithPath(finalTranslation = finalTranslation, path = filePath))
+            (parsedFiles as ArrayList).add(ComplexFinalTranslation(listOfHeaderFiles = list, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure))
         } else {
             var bool1 = false
             parsedFiles.iterator().forEachRemaining { complexFinalTranslation ->
                 run {
                     if (complexFinalTranslation.vcxprojStructure.equals(vcxprojStructure)) {
-                        val translationWithPath = TranslationWithPath(finalTranslation, filePath)
+                        val translationWithPath = TranslationWithPath(finalTranslation = finalTranslation, path = filePath)
                         var bool2 = false
                         complexFinalTranslation.listOfHeaderFiles!!.iterator().forEachRemaining {
                             translationWParent ->
@@ -46,9 +46,9 @@ object ProjectVcxprojComplexRegistry {
             }
             if (!bool1) {
                 val listx = ArrayList<TranslationWithPath>()
-                listx.add(TranslationWithPath(finalTranslation, filePath))
+                listx.add(TranslationWithPath(finalTranslation = finalTranslation, path = filePath))
                 (parsedFiles as ArrayList).add(
-                    ComplexFinalTranslation(listx, ArrayList(), vcxprojStructure)
+                    ComplexFinalTranslation(listOfHeaderFiles = listx, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure)
                 )
             }
         }
