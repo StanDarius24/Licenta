@@ -18,14 +18,14 @@ object LogicHandler {
         val list = SlnParser.locateAllSlnFiles(projectPath)
         val parser = Parser()
         val astVisitorOverride = ASTVisitorOverride()
-//        list.forEach { element ->
-//            run {
-                SlnParser.solveSln(list[2])
+        list.forEach { element ->
+            run {
+                SlnParser.solveSln(element)
                 parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride, projectPath, listOf)
                 parser.parseCppFiles(astVisitorOverride, projectPath, listOf)
                 if (listOf.contains("oop")) {
                     JsonWriter.writeData(
-                        list[2].split(OperatingSystem.getSeparator()).last(),
+                        element.split(OperatingSystem.getSeparator()).last(),
                         newPath.joinToString(OperatingSystem.getSeparator())
                     )
                 }
@@ -33,6 +33,6 @@ object LogicHandler {
                 SlnParser.slnDataList = null
                 VcxprojParser.mapOfData = emptyMap()
             }
-//        }
-//    }
+        }
+    }
 }

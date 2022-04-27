@@ -5,7 +5,6 @@ import com.stannis.dataModel.Statement
 data class TemplateDeclaration(
     override val `$type`: String? = "TemplateDeclaration",
     var declaration: Statement?,
-    var templateScope: Statement?,
     var parameters: ArrayList<Statement>?
 ) : Statement {
     fun addDeclaration(statement: Statement) {

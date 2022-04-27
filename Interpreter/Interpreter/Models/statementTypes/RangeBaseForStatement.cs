@@ -3,7 +3,7 @@
 namespace Interpreter.Models
 {
 
-    public class RangeBasedForStatement : IStatement
+    public class RangeBaseForStatement : IStatement
     {
         public IList<IStatement> declaration = new List<IStatement>();
 

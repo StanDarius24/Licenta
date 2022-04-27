@@ -99,7 +99,7 @@
         <Compile Include="Models\statementTypes\ProblemExpression.cs" />
         <Compile Include="Models\statementTypes\ProblemStatement.cs" />
         <Compile Include="Models\statementTypes\QualifiedName.cs" />
-        <Compile Include="Models\statementTypes\RangeBasedForStatement.cs" />
+        <Compile Include="Models\statementTypes\RangeBaseForStatement.cs" />
         <Compile Include="Models\statementTypes\Return.cs" />
         <Compile Include="Models\statementTypes\SimpleDeclaration.cs" />
         <Compile Include="Models\statementTypes\SimpleDeclSpecifier.cs" />

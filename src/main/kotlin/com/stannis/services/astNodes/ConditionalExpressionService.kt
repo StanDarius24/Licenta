@@ -23,11 +23,11 @@ object ConditionalExpressionService {
         val condExpr = ConditionalExpression(condition = null, negativeResult = null, positiveResult = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         solveparameter(conditionalExpression.logicalConditionExpression as ASTNode, anonimStatement)
-        condExpr.condition = anonimStatement
+        condExpr.condition = anonimStatement.statement
         solveparameter(conditionalExpression.positiveResultExpression as ASTNode, anonimStatement)
-        condExpr.positiveResult = anonimStatement
+        condExpr.positiveResult = anonimStatement.statement
         solveparameter(conditionalExpression.negativeResultExpression as ASTNode, anonimStatement)
-        condExpr.negativeResult = anonimStatement
+        condExpr.negativeResult = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, condExpr)
     }
 }

@@ -14,13 +14,13 @@ object RangeBaseForStatementService {
         val range = RangeBasedForStatement(declaration = null, initClause = null, body = null)
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.declaration as ASTNode, anonimStatement1)
-        range.addDeclaration(anonimStatement1)
+        range.addDeclaration(anonimStatement1.statement as Statement)
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.initializerClause as ASTNode, anonimStatement2)
-        range.addInitClause(anonimStatement2)
+        range.addInitClause(anonimStatement2.statement as Statement)
         val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.body as ASTNode, anonimStatement3)
-        range.addBody(anonimStatement3)
+        range.addBody(anonimStatement3.statement as Statement)
         StatementMapper.addStatementToStatement(statement!!, range)
     }
 }
