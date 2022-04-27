@@ -2,7 +2,7 @@ namespace Interpreter.Models{
 
     public class NamedTypeSpecifier: IStatement
     {
-        public string name { set; get; }
+        public IStatement name { set; get; }
     }
 
 };
