@@ -13,10 +13,10 @@ object StaticAssertionDeclarationService {
         staticAssertioncppast: CPPASTStaticAssertionDeclaration,
         statement: Statement?
     ) {
-        val staticAssertion = StaticAssertionDeclaration(null, null)
-        val anonimStatement1 = AnonimStatement(null)
+        val staticAssertion = StaticAssertionDeclaration(condition = null, message = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(staticAssertioncppast.condition as ASTNode, anonimStatement1)
-        val anonimStatement2 = AnonimStatement(null)
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(staticAssertioncppast.message as ASTNode, anonimStatement2)
         staticAssertion.addCondition(anonimStatement1)
         staticAssertion.addMessage(anonimStatement2)

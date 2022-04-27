@@ -11,8 +11,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLabelStatement
 object LabelStatementService {
 
     fun solveLabelStatement(labelCppast: CPPASTLabelStatement, statement: Statement?) {
-        val labelStatement = LabelStatement(labelCppast.name.rawSignature, null)
-        val anonimStatement = AnonimStatement(null)
+        val labelStatement = LabelStatement(name = labelCppast.name.rawSignature, expressions = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(labelCppast.nestedStatement as ASTNode, anonimStatement)
         labelStatement.addExpression(anonimStatement)
         StatementMapper.addStatementToStatement(statement!!, labelStatement)

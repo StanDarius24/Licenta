@@ -18,9 +18,9 @@ object SimpleDeclarationRegistry {
     fun addToList(data: SimpleDeclaration, parent: ASTNode?) {
         if (parent !is CPPASTCompositeTypeSpecifier) {
             if (data.declarators != null && data.declarators!![0] is Declarator) {
-                val declarationWithParent = DeclarationWithParent(data, null)
+                val declarationWithParent = DeclarationWithParent(declaration = data, parent = null)
                 if (parent != null) {
-                    val anonimStatement = AnonimStatement(null)
+                    val anonimStatement = AnonimStatement.getNewAnonimStatement()
                     if (parent is CPPASTFunctionDefinition) {
                         solveFunctionDefinition(parent, anonimStatement)
                         declarationWithParent.parent =
@@ -44,7 +44,7 @@ object SimpleDeclarationRegistry {
                 if (globalDeclaration == null) {
                     globalDeclaration = ArrayList()
                 }
-                globalDeclaration!!.add(DeclarationWithParent(data, null))
+                globalDeclaration!!.add(DeclarationWithParent(declaration = data, parent = null))
             }
         }
     }

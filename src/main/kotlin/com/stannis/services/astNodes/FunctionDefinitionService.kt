@@ -12,7 +12,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
         val functionDefinition = setFunction(funcDef)
-        val anonimStatement3 = AnonimStatement(null)
+        val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         FunctionDefinitionRegistry.addToList(functionDefinition)
         if (funcDef.body != null) {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
@@ -23,13 +23,13 @@ object FunctionDefinitionService {
 
     fun setFunction(funcDef: CPPASTFunctionDefinition): FunctionDefinition {
         val functionDefinition =
-            FunctionDefinition(null, null, null) // only functions with implementation
-        val anonimStatement1 = AnonimStatement(null)
+            FunctionDefinition(declaratorSpecifier = null, declarator = null, body = null) // only functions with implementation
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
         }
         functionDefinition.declaratorSpecifier = anonimStatement1.statement
-        val anonimStatement2 = AnonimStatement(null)
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declarator != null) {
             ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)
         }

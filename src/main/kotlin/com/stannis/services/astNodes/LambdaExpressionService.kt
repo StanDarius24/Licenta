@@ -11,26 +11,26 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLambdaExpression
 
 object LambdaExpressionService {
     fun solveLambdaExpression(data: CPPASTLambdaExpression, statement: Statement?) {
-        val lambdaExpression = LambdaExpression(null, null, null, null, null, null)
+        val lambdaExpression = LambdaExpression(captureDefault = null, declarator = null, body = null, captures = null, closureTypeName = null, implicitFunctionCallName = null)
         if (data.captureDefault != null) {
-            val name = Name(data.captureDefault.name)
+            val name = Name(name = data.captureDefault.name)
             lambdaExpression.captureDefault = name
         }
 
         if (data.body != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.body as ASTNode, anonimStatement)
             lambdaExpression.body = anonimStatement.statement
         }
 
         if (data.declarator != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.declarator as ASTNode, anonimStatement)
             lambdaExpression.declarator = anonimStatement.statement
         }
 
         if (data.closureTypeName != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.closureTypeName as ASTNode, anonimStatement)
             lambdaExpression.closureTypeName = anonimStatement.statement
         }

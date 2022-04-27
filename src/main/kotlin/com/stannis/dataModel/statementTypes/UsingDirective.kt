@@ -2,5 +2,8 @@ package com.stannis.dataModel.statementTypes
 
 import com.stannis.dataModel.Statement
 
-data class UsingDirective(var name: String?, override val type: String? = "UsingDirective") :
+data class UsingDirective(
+    override val `$type`: String? = "UsingDirective",
+    var name: String?
+) :
     Statement

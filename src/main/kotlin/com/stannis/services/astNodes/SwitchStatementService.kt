@@ -11,9 +11,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement
 object SwitchStatementService {
 
     fun solveSwitchStatement(switchStatement: CPPASTSwitchStatement, statement: Statement?) {
-        val data = SwitchStatement(null, null)
+        val data = SwitchStatement(controllerExpression = null, body = null)
         if (switchStatement.controllerExpression != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(
                 switchStatement.controllerExpression as ASTNode,
                 anonimStatement
@@ -21,7 +21,7 @@ object SwitchStatementService {
             data.addControllerExpression(anonimStatement)
         }
         if (switchStatement.body != null) {
-            val anonimStatement2 = AnonimStatement(null)
+            val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(switchStatement.body as ASTNode, anonimStatement2)
             data.addBody(anonimStatement2)
         }

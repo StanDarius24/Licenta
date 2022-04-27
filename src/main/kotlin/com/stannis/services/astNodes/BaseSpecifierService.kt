@@ -10,8 +10,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseSpecifier
 
 object BaseSpecifierService {
     fun solveBaseSpecifier(cppastBaseSpecifier: CPPASTBaseSpecifier, statement: Statement?) {
-        val baseSpecifier = BaseSpecifier(cppastBaseSpecifier.isVirtual, null)
-        val anonimStatement = AnonimStatement(null)
+        val baseSpecifier = BaseSpecifier(virtual = cppastBaseSpecifier.isVirtual, name = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastBaseSpecifier.nameSpecifier as ASTNode, anonimStatement)
         baseSpecifier.name = anonimStatement.statement
         StatementMapper.addStatementToStatement(statement!!, baseSpecifier)

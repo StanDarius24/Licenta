@@ -130,8 +130,8 @@ object LinkClassDeclarationsService {
                             internDefinition = true
                             val declarationWithClass =
                                 DeclarationWithClass(
-                                    declarationWithParent,
-                                    Name("Intern Class Call")
+                                    declarationWithParent = declarationWithParent,
+                                    linkedClass = Name(name = "Intern Class Call")
                                 )
                             listOfNewDecl = if (listOfNewDecl == null) {
                                 mapOf(declarationInClass to declarationWithClass)

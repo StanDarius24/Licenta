@@ -11,14 +11,14 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTRangeBasedForStatement
 object RangeBaseForStatementService {
 
     fun solveRangeBaseForStatement(rangebase: CPPASTRangeBasedForStatement, statement: Statement?) {
-        val range = RangeBasedForStatement(null, null, null)
-        val anonimStatement1 = AnonimStatement(null)
+        val range = RangeBasedForStatement(declaration = null, initClause = null, body = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.declaration as ASTNode, anonimStatement1)
         range.addDeclaration(anonimStatement1)
-        val anonimStatement2 = AnonimStatement(null)
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.initializerClause as ASTNode, anonimStatement2)
         range.addInitClause(anonimStatement2)
-        val anonimStatement3 = AnonimStatement(null)
+        val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(rangebase.body as ASTNode, anonimStatement3)
         range.addBody(anonimStatement3)
         StatementMapper.addStatementToStatement(statement!!, range)

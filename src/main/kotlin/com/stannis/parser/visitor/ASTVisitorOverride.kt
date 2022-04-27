@@ -39,7 +39,7 @@ class ASTVisitorOverride : ASTVisitor() {
             }
         }
         println("Found a declaration: " + declaration.rawSignature)
-        val anonimStatement = AnonimStatement(null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(declaration as ASTNode, anonimStatement)
         if (anonimStatement.statement != null) {
             primaryBlock.addStatement(anonimStatement.statement as Statement)

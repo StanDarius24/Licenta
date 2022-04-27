@@ -14,7 +14,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 object ForBlockService {
 
     fun solveForBlock(data: CPPASTForStatement, statement: Statement?) {
-        val forT = For(null, null, null, null, null)
+        val forT = For(initializer = null, conditionExpr = null, body = null, iteration = null, conditionDecl =  null)
         StatementMapper.addStatementToStatement(statement!!, forT)
         solveInitialization(data, forT)
         solveConditionExpression(data, forT)
@@ -27,13 +27,13 @@ object ForBlockService {
             (data.body as CPPASTCompoundStatement).statements.iterator().forEachRemaining {
                 statement ->
                 run {
-                    val anonimStatement = AnonimStatement(null)
+                    val anonimStatement = AnonimStatement.getNewAnonimStatement()
                     ASTNodeService.solveASTNode(statement as ASTNode, anonimStatement)
                     forT.addBody(anonimStatement.statement as Statement)
                 }
             }
         } else {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.body as ASTNode, anonimStatement)
             forT.addBody(anonimStatement.statement as Statement)
         }
@@ -41,14 +41,14 @@ object ForBlockService {
 
     private fun solveIterationExpression(data: CPPASTForStatement, forT: For) {
         if (data.iterationExpression != null) {
-            val anonimStatement1 = AnonimStatement(null)
+            val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.iterationExpression as ASTNode, anonimStatement1)
             forT.addIteration(anonimStatement1.statement as Statement)
         }
     }
 
     private fun solveConditionExpression(data: CPPASTForStatement, forT: For) {
-        val anonimStatement1 = AnonimStatement(null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         if (data.conditionExpression != null) {
             ASTNodeService.solveASTNode(data.conditionExpression as ASTNode, anonimStatement1)
             forT.addConditionExpression(anonimStatement1.statement as Statement)
@@ -62,13 +62,13 @@ object ForBlockService {
                 .declarators.iterator()
                 .forEachRemaining { declarator ->
                     run {
-                        val anonimStatement1 = AnonimStatement(null)
+                        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
                         ASTNodeService.solveASTNode(declarator as ASTNode, anonimStatement1)
                         forT.addInitializer(anonimStatement1.statement as Statement)
                     }
                 }
         } else {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.initializerStatement as ASTNode, anonimStatement)
             forT.addInitializer(anonimStatement.statement as Statement)
         }

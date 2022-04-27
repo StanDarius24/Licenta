@@ -3,9 +3,9 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class EnumerationSpecifier(
+    override val `$type`: String? = "EnumerationSpecifier",
     var name: String?,
-    var enumerators: ArrayList<Statement>?,
-    override val type: String? = "EnumerationSpecifier"
+    var enumerators: ArrayList<Statement>?
 ) : Statement {
     fun addEnumerators(statement: Statement) {
         if (enumerators == null) {

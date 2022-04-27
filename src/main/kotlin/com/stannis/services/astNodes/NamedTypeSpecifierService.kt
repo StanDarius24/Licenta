@@ -10,9 +10,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier
 
 object NamedTypeSpecifierService {
     fun solveNamedTypeSpecifier(namedTypeSpec: CPPASTNamedTypeSpecifier, statement: Statement?) {
-        val anonimStatement = AnonimStatement(null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(namedTypeSpec.name as ASTNode, anonimStatement)
-        val namedTypeSpecifier = NamedTypeSpecifier(anonimStatement.statement)
+        val namedTypeSpecifier = NamedTypeSpecifier(name = anonimStatement.statement)
         StatementMapper.addStatementToStatement(
             statement!!,
             namedTypeSpecifier

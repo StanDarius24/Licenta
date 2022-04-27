@@ -7,7 +7,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemExpression
 
 object ProblemExpressionService {
     fun solveProblemExpression(node: CPPASTProblemExpression, statement: Statement?) {
-        val problemExpression = ProblemExpression(node.rawSignature)
+        val problemExpression = ProblemExpression(problem = node.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, problemExpression)
     }
 

@@ -11,7 +11,7 @@ object ProblemDeclarationService {
         problemDeclaration: CPPASTProblemDeclaration,
         statement: Statement?
     ) {
-        val data = ProblemDeclaration(problemDeclaration.rawSignature)
+        val data = ProblemDeclaration(expression = problemDeclaration.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, data)
     }
 }

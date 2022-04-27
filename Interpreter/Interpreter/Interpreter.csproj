@@ -43,8 +43,10 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Models\complexStatementTypes\ComplexCompositeTypeSpecifier.cs" />
+        <Compile Include="Models\complexStatementTypes\DeclarationWithClass.cs" />
         <Compile Include="Models\complexStatementTypes\DeclarationWithParent.cs" />
         <Compile Include="Models\complexStatementTypes\FinalTranslation.cs" />
+        <Compile Include="Models\complexStatementTypes\FunctionCallWithDeclaration.cs" />
         <Compile Include="Models\complexStatementTypes\TranslationWithPath.cs" />
         <Compile Include="Models\SolutionModel.cs" />
         <Compile Include="Models\IStatement.cs" />
@@ -74,6 +76,7 @@
         <Compile Include="Models\statementTypes\FieldReference.cs" />
         <Compile Include="Models\statementTypes\For.cs" />
         <Compile Include="Models\statementTypes\FunctionCall.cs" />
+        <Compile Include="Models\statementTypes\FunctionCalls.cs" />
         <Compile Include="Models\statementTypes\FunctionDeclarator.cs" />
         <Compile Include="Models\statementTypes\FunctionDefinition.cs" />
         <Compile Include="Models\statementTypes\GotoStatement.cs" />
@@ -92,10 +95,32 @@
         <Compile Include="Models\statementTypes\NullStatement.cs" />
         <Compile Include="Models\statementTypes\PackEpansionExpression.cs" />
         <Compile Include="Models\statementTypes\ParameterDeclaration.cs" />
+        <Compile Include="Models\statementTypes\ProblemDeclaration.cs" />
+        <Compile Include="Models\statementTypes\ProblemExpression.cs" />
+        <Compile Include="Models\statementTypes\ProblemStatement.cs" />
+        <Compile Include="Models\statementTypes\QualifiedName.cs" />
+        <Compile Include="Models\statementTypes\RangeBasedForStatement.cs" />
+        <Compile Include="Models\statementTypes\Return.cs" />
         <Compile Include="Models\statementTypes\SimpleDeclaration.cs" />
+        <Compile Include="Models\statementTypes\SimpleDeclSpecifier.cs" />
+        <Compile Include="Models\statementTypes\SimpleTypeConstructorExpression.cs" />
+        <Compile Include="Models\statementTypes\SimpleTypeTemplateParameter.cs" />
+        <Compile Include="Models\statementTypes\StaticAssertionDeclaration.cs" />
+        <Compile Include="Models\statementTypes\SwitchStatement.cs" />
+        <Compile Include="Models\statementTypes\TemplateDeclaration.cs" />
+        <Compile Include="Models\statementTypes\TemplateId.cs" />
+        <Compile Include="Models\statementTypes\TemplateSpecialization.cs" />
+        <Compile Include="Models\statementTypes\TryBlockStatement.cs" />
+        <Compile Include="Models\statementTypes\TypeId.cs" />
+        <Compile Include="Models\statementTypes\TypeIdExpression.cs" />
+        <Compile Include="Models\statementTypes\UnaryExpression.cs" />
+        <Compile Include="Models\statementTypes\UsingDeclaration.cs" />
+        <Compile Include="Models\statementTypes\UsingDirective.cs" />
+        <Compile Include="Models\statementTypes\While.cs" />
         <Compile Include="Models\VcxProjStructure.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Utility\KnownTypesBinder.cs" />
         <Compile Include="Utility\Reader.cs" />
     </ItemGroup>
     <ItemGroup>

@@ -11,10 +11,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement
 object CompoundStatementService {
 
     fun solveCompoundStatement(node: CPPASTCompoundStatement, statement: Statement?) {
-        val compoundStatement = CompoundStatement(null)
+        val compoundStatement = CompoundStatement(statements = null)
         node.statements.iterator().forEachRemaining { statements ->
             run {
-                val anonimStatement = AnonimStatement(null)
+                val anonimStatement = AnonimStatement.getNewAnonimStatement()
                 ASTNodeService.solveASTNode(statements as ASTNode, anonimStatement)
                 compoundStatement.addStatement(anonimStatement.statement as Statement)
             }

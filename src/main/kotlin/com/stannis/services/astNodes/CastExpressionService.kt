@@ -11,13 +11,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression
 object CastExpressionService {
 
     fun solveCastExpression(cppastCastExpression: CPPASTCastExpression, statement: Statement?) {
-        val castExpr = CastExpression(null, null)
+        val castExpr = CastExpression(operand = null, typeId = null)
 
-        val anonimStatement = AnonimStatement(null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCastExpression.operand as ASTNode, anonimStatement)
         castExpr.operand = anonimStatement.statement
 
-        val anonimStatement1 = AnonimStatement(null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCastExpression.typeId as ASTNode, anonimStatement1)
         castExpr.typeId = anonimStatement1
 

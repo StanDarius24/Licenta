@@ -11,11 +11,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEnumerator
 object EnumeratorService {
 
     fun solveEnumerator(cppastEnumerator: CPPASTEnumerator, statement: Statement?) {
-        val enumerator = Enumerator(null, null)
-        val anonimStatement1 = AnonimStatement(null)
+        val enumerator = Enumerator(name = null, value = null)
+        val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastEnumerator.name as ASTNode, anonimStatement1)
         enumerator.name = anonimStatement1.statement
-        val anonimStatement2 = AnonimStatement(null)
+        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         if (cppastEnumerator.value != null) {
             ASTNodeService.solveASTNode(cppastEnumerator.value as ASTNode, anonimStatement2)
         }

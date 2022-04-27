@@ -14,7 +14,7 @@ object SimpleTypeConstructorExpressionService {
         statement: Statement
     ) {
         val simpleTypeConstr =
-            SimpleTypeConstructorExpression(expression.declSpecifier.rawSignature, null)
+            SimpleTypeConstructorExpression(castType = expression.declSpecifier.rawSignature, parameters = null)
         ASTNodeService.solveASTNode(expression.initializer as ASTNode, simpleTypeConstr)
         StatementMapper.addStatementToStatement(statement, simpleTypeConstr)
     }

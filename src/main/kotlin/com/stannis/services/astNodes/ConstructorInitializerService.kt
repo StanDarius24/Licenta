@@ -13,7 +13,7 @@ object ConstructorInitializerService {
         constructorInitializer: CPPASTConstructorInitializer,
         statement: Statement?
     ) {
-        val constrInit = ConstructorInitializer(null)
+        val constrInit = ConstructorInitializer(expressions = null)
         constructorInitializer.arguments.iterator().forEachRemaining { arg ->
             run { ASTNodeService.solveASTNode(arg as ASTNode, constrInit) }
         }

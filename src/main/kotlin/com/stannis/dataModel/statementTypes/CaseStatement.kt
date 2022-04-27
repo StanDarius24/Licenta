@@ -3,6 +3,7 @@ package com.stannis.dataModel.statementTypes
 import com.stannis.dataModel.Statement
 
 data class CaseStatement(
-    var expression: String?,
-    override val type: String? = "CaseStatement") :
+    override val `$type`: String? = "CaseStatement",
+    var expression: String?
+) :
     Statement

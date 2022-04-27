@@ -1,5 +1,5 @@
 package com.stannis.dataModel
 
 interface Statement {
-    val type: String?
+    val `$type`: String?
 }

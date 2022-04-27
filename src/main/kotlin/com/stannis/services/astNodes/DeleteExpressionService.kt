@@ -11,7 +11,7 @@ object DeleteExpressionService {
         cppastDeleteExpression: CPPASTDeleteExpression,
         statement: Statement?
     ) {
-        val delExpression = DeleteExpression(cppastDeleteExpression.operand.rawSignature)
+        val delExpression = DeleteExpression(deletedExpression = cppastDeleteExpression.operand.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, delExpression)
     }
 }

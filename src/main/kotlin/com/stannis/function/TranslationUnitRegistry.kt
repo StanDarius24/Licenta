@@ -9,7 +9,7 @@ object TranslationUnitRegistry {
 
     fun createTranslationUnit(boolean: Boolean) {
         val finalTranslation =
-            FinalTranslation(listOfDirectives as ArrayList, null, null, null, null, null, null)
+            FinalTranslation(directives = listOfDirectives as ArrayList, classList = null, globalDeclaration = null, internDeclaration = null, functionCallsWithoutImplementation = null, linkageSpecification = null, methodsWithFunctionCalls = null)
         finalTranslation.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
         finalTranslation.internDeclaration = SimpleDeclarationRegistry.internDeclaration
         finalTranslation.methodsWithFunctionCalls =

@@ -55,7 +55,7 @@ object FileSelector {
     }
 
     fun solvePath(s: String, filepath: String): String {
-        val finalvalue = s.split("/").toArray()
+        val finalvalue = s.split(OperatingSystem.getSeparator()).toArray()
         if (filepath.contains("\\")) {
             filepath.split("\\").forEach { element ->
                 run {

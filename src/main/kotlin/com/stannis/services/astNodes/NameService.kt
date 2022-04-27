@@ -7,6 +7,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName
 
 object NameService {
     fun solveName(cppastName: CPPASTName, statement: Statement?) {
-        StatementMapper.addStatementToStatement(statement!!, Name(cppastName.rawSignature))
+        StatementMapper.addStatementToStatement(statement!!, Name(name = cppastName.rawSignature))
     }
 }

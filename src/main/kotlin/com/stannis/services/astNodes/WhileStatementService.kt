@@ -11,22 +11,22 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement
 object WhileStatementService {
 
     fun solveWhileStatement(data: CPPASTWhileStatement, statement: Statement?) {
-        val whileStructure = While(null, null, null)
+        val whileStructure = While(condition = null, condition2 = null, body = null)
 
         if (data.condition != null) {
-            val anonimStatement1 = AnonimStatement(null)
+            val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.condition as ASTNode, anonimStatement1)
             whileStructure.condition = anonimStatement1.statement
         }
 
         if (data.conditionDeclaration != null) {
-            val anonimStatement2 = AnonimStatement(null)
+            val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.conditionDeclaration as ASTNode, anonimStatement2)
             whileStructure.condition2 = anonimStatement2.statement
         }
 
         if (data.body != null) {
-            val anonimStatement3 = AnonimStatement(null)
+            val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.body as ASTNode, anonimStatement3)
             whileStructure.body = anonimStatement3.statement
         }

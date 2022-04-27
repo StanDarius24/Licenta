@@ -12,8 +12,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression
 
 object EqualsInitializerService {
     fun solveEqualsInitializer(node: CPPASTEqualsInitializer, statement: Statement?) {
-        val equals = EqualsInitializer(null, null)
-        val anonimStatement = AnonimStatement(null)
+        val equals = EqualsInitializer(functionName = null, statements = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         if (node.initializerClause is CPPASTFunctionCallExpression) {
             ASTNodeService.solveASTNode(
                 (node.initializerClause as CPPASTFunctionCallExpression).functionNameExpression as
@@ -23,7 +23,7 @@ object EqualsInitializerService {
             (node.initializerClause as CPPASTFunctionCallExpression).arguments.iterator()
                 .forEachRemaining { argument ->
                     run {
-                        val anonimStatement2 = AnonimStatement(null)
+                        val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
                         ASTNodeService.solveASTNode(argument as ASTNode, anonimStatement2)
                         equals.addStatement(anonimStatement2.statement as Statement)
                     }

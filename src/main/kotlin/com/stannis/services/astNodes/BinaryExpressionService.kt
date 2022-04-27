@@ -15,14 +15,14 @@ object BinaryExpressionService {
     }
 
     fun solveBinaryExpressionService(expression: CPPASTBinaryExpression, statement: Statement?) {
-        val binaryExpr = BinaryExpression(null, null)
+        val binaryExpr = BinaryExpression(leftExpression = null, rightExpression = null)
         if (expression.operand1 != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             handreOperands(expression.operand1 as ASTNode, anonimStatement)
             binaryExpr.addLeftExpression(anonimStatement.statement!!)
         }
         if (expression.operand2 != null) {
-            val anonimStatement = AnonimStatement(null)
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
             handreOperands(expression.operand2 as ASTNode, anonimStatement)
             binaryExpr.addRightExpression(anonimStatement.statement!!)
         }

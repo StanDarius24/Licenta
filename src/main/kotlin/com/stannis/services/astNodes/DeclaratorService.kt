@@ -14,7 +14,7 @@ object DeclaratorService {
         statement: Statement?,
         modifier: String
     ) {
-        val decl = Declarator(modifier, null, null)
+        val decl = Declarator(modifier = modifier, name = null, initialization = null)
         if (declarator.name != null) {
             decl.name = declarator.name.rawSignature
         }

@@ -10,8 +10,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceAlias
 
 object NamespaceAliasService {
     fun solveNamespaceAlias(cppastNamespaceAlias: CPPASTNamespaceAlias, statement: Statement?) {
-        val namespaceAlias = NamespaceAlias(null, null)
-        val anonimStatement = AnonimStatement(null)
+        val namespaceAlias = NamespaceAlias(alias = null, qualifiedName = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastNamespaceAlias.alias as ASTNode, anonimStatement)
         namespaceAlias.alias = anonimStatement.statement
         ASTNodeService.solveASTNode(cppastNamespaceAlias.mappingName as ASTNode, anonimStatement)

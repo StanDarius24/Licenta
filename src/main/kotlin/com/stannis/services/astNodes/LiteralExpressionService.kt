@@ -11,7 +11,7 @@ object LiteralExpressionService {
         cppastLiteralExpression: CPPASTLiteralExpression,
         statement: Statement?
     ) {
-        val literalExpr = LiteralExpression(cppastLiteralExpression.rawSignature)
+        val literalExpr = LiteralExpression(expression = cppastLiteralExpression.rawSignature)
         StatementMapper.addStatementToStatement(statement!!, literalExpr)
     }
 }

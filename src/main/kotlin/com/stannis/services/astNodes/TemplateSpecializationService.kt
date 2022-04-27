@@ -13,8 +13,8 @@ object TemplateSpecializationService {
         templateSolver: CPPASTTemplateSpecialization,
         statement: Statement?
     ) {
-        val templSpec = TemplateSpecialization(null)
-        val anonimStatement = AnonimStatement(null)
+        val templSpec = TemplateSpecialization(declaration = null)
+        val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(templateSolver.declaration as ASTNode, anonimStatement)
         templSpec.declaration = anonimStatement
         StatementMapper.addStatementToStatement(statement!!, templSpec)
