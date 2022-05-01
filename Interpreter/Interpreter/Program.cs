@@ -12,7 +12,7 @@ namespace Interpreter
         public static void Main(string[] args)
         {
             var text = Reader.ReadFromPath(
-                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\project64-develop\vstudio.sln.json");
+                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\vs_course\vs_course.sln.json");
             Console.WriteLine(text);
             DataRegistry.deserializedData = JsonConvert.DeserializeObject<IList<ComplexFinalTranslation>>(text, new JsonSerializerSettings
             {
@@ -95,13 +95,13 @@ namespace Interpreter
                         typeof(InclusionStatement),      
                         typeof(While),
                         typeof(InitializerList),
-                        typeof(ComplexCompositeTypeSpecifier),
                         typeof(ComplexFinalTranslation),
                         typeof(SlnStructure),
                         typeof(VcxprojStructure)
                     }
                 }
             });
+            DirectiveFinder.linkDirective();
             Console.WriteLine(text);
         }
     }
