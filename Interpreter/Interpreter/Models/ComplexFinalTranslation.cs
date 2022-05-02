@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Interpreter.Models.complexStatementTypes;
 
 namespace Interpreter.Models{
     public class ComplexFinalTranslation : IStatement

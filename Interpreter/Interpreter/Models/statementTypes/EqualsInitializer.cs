@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 
-namespace Interpreter.Models{
+namespace Interpreter.Models.statementTypes{
 
     public class EqualsInitializer: IStatement
     {
         public IStatement functionName { set; get; }
 
-        public IList<IStatement> Statements = new List<IStatement>();
+        public IList<IStatement> statements = new List<IStatement>();
 
     }
 

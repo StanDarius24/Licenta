@@ -1,4 +1,4 @@
-namespace Interpreter.Models{
+namespace Interpreter.Models.statementTypes{
     public class ArraySubscript: IStatement
     {
         public string arrayValue { get; set; }

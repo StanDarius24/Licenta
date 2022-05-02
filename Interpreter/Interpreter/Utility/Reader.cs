@@ -1,11 +1,9 @@
-using System;
 
 namespace Interpreter.Utility
 {
-    public class Reader
+    public static class Reader
     {
-
-        public static String ReadFromPath(String path)
+        public static string ReadFromPath(string path)
         {
             return System.IO.File.ReadAllText(path);
         }

@@ -1,4 +1,4 @@
-﻿namespace Interpreter.Models{
+﻿namespace Interpreter.Models.statementTypes{
     public class StaticAssertionDeclaration : IStatement
     {
         public IStatement condition { set; get; }

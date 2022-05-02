@@ -1,4 +1,4 @@
-namespace Interpreter.Models
+namespace Interpreter.Models.complexStatementTypes
 {
 
     public class TranslationWithPath : IStatement
@@ -6,6 +6,8 @@ namespace Interpreter.Models
         public string path;
 
         public FinalTranslation finalTranslation;
+
+        public FinalTranslation newTranslation;
 
     }
 
