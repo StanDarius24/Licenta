@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 
-namespace Interpreter.Models
+namespace Interpreter.Models.statementTypes
 {
     public class CompositeTypeSpecifier : IStatement
     {
-        public IStatement name;
+        public IStatement name { set; get; }
 
         public IList<IStatement> baseSpecifier = new List<IStatement>();
 
         public IList<IStatement> declarations = new List<IStatement>();
 
-        public int key;
+        public int key { set; get; }
 
     }
 }

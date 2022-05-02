@@ -1,5 +1,4 @@
-namespace Interpreter.Models{
-
+namespace Interpreter.Models.statementTypes{
     public class ParameterDeclaration: IStatement
     {
         public IStatement declarationSpecifier { set; get; }
@@ -7,5 +6,4 @@ namespace Interpreter.Models{
         public IStatement declarator { set; get; }
         
     }
-
 };

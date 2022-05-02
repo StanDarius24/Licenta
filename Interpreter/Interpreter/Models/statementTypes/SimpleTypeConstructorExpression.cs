@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Interpreter.Models{
+namespace Interpreter.Models.statementTypes{
     public class SimpleTypeConstructorExpression : IStatement
     {
         public string castType { set; get; }

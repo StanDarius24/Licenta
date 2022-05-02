@@ -20,12 +20,12 @@ object LogicHandler {
         val astVisitorOverride = ASTVisitorOverride()
 //        list.forEach { element ->
 //            run {
-                SlnParser.solveSln(list[2])
+                SlnParser.solveSln(list[0])
                 parser.lookUpForVcxProjAndParseHeaderFiles(astVisitorOverride, projectPath, listOf)
                 parser.parseCppFiles(astVisitorOverride, projectPath, listOf)
                 if (listOf.contains("oop")) {
                     JsonWriter.writeData(
-                        list[2].split(OperatingSystem.getSeparator()).last(),
+                        list[0].split(OperatingSystem.getSeparator()).last(),
                         newPath.joinToString(OperatingSystem.getSeparator())
                     )
                 }

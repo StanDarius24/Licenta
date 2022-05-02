@@ -1,12 +1,14 @@
 using System.Collections.Generic;
-using Interpreter.Models;
+using Interpreter.Models.statementTypes;
 
-public class ComplexCompositeTypeSpecifier: IStatement
-{
-    public CompositeTypeSpecifier our_Class;
+namespace Interpreter.Models.complexStatementTypes{
+    public class ComplexCompositeTypeSpecifier: IStatement
+    {
+        public CompositeTypeSpecifier our_class;
 
-    public string path;
+        public string path;
 
-    public IList<Name> library = new List<Name>();
-
-}
+        public IList<IStatement> declarations = new List<IStatement>();
+    
+    }
+};

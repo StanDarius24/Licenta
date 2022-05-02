@@ -123,6 +123,7 @@
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="services\DataRegistry.cs" />
         <Compile Include="services\DirectiveFinder.cs" />
+        <Compile Include="Utility\Deserializer.cs" />
         <Compile Include="Utility\KnownTypesBinder.cs" />
         <Compile Include="Utility\Reader.cs" />
     </ItemGroup>

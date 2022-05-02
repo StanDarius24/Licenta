@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Interpreter.Models.statementTypes;
 
-namespace Interpreter.Models
+namespace Interpreter.Models.complexStatementTypes
 {
 
         public class FinalTranslation : IStatement
@@ -20,4 +21,4 @@ namespace Interpreter.Models
                 public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>();
         }
 
-};
+}

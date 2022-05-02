@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Interpreter.Models{
+namespace Interpreter.Models.statementTypes{
 
     public class EnumerationSpecifier: IStatement
     {

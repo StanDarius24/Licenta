@@ -1,0 +1,10 @@
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.csproj.AssemblyReference.cache
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.csproj.SuggestedBindingRedirects.cache
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.csproj.CoreCompileInputs.cache
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\bin\Debug\Interpreter.exe
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\bin\Debug\Interpreter.pdb
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.csproj.CopyComplete
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.exe
+C:\Users\Stannis\Desktop\KotlinLicenta\Interpreter\Interpreter\obj\Debug\Interpreter.pdb
