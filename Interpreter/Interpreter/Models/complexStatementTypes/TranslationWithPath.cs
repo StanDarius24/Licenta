@@ -7,8 +7,6 @@ namespace Interpreter.Models.complexStatementTypes
 
         public FinalTranslation finalTranslation;
 
-        public FinalTranslation newTranslation;
-
     }
 
 };
