@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Interpreter.Models.complexStatementTypes
 {
 
@@ -6,6 +8,8 @@ namespace Interpreter.Models.complexStatementTypes
         public string path;
 
         public FinalTranslation finalTranslation;
+
+        public IList<TranslationWithPath> relationList = new List<TranslationWithPath>();
 
     }
 
