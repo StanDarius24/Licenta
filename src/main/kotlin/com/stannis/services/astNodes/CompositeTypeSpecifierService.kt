@@ -4,6 +4,7 @@ import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.CompositeTypeSpecifier
 import com.stannis.dataModel.statementTypes.Name
+import com.stannis.dataModel.statementTypes.TemplateId
 import com.stannis.function.CompositeTypeRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -42,11 +43,17 @@ object CompositeTypeSpecifierService {
             )
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCompositeTypeSpecifier.name as ASTNode, anonimStatement1)
-        if ((anonimStatement1.statement as Name).name.toString() != "") {
-            data.name = anonimStatement1.statement
-        } else {
-            ASTNodeService.solveASTNode((cppastCompositeTypeSpecifier.parent as CPPASTSimpleDeclaration).declarators[0].name as ASTNode, anonimStatement1)
-            data.name = anonimStatement1.statement
+        if (anonimStatement1.statement is Name) {
+            if ((anonimStatement1.statement as Name).name.toString() != "") {
+                data.name = anonimStatement1.statement
+            } else {
+                if ((cppastCompositeTypeSpecifier.parent as CPPASTSimpleDeclaration).declarators.isNotEmpty()) {
+                    ASTNodeService.solveASTNode((cppastCompositeTypeSpecifier.parent as CPPASTSimpleDeclaration).declarators[0].name as ASTNode, anonimStatement1)
+                    data.name = anonimStatement1.statement
+                }
+            }
+        } else if (anonimStatement1.statement is TemplateId) {
+            data.name = (anonimStatement1.statement as TemplateId).templateName
         }
         cppastCompositeTypeSpecifier.baseSpecifiers.iterator().forEachRemaining { base ->
             run {

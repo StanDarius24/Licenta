@@ -9,7 +9,10 @@ namespace Interpreter.services{
     
     public class DirectiveFinder
     {
-        private static IList<string> listOfIncludedLivraries = new List<string>(){ "any", "atomic", "chrono", "concepts", "expected", "functional", "memory", "memory_resource", "scoped_allocator", "stdexcept", "system_error", "optional", "stacktrace", "tuple", "type_traits", "utility", "variant", "compare", "coroutine", "exception","initializer_list", "limits", "new", "source_location", "typeinfo", "version", "array", "bitset", "deque", "forward_list", "list", "map", "queue", "set", "span", "stack", "unordered_map", "unordered_set", "vector", "algorithm", "execution", "iterator", "ranges","locale", "codecvt", "charconv", "format", "string", "string_view", "regex", "filesystem", "fstream", "iomanip", "ios", "iosfwd", "iostream", "istream", "ostream", "spanstream", "sstream", "streambuf", "syncstream", "barrier", "condition_variable", "future", "latch", "mutex", "shared_mutex", "semaphore", "stop_token", "thread", "bit", "complex", "numbers", "random", "ratio", "valarray", "numeric"};
+        private static IList<string> _listOfIncludedLivraries = new List<string>(){ "any", "atomic", "chrono", "concepts", "expected", "functional", "memory", "memory_resource", "scoped_allocator", "stdexcept", "system_error", "optional", "stacktrace", "tuple", "type_traits", "utility", "variant", "compare", "coroutine", "exception","initializer_list", "limits", "new", "source_location", "typeinfo", "version", "array", "bitset", "deque", "forward_list", "list", "map", "queue", "set", "span", "stack", "unordered_map", "unordered_set", "vector", "algorithm", "execution", "iterator", "ranges","locale", "codecvt", "charconv", "format", "string", "string_view", "regex", "filesystem", "fstream", "iomanip", "ios", "iosfwd", "iostream", "istream", "ostream", "spanstream", "sstream", "streambuf", "syncstream", "barrier", "condition_variable", "future", "latch", "mutex", "shared_mutex", "semaphore", "stop_token", "thread", "bit", "complex", "numbers", "random", "ratio", "valarray", "numeric", "assert", "complex", "ctype", "errno", "fenv", "float", "inttypes", "iso646", "limits", "locale", "math", "setjmp", "signal", "stdalign", "stdarg", "stdatomic", "stdbool", "stddef", "stdint", "stdio", "stdlib", "stdnoreturn", "string", "tgmath", "threads", "time","uchar", "wchar", "wctype"};
+        
+        
+        
         public static void LinkDirective()
         {
             foreach (var complexFinalTranslation in DataRegistry.deserializedData)
@@ -31,7 +34,10 @@ namespace Interpreter.services{
                     {
                         element.relationList.Add(translation);
                     }
-                    Console.Out.Write("test");
+                    else
+                    {
+                        Console.Out.Write("test");
+                    }
                 }
             }
         }
@@ -46,7 +52,8 @@ namespace Interpreter.services{
             else
             {
                 var returnedHeaderName = headerName.Substring(headerName.IndexOf('<') + 1);
-                return returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>'));
+                var newReturn = returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>'));
+                return newReturn.Contains("/") ? newReturn.Split('/')[1] : newReturn;
             }
         }
 
@@ -70,14 +77,7 @@ namespace Interpreter.services{
         private static TranslationWithPath FindFinalTranslation(string headerFile)
         {
             var vcxProj = HeaderFileDifferentVcxproj(headerFile);
-            foreach (var internalHeaderFile in vcxProj.listOfHeaderFiles)
-            {
-                if (internalHeaderFile.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFile))
-                {
-                    return internalHeaderFile;
-                }
-            }
-            return null;
+            return vcxProj.listOfHeaderFiles.FirstOrDefault(internalHeaderFile => internalHeaderFile.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFile));
         }
 
         private static ComplexFinalTranslation HeaderFileDifferentVcxproj(string headerFileName)
@@ -87,23 +87,12 @@ namespace Interpreter.services{
 
         private static TranslationWithPath GetFileFromDifferentTranslation(string headerFileName)
         {
-            foreach (var complexFinalTranslation in DataRegistry.deserializedData)
-            {
-                foreach (var translationWithPath in complexFinalTranslation.listOfHeaderFiles)
-                {
-                    if (translationWithPath.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFileName))
-                    {
-                        return translationWithPath;
-                    }
-                }
-            }
-
-            return null;
+            return DataRegistry.deserializedData.SelectMany(complexFinalTranslation => complexFinalTranslation.listOfHeaderFiles).FirstOrDefault(translationWithPath => translationWithPath.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFileName));
         }
 
         private static bool CheckForInternalLibraries(string headerFileName)
         {
-            return listOfIncludedLivraries.Contains(headerFileName);
+            return _listOfIncludedLivraries.Contains(headerFileName);
         }
     }
 };

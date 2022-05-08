@@ -13,7 +13,7 @@ namespace Interpreter.Utility{
             if (getOperatingSystem().Equals("Unix"))
             {
                 return '/';
-            } else if (getOperatingSystem().Equals("Windows"))
+            } else if (getOperatingSystem().Contains("Win"))
             {
                 return '\\';
             }
