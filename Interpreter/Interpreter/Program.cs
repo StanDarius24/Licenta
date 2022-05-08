@@ -9,7 +9,7 @@ namespace Interpreter
         public static void Main(string[] args)
         {
             var text = Reader.ReadFromPath(
-                @"/home/stan/Desktop/Licenta/src/main/resources/result/ConsoleApplication1/ConsoleApplication.sln.json");
+                @"/home/stan/Desktop/Licenta/src/main/resources/result/project64-develop/vstudio.sln.json");
             DataRegistry.deserializedData = Deserializer.DeserializeData(text);
             DirectiveFinder.LinkDirective();
             Console.WriteLine(text);

@@ -5,7 +5,7 @@ import com.stannis.parser.fileHandler.LogicHandler
 fun main() {
 
     val projectPath =
-        "/home/stan/Desktop/Licenta/src/main/resources/ConsoleApplication1"
+        "/home/stan/Desktop/Licenta/src/main/resources/project64-develop"
 
     LogicHandler.run(projectPath, listOf("oop"))
     /*

@@ -56,8 +56,7 @@ namespace Interpreter.services{
             {
                 if (!CheckForInternalLibraries(headerFileName))
                 {
-                    var finalTranslationFile = HeaderFileDifferentVcxproj(headerFileName);
-                    return null;
+                    return GetFileFromDifferentTranslation(headerFileName);
                 }
             }
             else
@@ -84,6 +83,22 @@ namespace Interpreter.services{
         private static ComplexFinalTranslation HeaderFileDifferentVcxproj(string headerFileName)
         {
             return DataRegistry.deserializedData.FirstOrDefault(complexFinalTranslation => complexFinalTranslation.vcxprojStructure.listOfHeaderFiles.Contains(headerFileName));
+        }
+
+        private static TranslationWithPath GetFileFromDifferentTranslation(string headerFileName)
+        {
+            foreach (var complexFinalTranslation in DataRegistry.deserializedData)
+            {
+                foreach (var translationWithPath in complexFinalTranslation.listOfHeaderFiles)
+                {
+                    if (translationWithPath.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFileName))
+                    {
+                        return translationWithPath;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private static bool CheckForInternalLibraries(string headerFileName)
