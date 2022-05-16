@@ -21,9 +21,31 @@ object ParentExtractor {
         var parent = node.parent
         while (parent != null &&
             parent !is CPPASTCompositeTypeSpecifier &&
-            parent !is CPPASTLinkageSpecification) {
+            parent !is CPPASTLinkageSpecification &&
+            parent !is CPPASTNamespaceDefinition) {
             parent = parent.parent
         }
         return parent
+    }
+
+    fun checkParentFuntionDeclarator(node: CPPASTFunctionDeclarator): Boolean {
+        var parent = node.parent
+        while (parent != null &&
+            parent !is CPPASTCompositeTypeSpecifier &&
+            parent !is CPPASTLinkageSpecification &&
+            parent !is CPPASTNamespaceDefinition) {
+            parent = parent.parent
+        }
+        return parent != null
+    }
+    fun checkParentFunctionDefinition(node: CPPASTFunctionDefinition): Boolean {
+        var parent = node.parent
+        while (parent != null &&
+            parent !is CPPASTCompositeTypeSpecifier &&
+            parent !is CPPASTLinkageSpecification &&
+            parent !is CPPASTNamespaceDefinition) {
+            parent = parent.parent
+        }
+        return parent != null
     }
 }

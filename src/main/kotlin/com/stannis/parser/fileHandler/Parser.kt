@@ -45,7 +45,7 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
-                if(filepath.equals("CProject64Input.cpp")) {
+                if(filepath == "TestB.h") {
                     println()
                 }
                 ASTNodeService.modifier = "public"
@@ -118,13 +118,11 @@ class Parser {
     }
 
     private fun checkForNamespace(declarations: Array<IASTDeclaration>?) {
-        if (declarations != null) {
-            declarations.forEach { declaration -> run {
-                if (declaration is CPPASTNamespaceDefinition) {
-                    NameSpaceService.solveNameSpace(declaration, true)
-                }
-            }}
-        }
+        declarations?.forEach { declaration -> run {
+            if (declaration is CPPASTNamespaceDefinition) {
+                NameSpaceService.solveNameSpace(declaration, true, null)
+            }
+        }}
     }
 
     private fun parseFiles(
@@ -174,7 +172,7 @@ class Parser {
     }
 
     fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
-        VcxprojParser.mapOfData.forEach { slnStructure, vcxprojStructures -> run {
+        VcxprojParser.mapOfData.forEach { (slnStructure, vcxprojStructures) -> run {
             vcxprojStructures.forEach { element -> run {
                 ProjectVcxprojComplexRegistry.setVcxProj(element)
                 val absolutProjectPath =
