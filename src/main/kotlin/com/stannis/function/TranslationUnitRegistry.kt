@@ -9,7 +9,7 @@ object TranslationUnitRegistry {
 
     fun createTranslationUnit(boolean: Boolean) {
         val classOrHeader =
-            ClassOrHeader(directives = listOfDirectives as ArrayList, classList = null, globalDeclaration = null, internDeclaration = null, functionCallsWithoutImplementation = null, linkageSpecification = null, methodsWithFunctionCalls = null, namespace = null)
+            ClassOrHeader(directives = listOfDirectives as ArrayList, classList = null, globalDeclaration = null, internDeclaration = null, functionCallsWithoutImplementation = null, linkageSpecification = null, methodsWithFunctionCalls = null, namespaces = null)
         classOrHeader.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
         classOrHeader.internDeclaration = SimpleDeclarationRegistry.internDeclaration
         classOrHeader.methodsWithFunctionCalls =
@@ -17,7 +17,7 @@ object TranslationUnitRegistry {
         classOrHeader.functionCallsWithoutImplementation = FunctionDeclaratorRegistry.list
         classOrHeader.classList = CompositeTypeRegistry.list
         classOrHeader.linkageSpecification = ExternDefinitionRegistry.listOfExtern
-        classOrHeader.namespace = NameSpaceRegistry.listOfNameSpace
+        classOrHeader.namespaces = NameSpaceRegistry.listOfNameSpace
         ProjectVcxprojComplexRegistry.addFinalTranslation(classOrHeader, boolean)
     }
 

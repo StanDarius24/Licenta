@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Interpreter.Models;
+using Interpreter.Models.serialize;
 
 namespace Interpreter.services{
     public static class DataRegistry

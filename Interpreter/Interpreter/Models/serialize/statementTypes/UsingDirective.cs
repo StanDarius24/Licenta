@@ -1,4 +1,4 @@
-﻿namespace Interpreter.Models.statementTypes{
+﻿namespace Interpreter.Models.serialize.statementTypes{
     public class UsingDirective : IStatement
     {
         public string name { set; get; }

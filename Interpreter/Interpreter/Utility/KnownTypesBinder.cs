@@ -10,6 +10,7 @@ namespace Interpreter.Utility{
 
         public Type BindToType(string assemblyName, string typeName)
         {
+            Console.Out.Write(typeName + "\n");
             return knownTypes.SingleOrDefault(t => t.Name == typeName);
         }
 
@@ -17,6 +18,7 @@ namespace Interpreter.Utility{
         {
             assemblyName = null;
             typeName = serializedType.Name;
+            Console.Out.Write(typeName + "\n");
         }
     }
 };

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Interpreter.Models;
-using Interpreter.Models.complexStatementTypes;
-using Interpreter.Models.statementTypes;
+using Interpreter.Models.serialize;
+using Interpreter.Models.serialize.complexStatementTypes;
+using Interpreter.Models.serialize.statementTypes;
 using Newtonsoft.Json;
 
 namespace Interpreter.Utility{
@@ -18,6 +18,7 @@ namespace Interpreter.Utility{
                 {
                     knownTypes = new List<Type>
                     {
+                        typeof(NameSpace),
                         typeof(ComplexCompositeTypeSpecifier),
                         typeof(DeclarationWithParent),
                         typeof(DeclarationWithClass),
@@ -35,7 +36,6 @@ namespace Interpreter.Utility{
                         typeof(BreakStatement),           
                         typeof(Name),
                         typeof(CaseStatement),            
-                        typeof(NameSpace),
                         typeof(NamedTypeSpecifier),
                         typeof(CastExpression),          
                         typeof(NamespaceAlias),

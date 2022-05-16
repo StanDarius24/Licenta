@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Interpreter.Models.statementTypes;
+using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.Models.complexStatementTypes
+namespace Interpreter.Models.serialize.complexStatementTypes
 {
-
         public class ClassOrHeader : IStatement
         {
                 public IList<string> directives = new List<string>();
@@ -20,7 +19,7 @@ namespace Interpreter.Models.complexStatementTypes
 
                 public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>();
 
-                public IList<NameSpace> nameSpaces = new List<NameSpace>();
+                public IList<NameSpace> namespaces = new List<NameSpace>();
         }
 
 }

@@ -1,4 +1,4 @@
-namespace Interpreter.Models.statementTypes{
+namespace Interpreter.Models.serialize.statementTypes{
     public class BreakStatement : IStatement
     {
         public string expression { set; get; }

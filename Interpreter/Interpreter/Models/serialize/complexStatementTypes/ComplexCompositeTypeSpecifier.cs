@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Interpreter.Models.statementTypes;
+using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.Models.complexStatementTypes{
+namespace Interpreter.Models.serialize.complexStatementTypes{
     public class ComplexCompositeTypeSpecifier: IStatement
     {
         public CompositeTypeSpecifier our_class;

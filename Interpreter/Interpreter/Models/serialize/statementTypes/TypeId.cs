@@ -1,4 +1,4 @@
-﻿namespace Interpreter.Models.statementTypes{
+﻿namespace Interpreter.Models.serialize.statementTypes{
     public class TypeId: IStatement
     {
         public IStatement declSpecifier { set; get; }

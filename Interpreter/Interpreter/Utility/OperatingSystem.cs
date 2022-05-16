@@ -3,17 +3,17 @@ using System;
 namespace Interpreter.Utility{
     public class OperatingSystem
     {
-        public static string getOperatingSystem()
+        public static string GetOperatingSystem()
         {
             return Environment.OSVersion.Platform.ToString();
         }
 
-        public static char getSeparator()
+        public static char GetSeparator()
         {
-            if (getOperatingSystem().Equals("Unix"))
+            if (GetOperatingSystem().Equals("Unix"))
             {
                 return '/';
-            } else if (getOperatingSystem().Contains("Win"))
+            } else if (GetOperatingSystem().Contains("Win"))
             {
                 return '\\';
             }

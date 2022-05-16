@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Interpreter.Models.statementTypes;
+using Interpreter.Models.serialize.statementTypes;
 
 namespace Interpreter.Models.mapper{
     public class Projects

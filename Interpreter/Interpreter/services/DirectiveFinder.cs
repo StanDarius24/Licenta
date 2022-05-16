@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Interpreter.Models;
-using Interpreter.Models.complexStatementTypes;
+using Interpreter.Models.serialize;
+using Interpreter.Models.serialize.complexStatementTypes;
 using OperatingSystem = Interpreter.Utility.OperatingSystem;
 
 namespace Interpreter.services{
@@ -79,7 +80,7 @@ namespace Interpreter.services{
         private static ClassOrHeaderWithPath FindFinalTranslation(string headerFile)
         {
             var vcxProj = HeaderFileDifferentVcxproj(headerFile);
-            return vcxProj.listOfHeaderFiles.FirstOrDefault(internalHeaderFile => internalHeaderFile.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFile));
+            return vcxProj.listOfHeaderFiles.FirstOrDefault(internalHeaderFile => internalHeaderFile.path.Split(OperatingSystem.GetSeparator()).Last().Equals(headerFile));
         }
 
         private static RepositoryModel HeaderFileDifferentVcxproj(string headerFileName)
@@ -89,7 +90,7 @@ namespace Interpreter.services{
 
         private static ClassOrHeaderWithPath GetFileFromDifferentTranslation(string headerFileName)
         {
-            return DataRegistry.deserializedData.SelectMany(complexFinalTranslation => complexFinalTranslation.listOfHeaderFiles).FirstOrDefault(translationWithPath => translationWithPath.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFileName));
+            return DataRegistry.deserializedData.SelectMany(complexFinalTranslation => complexFinalTranslation.listOfHeaderFiles).FirstOrDefault(translationWithPath => translationWithPath.path.Split(OperatingSystem.GetSeparator()).Last().Equals(headerFileName));
         }
 
         private static bool CheckForInternalLibraries(string headerFileName)
