@@ -15,5 +15,5 @@ data class ClassOrHeader(
     var functionCallsWithoutImplementation: ArrayList<FunctionDeclarator>?,
     var classList: ArrayList<ComplexCompositeTypeSpecifier>?,
     var linkageSpecification: ArrayList<LinkageSpecification>?,
-    var namespace: ArrayList<NameSpace>?
+    var namespaces: ArrayList<NameSpace>?
     ) : Statement

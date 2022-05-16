@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Interpreter.Models{
+namespace Interpreter.Models.serialize{
     public class SlnStructure: IStatement
     {
         public string token { set; get; }

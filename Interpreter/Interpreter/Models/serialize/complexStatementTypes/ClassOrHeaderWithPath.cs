@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Interpreter.Models.complexStatementTypes
+namespace Interpreter.Models.serialize.complexStatementTypes
 {
 
     public class ClassOrHeaderWithPath : IStatement

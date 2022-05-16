@@ -1,4 +1,4 @@
-﻿namespace Interpreter.Models.statementTypes{
+﻿namespace Interpreter.Models.serialize.statementTypes{
     public class SwitchStatement : IStatement
     {
         public IStatement controllerExpression { set; get; }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Interpreter.Models.statementTypes{
+namespace Interpreter.Models.serialize.statementTypes{
     public class TemplateDeclaration: IStatement
     {
         public IStatement declaration { set; get; }

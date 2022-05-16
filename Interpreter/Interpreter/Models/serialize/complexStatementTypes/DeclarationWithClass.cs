@@ -1,4 +1,4 @@
-﻿namespace Interpreter.Models.complexStatementTypes
+﻿namespace Interpreter.Models.serialize.complexStatementTypes
 {
 
     public class DeclarationWithClass : IStatement
