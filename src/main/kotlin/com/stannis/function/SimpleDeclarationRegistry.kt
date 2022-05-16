@@ -43,6 +43,11 @@ object SimpleDeclarationRegistry {
                             }
                         }
                     }
+                } else {
+                    if (globalDeclaration == null) {
+                        globalDeclaration = ArrayList()
+                    }
+                    globalDeclaration!!.add(DeclarationWithParent(declaration = data, parent = null))
                 }
             } else if (data.declSpecifier is EnumerationSpecifier) {
                 if (globalDeclaration == null) {

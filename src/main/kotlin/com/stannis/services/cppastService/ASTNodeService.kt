@@ -235,7 +235,7 @@ object ASTNodeService {
                 BaseSpecifierService.solveBaseSpecifier(node, statement)
             }
             is CPPASTNamespaceDefinition -> {
-                NameSpaceService.solveNameSpace(node, false)
+                NameSpaceService.solveNameSpace(node, false, statement)
             }
             else -> throw Exception()
         }

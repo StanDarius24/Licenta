@@ -7,7 +7,7 @@ import com.stannis.dataModel.statementTypes.LinkageSpecification
 import com.stannis.dataModel.statementTypes.NameSpace
 
 data class ClassOrHeader(
-    override val `$type`: String = "Vcxproj",
+    override val `$type`: String = "ClassOrHeader",
     var directives: ArrayList<String>?,
     var globalDeclaration: ArrayList<DeclarationWithParent>?,
     var internDeclaration: ArrayList<DeclarationWithParent>?,
