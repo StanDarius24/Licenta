@@ -4,7 +4,7 @@ using Interpreter.Models.statementTypes;
 namespace Interpreter.Models.complexStatementTypes
 {
 
-        public class FinalTranslation : IStatement
+        public class ClassOrHeader : IStatement
         {
                 public IList<string> directives = new List<string>();
 
@@ -19,6 +19,8 @@ namespace Interpreter.Models.complexStatementTypes
                 public IList<ComplexCompositeTypeSpecifier> classList = new List<ComplexCompositeTypeSpecifier>();
 
                 public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>();
+
+                public IList<NameSpace> nameSpaces = new List<NameSpace>();
         }
 
 }

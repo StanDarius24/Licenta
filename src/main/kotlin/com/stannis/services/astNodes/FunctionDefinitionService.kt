@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FunctionDefinition
@@ -28,7 +29,7 @@ object FunctionDefinitionService {
         if (funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
         }
-        functionDefinition.declaratorSpecifier = anonimStatement1.statement
+        functionDefinition.declaratorSpecifier = anonimStatement1.statement as DeclarationSpecifierParent
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declarator != null) {
             ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)

@@ -11,9 +11,6 @@ object FunctionDeclaratorRegistry {
 
     var list: ArrayList<FunctionDeclarator>? = null
 
-    fun clearList() {
-        list = null
-    }
 
     var sw: Boolean = false
 
@@ -21,10 +18,10 @@ object FunctionDeclaratorRegistry {
         functionDeclarator: FunctionDeclarator,
         node: CPPASTFunctionDeclarator
     ) { // declarari de functii, fara body. metode fara implementare, interfete etc.
-        if (ParentExtractor.extractParentForFunctionDeclarator(node) !is
-                CPPASTCompositeTypeSpecifier &&
-                ParentExtractor.extractParentForFunctionDeclarator(node) !is
-                    CPPASTLinkageSpecification
+        if (ParentExtractor.extractParentForFunctionDeclarator(node)
+                !is CPPASTCompositeTypeSpecifier &&
+                ParentExtractor.extractParentForFunctionDeclarator(node)
+                    !is CPPASTLinkageSpecification
         ) {
             if (list == null) { // here
                 list = ArrayList()
@@ -36,8 +33,9 @@ object FunctionDeclaratorRegistry {
                 }
             }
             if (!sw) {
-                list!!.add(functionDeclarator)
-                println()
+                if (!list!!.contains(functionDeclarator)) {
+                    list!!.add(functionDeclarator)
+                }
             }
         }
     }

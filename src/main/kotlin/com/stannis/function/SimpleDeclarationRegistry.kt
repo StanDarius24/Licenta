@@ -33,9 +33,13 @@ object SimpleDeclarationRegistry {
                                 internDeclaration = ArrayList()
                             }
                             if (declarationWithParent.parent == null) {
-                                globalDeclaration!!.add(declarationWithParent)
+                                if (!globalDeclaration!!.contains(declarationWithParent)) {
+                                    globalDeclaration!!.add(declarationWithParent)
+                                }
                             } else {
-                                internDeclaration!!.add(declarationWithParent)
+                                if (!internDeclaration!!.contains(declarationWithParent)) {
+                                    internDeclaration!!.add(declarationWithParent)
+                                }
                             }
                         }
                     }
@@ -57,11 +61,6 @@ object SimpleDeclarationRegistry {
             newparent = newparent.parent
         }
         return newparent is CPPASTCompositeTypeSpecifier
-    }
-
-    fun clearList() {
-        globalDeclaration = null
-        internDeclaration = null
     }
 
     private fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {

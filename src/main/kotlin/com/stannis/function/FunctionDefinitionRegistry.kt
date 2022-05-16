@@ -19,9 +19,6 @@ object FunctionDefinitionRegistry {
         listOfComplexFunctionCalls!!.add(functionDefinition)
     }
 
-    fun clearList() {
-        list = null
-    }
 
     fun addToList(data: FunctionDefinition) {
         if (list == null) {
@@ -86,15 +83,15 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        if ((newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter != null) {
-            (newFunctionDefinition.declarator!![0] as FunctionDeclarator).parameter!!.iterator()
+        if (newFunctionDefinition.declarator!![0].parameter != null) {
+            newFunctionDefinition.declarator!![0].parameter!!.iterator()
                 .forEachRemaining { parameter ->
                     run {
                         bool1 =
                             checkIfParametersDeclaration(
                                 statement,
                                 newFunctionDefinition,
-                                parameter as ParameterDeclaration
+                                parameter
                             )
                     }
                 }

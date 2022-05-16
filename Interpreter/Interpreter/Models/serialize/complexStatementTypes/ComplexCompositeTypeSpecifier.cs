@@ -11,4 +11,4 @@ namespace Interpreter.Models.complexStatementTypes{
         public IList<IStatement> declarations = new List<IStatement>();
     
     }
-};
+}

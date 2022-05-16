@@ -1,8 +1,8 @@
 package com.stannis.callHierarchy
 
-import com.stannis.dataModel.complexStatementTypes.ComplexFinalTranslation
-import com.stannis.dataModel.complexStatementTypes.FinalTranslation
-import com.stannis.dataModel.complexStatementTypes.TranslationWithPath
+import com.stannis.dataModel.complexStatementTypes.RepositoryModel
+import com.stannis.dataModel.complexStatementTypes.ClassOrHeader
+import com.stannis.dataModel.complexStatementTypes.ClassOrHeaderWithPath
 import com.stannis.parser.sln.VcxprojStructure
 
 object ProjectVcxprojComplexRegistry {
@@ -10,20 +10,20 @@ object ProjectVcxprojComplexRegistry {
     private lateinit var vcxprojStructure: VcxprojStructure
     private lateinit var filePath: String
 
-    lateinit var parsedFiles: List<ComplexFinalTranslation>
+    lateinit var parsedFiles: List<RepositoryModel>
 
-    fun addFinalTranslation(finalTranslation: FinalTranslation, boolean: Boolean) {
+    fun addFinalTranslation(classOrHeader: ClassOrHeader, boolean: Boolean) {
         if (!this::parsedFiles.isInitialized) {
             parsedFiles = ArrayList()
-            val list = ArrayList<TranslationWithPath>()
-            list.add(TranslationWithPath(finalTranslation = finalTranslation, path = filePath))
-            (parsedFiles as ArrayList).add(ComplexFinalTranslation(listOfHeaderFiles = list, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure))
+            val list = ArrayList<ClassOrHeaderWithPath>()
+            list.add(ClassOrHeaderWithPath(classOrHeader = classOrHeader, path = filePath))
+            (parsedFiles as ArrayList).add(RepositoryModel(listOfHeaderFiles = list, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure))
         } else {
             var bool1 = false
             parsedFiles.iterator().forEachRemaining { complexFinalTranslation ->
                 run {
                     if (complexFinalTranslation.vcxprojStructure.equals(vcxprojStructure)) {
-                        val translationWithPath = TranslationWithPath(finalTranslation = finalTranslation, path = filePath)
+                        val classOrHeaderWithPath = ClassOrHeaderWithPath(classOrHeader = classOrHeader, path = filePath)
                         var bool2 = false
                         complexFinalTranslation.listOfHeaderFiles!!.iterator().forEachRemaining {
                             translationWParent ->
@@ -35,9 +35,9 @@ object ProjectVcxprojComplexRegistry {
                         }
                         if (!bool2) {
                             if (boolean) {
-                                complexFinalTranslation.listOfHeaderFiles.add(translationWithPath)
+                                complexFinalTranslation.listOfHeaderFiles.add(classOrHeaderWithPath)
                             } else {
-                                complexFinalTranslation.listOfCppFiles!!.add(translationWithPath)
+                                complexFinalTranslation.listOfCppFiles!!.add(classOrHeaderWithPath)
                             }
                         }
                         bool1 = true
@@ -45,10 +45,10 @@ object ProjectVcxprojComplexRegistry {
                 }
             }
             if (!bool1) {
-                val listx = ArrayList<TranslationWithPath>()
-                listx.add(TranslationWithPath(finalTranslation = finalTranslation, path = filePath))
+                val listx = ArrayList<ClassOrHeaderWithPath>()
+                listx.add(ClassOrHeaderWithPath(classOrHeader = classOrHeader, path = filePath))
                 (parsedFiles as ArrayList).add(
-                    ComplexFinalTranslation(listOfHeaderFiles = listx, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure)
+                    RepositoryModel(listOfHeaderFiles = listx, listOfCppFiles = ArrayList(), vcxprojStructure = vcxprojStructure)
                 )
             }
         }

@@ -1,23 +1,26 @@
 package com.stannis.dataModel.statementTypes
 
+import com.stannis.dataModel.BodyParent
+import com.stannis.dataModel.DeclarationParent
+import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
 
 data class FunctionDefinition(
     override val `$type`: String? = "FunctionDefinition",
-    var declaratorSpecifier: Statement?,
-    var declarator: ArrayList<Statement>?,
-    var body: ArrayList<Statement>?
-) : Statement {
+    var declaratorSpecifier: DeclarationSpecifierParent?,
+    var declarator: ArrayList<FunctionDeclarator>?,
+    var body: ArrayList<BodyParent>?
+) : Statement, DeclarationParent {
     fun addDeclarator(statement: Statement) {
         if (declarator == null) {
             declarator = ArrayList()
         }
-        declarator!!.add(statement)
+        declarator!!.add(statement as FunctionDeclarator)
     }
     fun addToBody(statement: Statement) {
         if (body == null) {
             body = ArrayList()
         }
-        body!!.add(statement)
+        body!!.add(statement as BodyParent)
     }
 }

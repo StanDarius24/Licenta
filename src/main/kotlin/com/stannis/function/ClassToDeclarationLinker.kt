@@ -1,7 +1,7 @@
 package com.stannis.function
 
 import com.stannis.dataModel.complexStatementTypes.FunctionCallWithDeclaration
-import com.stannis.dataModel.complexStatementTypes.TranslationWithPath
+import com.stannis.dataModel.complexStatementTypes.ClassOrHeaderWithPath
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.parser.sln.VcxprojStructure
 
@@ -73,7 +73,7 @@ object ClassToDeclarationLinker {
     }
 
     fun findClass(
-        translationWithPath: TranslationWithPath,
+        classOrHeaderWithPath: ClassOrHeaderWithPath,
         declarationInClass: SimpleDeclaration,
         vcxprojStructure: VcxprojStructure
     ) {

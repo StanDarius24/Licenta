@@ -48,9 +48,10 @@ object CheckForUnusedClasses {
         listOfDetectedFiles: ArrayList<String>
     ): ArrayList<String> {
         val list = ArrayList<String>()
+        val newExistingList = listOfDetectedFiles.map { element -> element.split(OperatingSystem.getSeparator()).last() }
         listOfExistentFiles.forEach { element ->
             run {
-                if (!listOfDetectedFiles.contains(element.split(OperatingSystem.getSeparator()).last())) {
+                if (!newExistingList.contains(element.split(OperatingSystem.getSeparator()).last())) {
                     list.add(element.split(OperatingSystem.getSeparator()).last())
                 }
             }

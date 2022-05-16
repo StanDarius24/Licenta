@@ -3,3 +3,5 @@
 /src/test/
 /target/
 /.idea/
+/Interpreter/Interpreter/obj/
+/Interpreter/Interpreter/bin/
