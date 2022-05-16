@@ -84,7 +84,7 @@ object ASTNodeService {
                 modifier = node.rawSignature
             }
             is CPPASTSimpleDeclaration -> {
-                if (!SimpleDeclarationService.solveDeclSpecifier(node, statement)) {}
+                SimpleDeclarationService.solveDeclSpecifier(node, statement)
             }
             is CPPASTFunctionDefinition -> {
                 FunctionDefinitionService.solveFunctionDefinition(node, statement)
@@ -233,6 +233,9 @@ object ASTNodeService {
             }
             is CPPASTBaseSpecifier -> {
                 BaseSpecifierService.solveBaseSpecifier(node, statement)
+            }
+            is CPPASTNamespaceDefinition -> {
+                NameSpaceService.solveNameSpace(node, false)
             }
             else -> throw Exception()
         }

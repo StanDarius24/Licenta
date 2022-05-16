@@ -11,9 +11,6 @@ object FunctionDeclaratorRegistry {
 
     var list: ArrayList<FunctionDeclarator>? = null
 
-    fun clearList() {
-        list = null
-    }
 
     var sw: Boolean = false
 

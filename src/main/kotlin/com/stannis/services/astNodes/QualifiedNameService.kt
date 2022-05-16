@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.QualifiedName
@@ -13,7 +14,7 @@ object QualifiedNameService {
         val qualifiedName = QualifiedName(qualifier = null, lastName = null)
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastQualifiedName.lastName as ASTNode, anonimStatement1)
-        qualifiedName.lastName = anonimStatement1.statement
+        qualifiedName.lastName = anonimStatement1.statement as NameInterface
         cppastQualifiedName.qualifier.iterator().forEachRemaining { qualifier ->
             run {
                 val anonimStatement2 = AnonimStatement.getNewAnonimStatement()

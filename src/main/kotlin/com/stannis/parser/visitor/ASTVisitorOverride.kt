@@ -24,7 +24,6 @@ class ASTVisitorOverride : ASTVisitor() {
         fun getPrimaryBlock(): PrimaryBlock {
             return primaryBlock
         }
-        private var checkHeader: Boolean = false
     }
 
     override fun visit(classVirtSpecifier: ICPPASTClassVirtSpecifier?): Int {

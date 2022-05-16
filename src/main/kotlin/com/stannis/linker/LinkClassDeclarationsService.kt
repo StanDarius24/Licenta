@@ -1,11 +1,12 @@
 package com.stannis.linker
 
 import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
+import com.stannis.dataModel.DeclarationParent
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.complexStatementTypes.ComplexCompositeTypeSpecifier
-import com.stannis.dataModel.complexStatementTypes.ComplexFinalTranslation
+import com.stannis.dataModel.complexStatementTypes.RepositoryModel
 import com.stannis.dataModel.complexStatementTypes.DeclarationWithClass
-import com.stannis.dataModel.complexStatementTypes.TranslationWithPath
+import com.stannis.dataModel.complexStatementTypes.ClassOrHeaderWithPath
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.ClassToDeclarationLinker
 import com.stannis.parser.sln.VcxprojStructure
@@ -46,24 +47,24 @@ object LinkClassDeclarationsService {
         }
     }
 
-    private fun solveComplexFinalTranslation(complexFinalTranslation: ComplexFinalTranslation) {
+    private fun solveComplexFinalTranslation(complexFinalTranslation: RepositoryModel) {
         complexFinalTranslation.listOfHeaderFiles!!.forEach { translationWithPath ->
             run { solveTranslationWithPath(translationWithPath) }
         }
     }
 
     private fun solveTranslationWithPath(
-        translationWithPath: TranslationWithPath,
+        classOrHeaderWithPath: ClassOrHeaderWithPath,
     ) {
-        if (translationWithPath.finalTranslation.classList != null) {
-            translationWithPath.finalTranslation.classList!!.forEach { classDecl ->
+        if (classOrHeaderWithPath.classOrHeader.classList != null) {
+            classOrHeaderWithPath.classOrHeader.classList!!.forEach { classDecl ->
                 run {
-                    solveClassDeclaration(classDecl, translationWithPath)
+                    solveClassDeclaration(classDecl, classOrHeaderWithPath)
                     if (listOfNewDecl != null) {
                         listOfNewDecl!!.forEach { (t, u) ->
                             run {
-                                classDecl.our_class.declarations!!.remove(t)
-                                classDecl.our_class.declarations!!.add(u)
+                                classDecl.our_class.declarations!!.remove(t as DeclarationParent)
+                                classDecl.our_class.declarations!!.add(u as DeclarationParent)
                                 listOfNewDecl = null
                             }
                         }
@@ -75,7 +76,7 @@ object LinkClassDeclarationsService {
 
     private fun solveClassDeclaration(
         classDecl: ComplexCompositeTypeSpecifier,
-        translationWithPath: TranslationWithPath,
+        classOrHeaderWithPath: ClassOrHeaderWithPath,
     ) {
         if (classDecl.our_class.declarations != null) {
             classDecl.our_class.declarations!!.forEach { declarationInClass ->
@@ -83,7 +84,7 @@ object LinkClassDeclarationsService {
                     if (declarationInClass is SimpleDeclaration) {
                         solveSimpleDeclaration(
                             declarationInClass,
-                            translationWithPath
+                            classOrHeaderWithPath
                         )
                     }
                 }
@@ -93,7 +94,7 @@ object LinkClassDeclarationsService {
 
     private fun solveSimpleDeclaration(
         declarationInClass: SimpleDeclaration,
-        translationWithPath: TranslationWithPath
+        classOrHeaderWithPath: ClassOrHeaderWithPath
     ) {
         if (declarationInClass.declSpecifier is NamedTypeSpecifier) {
             if ((declarationInClass.declSpecifier as NamedTypeSpecifier).name is Name) {
@@ -102,7 +103,7 @@ object LinkClassDeclarationsService {
                     )
                 ) {
                     checkInternDeclaration(
-                        translationWithPath,
+                        classOrHeaderWithPath,
                         ((declarationInClass.declSpecifier as NamedTypeSpecifier).name as Name)
                             .name,
                         declarationInClass
@@ -113,13 +114,13 @@ object LinkClassDeclarationsService {
     }
 
     private fun checkInternDeclaration(
-        translationWithPath: TranslationWithPath,
+        classOrHeaderWithPath: ClassOrHeaderWithPath,
         name: String?,
         declarationInClass: SimpleDeclaration
     ) {
         var internDefinition = false
-        if (translationWithPath.finalTranslation.globalDeclaration != null) {
-            translationWithPath.finalTranslation.globalDeclaration!!.forEach { declarationWithParent
+        if (classOrHeaderWithPath.classOrHeader.globalDeclaration != null) {
+            classOrHeaderWithPath.classOrHeader.globalDeclaration!!.forEach { declarationWithParent
                 ->
                 run {
                     if (declarationWithParent.declaration.declSpecifier is EnumerationSpecifier) {
@@ -143,7 +144,7 @@ object LinkClassDeclarationsService {
                     }
                     if (!internDefinition) {
                         println()
-                        ClassToDeclarationLinker.findClass(translationWithPath, declarationInClass, vcxprojStructure)
+                        ClassToDeclarationLinker.findClass(classOrHeaderWithPath, declarationInClass, vcxprojStructure)
                     }
                 }
             }

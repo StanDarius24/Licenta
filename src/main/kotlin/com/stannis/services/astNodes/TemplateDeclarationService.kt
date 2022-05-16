@@ -7,7 +7,6 @@ import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTemplateScope
 
 object TemplateDeclarationService {
 

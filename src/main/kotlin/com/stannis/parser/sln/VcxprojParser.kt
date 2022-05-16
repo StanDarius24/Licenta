@@ -31,7 +31,7 @@ object VcxprojParser {
                         if (Reader.checkIfFileExist(absolutPath)) {
                             createVcxproj(getFileData(absolutPath), absolutPath, element)
                         } else {
-                            val listw = listOf<String>(element.path.split(".")[0], "vcxproj")
+                            val listw = listOf(element.path.split(".")[0], "vcxproj")
                             val datax = listw.joinToString(".")
                             val pathToLostVcxproj =
                                 DirReader.getAllFilesInResources(

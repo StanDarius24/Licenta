@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FunctionDeclarator
@@ -15,7 +16,7 @@ object FunctionDeclaratorService {
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         if (node.name != null) {
             ASTNodeService.solveASTNode(node.name as ASTNode, anonimStatement)
-            functionDeclarator.name = anonimStatement.statement
+            functionDeclarator.name = anonimStatement.statement as NameInterface
         }
         if (node.parameters.isNotEmpty()) {
             node.parameters.iterator().forEachRemaining { param ->

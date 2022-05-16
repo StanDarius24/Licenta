@@ -8,9 +8,9 @@ using Newtonsoft.Json;
 namespace Interpreter.Utility{
     public class Deserializer
     {
-        public static IList<ComplexFinalTranslation> DeserializeData(string text)
+        public static IList<RepositoryModel> DeserializeData(string text)
         {
-            return JsonConvert.DeserializeObject<IList<ComplexFinalTranslation>>(text, new JsonSerializerSettings
+            return JsonConvert.DeserializeObject<IList<RepositoryModel>>(text, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 NullValueHandling = NullValueHandling.Ignore,
@@ -21,9 +21,9 @@ namespace Interpreter.Utility{
                         typeof(ComplexCompositeTypeSpecifier),
                         typeof(DeclarationWithParent),
                         typeof(DeclarationWithClass),
-                        typeof(FinalTranslation),
+                        typeof(ClassOrHeader),
                         typeof(FunctionCallWithDeclaration),
-                        typeof(TranslationWithPath),
+                        typeof(ClassOrHeaderWithPath),
                         typeof(AliasDeclaration),      
                         typeof(LabelStatement),
                         typeof(ArraySubscript),         
@@ -35,6 +35,7 @@ namespace Interpreter.Utility{
                         typeof(BreakStatement),           
                         typeof(Name),
                         typeof(CaseStatement),            
+                        typeof(NameSpace),
                         typeof(NamedTypeSpecifier),
                         typeof(CastExpression),          
                         typeof(NamespaceAlias),
@@ -91,7 +92,7 @@ namespace Interpreter.Utility{
                         typeof(InclusionStatement),      
                         typeof(While),
                         typeof(InitializerList),
-                        typeof(ComplexFinalTranslation),
+                        typeof(RepositoryModel),
                         typeof(SlnStructure),
                         typeof(VcxprojStructure)
                     }

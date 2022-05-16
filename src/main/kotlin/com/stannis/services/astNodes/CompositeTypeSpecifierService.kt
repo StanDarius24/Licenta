@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.CompositeTypeSpecifier
@@ -45,15 +46,15 @@ object CompositeTypeSpecifierService {
         ASTNodeService.solveASTNode(cppastCompositeTypeSpecifier.name as ASTNode, anonimStatement1)
         if (anonimStatement1.statement is Name) {
             if ((anonimStatement1.statement as Name).name.toString() != "") {
-                data.name = anonimStatement1.statement
+                data.name = anonimStatement1.statement as NameInterface
             } else {
                 if ((cppastCompositeTypeSpecifier.parent as CPPASTSimpleDeclaration).declarators.isNotEmpty()) {
                     ASTNodeService.solveASTNode((cppastCompositeTypeSpecifier.parent as CPPASTSimpleDeclaration).declarators[0].name as ASTNode, anonimStatement1)
-                    data.name = anonimStatement1.statement
+                    data.name = anonimStatement1.statement as NameInterface
                 }
             }
         } else if (anonimStatement1.statement is TemplateId) {
-            data.name = (anonimStatement1.statement as TemplateId).templateName
+            data.name = (anonimStatement1.statement as TemplateId).templateName as NameInterface
         }
         cppastCompositeTypeSpecifier.baseSpecifiers.iterator().forEachRemaining { base ->
             run {

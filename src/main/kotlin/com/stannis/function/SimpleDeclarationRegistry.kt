@@ -63,11 +63,6 @@ object SimpleDeclarationRegistry {
         return newparent is CPPASTCompositeTypeSpecifier
     }
 
-    fun clearList() {
-        globalDeclaration = null
-        internDeclaration = null
-    }
-
     private fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
         val functionDefinition = FunctionDefinitionService.setFunction(funcDef)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Interpreter.Models;
 using Interpreter.Models.complexStatementTypes;
@@ -22,21 +21,17 @@ namespace Interpreter.services{
             }
         }
 
-        private static void ParseTranslationWithPath(IEnumerable<TranslationWithPath> list, VcxprojStructure vcxprojStructure)
+        private static void ParseTranslationWithPath(IEnumerable<ClassOrHeaderWithPath> list, VcxprojStructure vcxprojStructure)
         {
             foreach (var element in list)
             {
-                if (element.finalTranslation.directives == null) continue;
-                foreach (var headerFileName in element.finalTranslation.directives)
+                if (element.classOrHeader.directives == null) continue;
+                foreach (var headerFileName in element.classOrHeader.directives)
                 {
                     var translation = LookUp4HeaderImplementation(FixHeaderName(headerFileName), vcxprojStructure);
                     if (translation != null)
                     {
                         element.relationList.Add(translation);
-                    }
-                    else
-                    {
-                        Console.Out.Write("test");
                     }
                 }
             }
@@ -52,12 +47,20 @@ namespace Interpreter.services{
             else
             {
                 var returnedHeaderName = headerName.Substring(headerName.IndexOf('<') + 1);
-                var newReturn = returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>'));
+                string newReturn;
+                if (returnedHeaderName.Contains('>'))
+                {
+                    newReturn = returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>'));
+                }
+                else
+                {
+                    newReturn = returnedHeaderName;
+                }
                 return newReturn.Contains("/") ? newReturn.Split('/')[1] : newReturn;
             }
         }
 
-        private static TranslationWithPath LookUp4HeaderImplementation(string headerFileName, VcxprojStructure vcxprojStructure)
+        private static ClassOrHeaderWithPath LookUp4HeaderImplementation(string headerFileName, VcxprojStructure vcxprojStructure)
         {
             if (!vcxprojStructure.listOfHeaderFiles.Contains(headerFileName))
             {
@@ -70,29 +73,33 @@ namespace Interpreter.services{
             {
                 return FindFinalTranslation(headerFileName);
             }
-
             return null;
         }
 
-        private static TranslationWithPath FindFinalTranslation(string headerFile)
+        private static ClassOrHeaderWithPath FindFinalTranslation(string headerFile)
         {
             var vcxProj = HeaderFileDifferentVcxproj(headerFile);
             return vcxProj.listOfHeaderFiles.FirstOrDefault(internalHeaderFile => internalHeaderFile.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFile));
         }
 
-        private static ComplexFinalTranslation HeaderFileDifferentVcxproj(string headerFileName)
+        private static RepositoryModel HeaderFileDifferentVcxproj(string headerFileName)
         {
             return DataRegistry.deserializedData.FirstOrDefault(complexFinalTranslation => complexFinalTranslation.vcxprojStructure.listOfHeaderFiles.Contains(headerFileName));
         }
 
-        private static TranslationWithPath GetFileFromDifferentTranslation(string headerFileName)
+        private static ClassOrHeaderWithPath GetFileFromDifferentTranslation(string headerFileName)
         {
             return DataRegistry.deserializedData.SelectMany(complexFinalTranslation => complexFinalTranslation.listOfHeaderFiles).FirstOrDefault(translationWithPath => translationWithPath.path.Split(OperatingSystem.getSeparator()).Last().Equals(headerFileName));
         }
 
         private static bool CheckForInternalLibraries(string headerFileName)
         {
-            return _listOfIncludedLivraries.Contains(headerFileName);
+            return _listOfIncludedLivraries.Contains(DeleteExtension(headerFileName));
+        }
+
+        private static string DeleteExtension(string headerFileName)
+        {
+            return FixHeaderName(headerFileName).Split('.')[0];
         }
     }
 };

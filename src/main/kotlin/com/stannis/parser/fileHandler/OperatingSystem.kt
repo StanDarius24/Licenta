@@ -1,6 +1,5 @@
 package com.stannis.parser.fileHandler
 
-import java.util.function.Predicate.not
 
 object OperatingSystem {
 

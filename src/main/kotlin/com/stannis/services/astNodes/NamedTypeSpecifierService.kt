@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.NamedTypeSpecifier
@@ -12,7 +13,7 @@ object NamedTypeSpecifierService {
     fun solveNamedTypeSpecifier(namedTypeSpec: CPPASTNamedTypeSpecifier, statement: Statement?) {
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(namedTypeSpec.name as ASTNode, anonimStatement)
-        val namedTypeSpecifier = NamedTypeSpecifier(name = anonimStatement.statement)
+        val namedTypeSpecifier = NamedTypeSpecifier(name = anonimStatement.statement as NameInterface)
         StatementMapper.addStatementToStatement(
             statement!!,
             namedTypeSpecifier

@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.SimpleDeclaration
@@ -12,7 +13,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 
 object SimpleDeclarationService {
 
-    fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement?): Boolean {
+    fun solveDeclSpecifier(declaration: CPPASTSimpleDeclaration, statement: Statement?) {
         val simpleDeclaration = SimpleDeclaration(declarators = null, declSpecifier = null)
         declaration.declarators.iterator().forEachRemaining { decl ->
             run {
@@ -23,12 +24,11 @@ object SimpleDeclarationService {
         }
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(declaration.declSpecifier as ASTNode, anonimStatement2)
-        simpleDeclaration.declSpecifier = anonimStatement2.statement
+        simpleDeclaration.declSpecifier = anonimStatement2.statement as DeclarationSpecifierParent
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
         SimpleDeclarationRegistry.addToList(
             simpleDeclaration,
             ParentExtractor.extractParentasFunctionCall(declaration)
         )
-        return true
     }
 }

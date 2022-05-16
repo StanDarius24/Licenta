@@ -6,12 +6,15 @@ import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
 import com.stannis.parser.sln.VcxprojParser
 import com.stannis.parser.visitor.ASTVisitorOverride
+import com.stannis.services.astNodes.NameSpaceService
 import com.stannis.services.cppastService.ASTNodeService
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 class Parser {
 
@@ -42,6 +45,9 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
+                if(filepath.equals("CProject64Input.cpp")) {
+                    println()
+                }
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
                 CompositeTypeRegistry.setPath(fileCorectedPath)
@@ -85,6 +91,7 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNames = true
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
+                    checkForNamespace(translationUnit.declarations)
                     TranslationUnitRegistry.listOfDirectives =
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
@@ -103,13 +110,21 @@ class Parser {
                             out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                         }
                     }
-                    println()
                 } else {
                     println()
                 }
             }
         }
-        println()
+    }
+
+    private fun checkForNamespace(declarations: Array<IASTDeclaration>?) {
+        if (declarations != null) {
+            declarations.forEach { declaration -> run {
+                if (declaration is CPPASTNamespaceDefinition) {
+                    NameSpaceService.solveNameSpace(declaration, true)
+                }
+            }}
+        }
     }
 
     private fun parseFiles(
@@ -151,14 +166,11 @@ class Parser {
                                 listOf,
                                 true
                             )
-                        } else {
-                            println()
                         }
                     }
                 }
             }
         }
-        println()
     }
 
     fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
