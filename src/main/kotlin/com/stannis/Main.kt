@@ -2,13 +2,14 @@ package com.stannis
 
 import com.stannis.parser.fileHandler.LogicHandler
 
-fun main() {
 
-    val projectPath =
-        "C:\\Users\\Stannis\\Desktop\\KotlinLicenta\\src\\main\\resources\\c++\\ConsoleApplication"
+fun main(args: Array<String>) {
+
+    val projectPath = args[0]
 
     LogicHandler.run(projectPath, listOf("oop"))
-    /*
+
+/*
     -oop
     generates a serialized file with the important things from an oop
     point of view.

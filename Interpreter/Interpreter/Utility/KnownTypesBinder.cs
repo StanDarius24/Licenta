@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Newtonsoft.Json.Serialization;
 
 namespace Interpreter.Utility{
     public class KnownTypesBinder : ISerializationBinder
     {
+        public ICollection<string> knownType = new Collection<string>();
         public IList<Type> knownTypes { get; set; }
 
         public Type BindToType(string assemblyName, string typeName)
         {
-            Console.Out.Write(typeName + "\n");
             return knownTypes.SingleOrDefault(t => t.Name == typeName);
         }
 
@@ -18,7 +19,7 @@ namespace Interpreter.Utility{
         {
             assemblyName = null;
             typeName = serializedType.Name;
-            Console.Out.Write(typeName + "\n");
+            knownType.Add(typeName);
         }
     }
 };

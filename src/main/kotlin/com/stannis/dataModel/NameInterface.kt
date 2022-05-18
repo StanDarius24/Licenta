@@ -1,4 +1,4 @@
 package com.stannis.dataModel
 
-interface NameInterface {
+interface NameInterface: HigherClass {
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Interpreter.Models;
 using Interpreter.Models.serialize;
 using Interpreter.Models.serialize.complexStatementTypes;
 using OperatingSystem = Interpreter.Utility.OperatingSystem;
@@ -32,7 +31,7 @@ namespace Interpreter.services{
                     var translation = LookUp4HeaderImplementation(FixHeaderName(headerFileName), vcxprojStructure);
                     if (translation != null)
                     {
-                        element.relationList.Add(translation);
+                        element.ListOfInheritance.Add(translation);
                     }
                 }
             }
@@ -49,14 +48,7 @@ namespace Interpreter.services{
             {
                 var returnedHeaderName = headerName.Substring(headerName.IndexOf('<') + 1);
                 string newReturn;
-                if (returnedHeaderName.Contains('>'))
-                {
-                    newReturn = returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>'));
-                }
-                else
-                {
-                    newReturn = returnedHeaderName;
-                }
+                newReturn = returnedHeaderName.Contains('>') ? returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>')) : returnedHeaderName;
                 return newReturn.Contains("/") ? newReturn.Split('/')[1] : newReturn;
             }
         }

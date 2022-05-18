@@ -38,7 +38,7 @@ object CompositeTypeSpecifierService {
         val data =
             CompositeTypeSpecifier(
                 name = null,
-                baseSpec = null,
+                baseSpecifier = null,
                 declarations = null,
                 key = cppastCompositeTypeSpecifier.key
             )

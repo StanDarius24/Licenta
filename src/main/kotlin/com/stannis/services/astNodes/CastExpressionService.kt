@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.Arguments
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.CastExpression
@@ -15,11 +16,11 @@ object CastExpressionService {
 
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCastExpression.operand as ASTNode, anonimStatement)
-        castExpr.operand = anonimStatement.statement
+        castExpr.operand = anonimStatement.statement as Arguments
 
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(cppastCastExpression.typeId as ASTNode, anonimStatement1)
-        castExpr.typeId = anonimStatement1.statement
+        castExpr.typeId = anonimStatement1.statement as Arguments
 
         StatementMapper.addStatementToStatement(statement!!, castExpr)
     }
