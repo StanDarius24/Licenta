@@ -1,5 +1,7 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.DeclarationSpecifierParent
+import com.stannis.dataModel.DeclaratorInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.TypeId
@@ -13,10 +15,10 @@ object TypeIdService {
         val typeIdData = TypeId(declSpecifier = null, abstractDeclaration = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.declSpecifier as ASTNode, anonimStatement)
-        typeIdData.declSpecifier = anonimStatement.statement
+        typeIdData.declSpecifier = anonimStatement.statement as DeclarationSpecifierParent
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.abstractDeclarator as ASTNode, anonimStatement1)
-        typeIdData.abstractDeclaration = anonimStatement1.statement
+        typeIdData.abstractDeclaration = anonimStatement1.statement as DeclaratorInterface
         StatementMapper.addStatementToStatement(statement!!, typeIdData)
     }
 }

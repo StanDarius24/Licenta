@@ -17,6 +17,14 @@ object LambdaExpressionService {
             lambdaExpression.captureDefault = name
         }
 
+        if(data.captures != null) {
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
+            data.captures.forEach { element -> run {
+                ASTNodeService.solveASTNode(element as ASTNode, anonimStatement)
+                lambdaExpression.addCaptures(anonimStatement.statement)
+            } }
+        }
+
         if (data.body != null) {
             val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.body as ASTNode, anonimStatement)
@@ -33,6 +41,14 @@ object LambdaExpressionService {
             val anonimStatement = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(data.closureTypeName as ASTNode, anonimStatement)
             lambdaExpression.closureTypeName = anonimStatement.statement
+        }
+
+        if (data.implicitNames != null) {
+            val anonimStatement = AnonimStatement.getNewAnonimStatement()
+            data.implicitNames.forEach { elem -> run {
+                ASTNodeService.solveASTNode(elem as ASTNode, anonimStatement)
+                lambdaExpression.addImplicitFunctionCallName(anonimStatement.statement)
+            } }
         }
 
         StatementMapper.addStatementToStatement(statement!!, lambdaExpression)

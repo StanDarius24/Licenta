@@ -11,9 +11,10 @@ namespace Interpreter
         public static void Main(string[] args)
         {
             var text = Reader.ReadFromPath(
-                @"C:\Users\Stannis\Desktop\KotlinLicenta\src\main\resources\c++\result\ConsoleApplication\ConsoleApplication.sln.json");
+                @"C:\Users\Stannis\Desktop\KotlinLicenta\c++\result\ConsoleApplication\ConsoleApplication.sln.json");
             DataRegistry.deserializedData = Deserializer.DeserializeData(text);
             DirectiveFinder.LinkDirective();
+            DataMapper.LinkClasses();
             Console.WriteLine(text);
         }
     }

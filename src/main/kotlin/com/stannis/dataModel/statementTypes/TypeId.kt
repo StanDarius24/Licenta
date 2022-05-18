@@ -1,9 +1,9 @@
 package com.stannis.dataModel.statementTypes
 
-import com.stannis.dataModel.Statement
+import com.stannis.dataModel.*
 
 data class TypeId(
     override val `$type`: String? = "TypeId",
-    var declSpecifier: Statement?,
-    var abstractDeclaration: Statement?
-) : Statement
+    var declSpecifier: DeclarationSpecifierParent?,
+    var abstractDeclaration: DeclaratorInterface?
+) : Statement, Arguments

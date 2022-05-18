@@ -5,5 +5,5 @@ import com.stannis.dataModel.Statement
 
 data class ConversionName(
     override val `$type`: String = "ConversionName",
-    var typeId: Statement?
+    var typeId: TypeId?
     ): Statement, NameInterface

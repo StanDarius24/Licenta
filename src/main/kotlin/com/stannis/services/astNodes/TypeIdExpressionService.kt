@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.Arguments
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.TypeIdExpression
@@ -14,7 +15,7 @@ object TypeIdExpressionService {
         val typeIdExpression = TypeIdExpression(typeId = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(typeId.typeId as ASTNode, anonimStatement)
-        typeIdExpression.typeId = anonimStatement.statement
+        typeIdExpression.typeId = anonimStatement.statement as Arguments
         StatementMapper.addStatementToStatement(statement!!, typeIdExpression)
     }
 }

@@ -1,5 +1,6 @@
 package com.stannis.services.mapper
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.PrimaryBlock
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
@@ -51,7 +52,7 @@ class StatementMapper {
                     statementParent.addStatement(statementChild)
                 }
                 is IdExpression -> {
-                    statementParent.expression = statementChild
+                    statementParent.expression = statementChild as NameInterface
                 }
                 else -> {
                     throw Exception()

@@ -13,12 +13,13 @@ namespace Interpreter.Utility{
             return JsonConvert.DeserializeObject<IList<RepositoryModel>>(text, new JsonSerializerSettings
             {
                 TypeNameHandling = TypeNameHandling.Auto,
-                NullValueHandling = NullValueHandling.Ignore,
+                // NullValueHandling = NullValueHandling.Ignore,
                 SerializationBinder = new KnownTypesBinder
                 {
                     knownTypes = new List<Type>
                     {
                         typeof(NameSpace),
+                        typeof(Capture),
                         typeof(ComplexCompositeTypeSpecifier),
                         typeof(DeclarationWithParent),
                         typeof(DeclarationWithClass),

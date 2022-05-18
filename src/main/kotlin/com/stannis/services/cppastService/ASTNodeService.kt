@@ -220,10 +220,10 @@ object ASTNodeService {
                 TemplateIdService.solveTemplateId(node, statement)
             }
             is CPPASTExplicitTemplateInstantiation -> {
-                throw Exception()
+                throw Exception("CPPASTExplicitTemplateInstantiation not supported")
             }
             is CPPASTTemplatedTypeTemplateParameter -> {
-                throw Exception()
+                throw Exception("CPPASTTemplatedTypeTemplateParameter not supported")
             }
             is CPPASTConversionName -> {
                 ConversionNameService.solveConversionName(node, statement)
@@ -236,6 +236,9 @@ object ASTNodeService {
             }
             is CPPASTNamespaceDefinition -> {
                 NameSpaceService.solveNameSpace(node, false, statement)
+            }
+            is CPPASTCapture -> {
+                CaptureService.solveCapture(node, statement)
             }
             else -> throw Exception()
         }

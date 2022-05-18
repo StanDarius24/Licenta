@@ -9,7 +9,9 @@ namespace Interpreter.Models.serialize.complexStatementTypes
 
         public ClassOrHeader classOrHeader;
 
-        public IList<ClassOrHeaderWithPath> relationList = new List<ClassOrHeaderWithPath>();
+        public IList<ClassOrHeaderWithPath> ListOfInheritance = new List<ClassOrHeaderWithPath>();
+
+        public IList<ClassOrHeaderWithPath> ListOfDeclaration = new List<ClassOrHeaderWithPath>();
 
     }
 

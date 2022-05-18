@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.TemplateId
@@ -13,7 +14,7 @@ object TemplateIdService {
         val templateData = TemplateId(templateName = null, templateArguments = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(templateIdcpp.templateName as ASTNode, anonimStatement)
-        templateData.templateName = anonimStatement.statement
+        templateData.templateName = anonimStatement.statement as NameInterface
         templateIdcpp.templateArguments.iterator().forEachRemaining { template -> run {
             val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
             ASTNodeService.solveASTNode(template as ASTNode, anonimStatement1)

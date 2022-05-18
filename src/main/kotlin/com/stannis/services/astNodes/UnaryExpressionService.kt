@@ -1,5 +1,6 @@
 package com.stannis.services.astNodes
 
+import com.stannis.dataModel.Arguments
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.UnaryExpression
@@ -14,7 +15,7 @@ object UnaryExpressionService {
         val unaryExpression = UnaryExpression(operand = null)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(data.operand as ASTNode, anonimStatement)
-        unaryExpression.operand = anonimStatement.statement
+        unaryExpression.operand = anonimStatement.statement as Arguments
         StatementMapper.addStatementToStatement(statement!!, unaryExpression)
     }
 }
