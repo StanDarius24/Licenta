@@ -2,6 +2,7 @@
 using System.Linq;
 using Interpreter.Models.serialize;
 using Interpreter.Models.serialize.complexStatementTypes;
+using Interpreter.Utility;
 using OperatingSystem = Interpreter.Utility.OperatingSystem;
 
 namespace Interpreter.services{
@@ -28,28 +29,19 @@ namespace Interpreter.services{
                 if (element.classOrHeader.directives == null) continue;
                 foreach (var headerFileName in element.classOrHeader.directives)
                 {
-                    var translation = LookUp4HeaderImplementation(FixHeaderName(headerFileName), vcxprojStructure);
-                    if (translation != null)
+                    var translation = LookUp4HeaderImplementation(StringService.FixHeaderName(headerFileName), vcxprojStructure);
+                    if (translation == null) continue;
+                    if (StringService.FixPath(StringService.FixHeaderName(headerFileName)).Equals(StringService.FixPath(element.path)))
+                    {
+                        if (!StringService.GetDirectoryPath(element.path).Equals(StringService.GetDirectoryPath(translation.path))) continue;
+                        element.AsociatedFile = translation;
+                        translation.AsociatedFile = element;
+                    }
+                    else
                     {
                         element.ListOfInheritance.Add(translation);
                     }
                 }
-            }
-        }
-
-        private static string FixHeaderName(string headerName)
-        {
-            var list = headerName.Split('\"');
-            if (list.Length > 2)
-            {
-                return list[list.Length - 2];
-            }
-            else
-            {
-                var returnedHeaderName = headerName.Substring(headerName.IndexOf('<') + 1);
-                string newReturn;
-                newReturn = returnedHeaderName.Contains('>') ? returnedHeaderName.Substring(0, returnedHeaderName.IndexOf('>')) : returnedHeaderName;
-                return newReturn.Contains("/") ? newReturn.Split('/')[1] : newReturn;
             }
         }
 
@@ -87,12 +79,8 @@ namespace Interpreter.services{
 
         private static bool CheckForInternalLibraries(string headerFileName)
         {
-            return _listOfIncludedLivraries.Contains(DeleteExtension(headerFileName));
+            return _listOfIncludedLivraries.Contains(StringService.DeleteExtension(headerFileName));
         }
 
-        private static string DeleteExtension(string headerFileName)
-        {
-            return FixHeaderName(headerFileName).Split('.')[0];
-        }
     }
-};
+}
