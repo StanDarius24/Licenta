@@ -8,10 +8,14 @@ namespace Interpreter.Models.serialize.complexStatementTypes
         public string path;
 
         public ClassOrHeader classOrHeader;
+        
+        public ClassOrHeaderWithPath AsociatedFile { set; get; }
 
         public IList<ClassOrHeaderWithPath> ListOfInheritance = new List<ClassOrHeaderWithPath>();
 
         public IList<ClassOrHeaderWithPath> ListOfDeclaration = new List<ClassOrHeaderWithPath>();
+
+        public IList<ClassOrHeaderWithPath> ListOfImportedButUnused = new List<ClassOrHeaderWithPath>();
 
     }
 
