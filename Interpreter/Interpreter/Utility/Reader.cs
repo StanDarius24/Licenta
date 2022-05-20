@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -8,14 +9,21 @@ namespace Interpreter.Utility
     {
         public static string ReadFromPath(string path)
         {
-            return System.IO.File.ReadAllText(path);
+            return File.ReadAllText(path);
         }
 
         public static IEnumerable<string> FindProjectData(string data)
         {
-            return Directory.GetFiles(
-                @StringService.SolveDataPath(data) +
-                OperatingSystem.GetSeparator());
+            if (!Directory.Exists(data)) return null;
+            try
+            {
+                return Directory.GetFiles(StringService.SolveDataPath(data));
+            }
+            catch (Exception e)
+            {
+                Console.Out.Write(e);
+                return null;
+            }
         }
         
     }

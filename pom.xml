@@ -134,7 +134,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.com.stannis.Main</mainClass>
+                                    <mainClass>com.stannis.MainKt</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using Interpreter.services;
+﻿using System.Diagnostics.CodeAnalysis;
 using Interpreter.Utility;
 
 namespace Interpreter
@@ -10,7 +8,7 @@ namespace Interpreter
         [SuppressMessage("ReSharper.DPA", "DPA0001: Memory allocation issues")]
         public static void Main(string[] args)
         {
-            Logic.Solve(@"C:\Users\Stannis\Desktop\KotlinLicenta\c++\project64-develop");
+            Logic.Solve(@"C:\Users\Stannis\Desktop\KotlinLicenta\c++\ConsoleApplication");
         }
     }
 }

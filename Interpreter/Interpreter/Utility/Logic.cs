@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq;
 using Interpreter.Models.serialize;
 using Interpreter.services;
@@ -13,7 +14,12 @@ namespace Interpreter.Utility{
                 name = data.Split(OperatingSystem.GetSeparator()).Last()
             };
             var listOfSolutions =
-                Reader.FindProjectData(@data);
+                Reader.FindProjectData(data);
+            if (listOfSolutions == null)
+            {
+                JarRunner.RunJar(data);
+                listOfSolutions = Reader.FindProjectData(data);
+            }
 
             foreach (var solutionPath in listOfSolutions)
             {
@@ -28,6 +34,7 @@ namespace Interpreter.Utility{
                 }
                 project.solution.Add(solution);
             }
+            Console.Out.Write("test");
         }    
     }
 };
