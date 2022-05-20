@@ -8,6 +8,7 @@ namespace Interpreter.Utility{
         public static void RunJar(string path)
         {
             var process = Process.GetCurrentProcess(); // Or whatever method you are using
+            if (process.MainModule == null) return;
             var fullPath = process.MainModule.FileName;
             
             var list = fullPath.Split(OperatingSystem.GetSeparator());
@@ -15,7 +16,7 @@ namespace Interpreter.Utility{
 
             var projectPath = string.Join(OperatingSystem.GetSeparator().ToString(), list);
         
-            var processInfo = new ProcessStartInfo("java.exe", "-jar " + projectPath + OperatingSystem.GetSeparator() + "target" + OperatingSystem.GetSeparator() + "KotlinLicenta-1.0-SNAPSHOT-jar-with-dependencies.jar")
+            var processInfo = new ProcessStartInfo("java.exe", "-jar " + projectPath + OperatingSystem.GetSeparator() + "target" + OperatingSystem.GetSeparator() + "KotlinLicenta-1.0-SNAPSHOT-jar-with-dependencies.jar " + path)
             {
                 CreateNoWindow = true,
                 UseShellExecute = false
