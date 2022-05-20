@@ -14,6 +14,8 @@ namespace Interpreter.Utility{
             };
             var listOfSolutions =
                 Reader.FindProjectData(@data);
+            
+            JarRunner.RunJar(data);
 
             foreach (var solutionPath in listOfSolutions)
             {

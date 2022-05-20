@@ -13,9 +13,13 @@ namespace Interpreter.Utility
 
         public static IEnumerable<string> FindProjectData(string data)
         {
-            return Directory.GetFiles(
-                @StringService.SolveDataPath(data) +
-                OperatingSystem.GetSeparator());
+            if (Directory.Exists(data))
+            {
+                return Directory.GetFiles(
+                    @StringService.SolveDataPath(data) +
+                    OperatingSystem.GetSeparator());
+            }
+            return null;
         }
         
     }
