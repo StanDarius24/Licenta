@@ -15,11 +15,11 @@ namespace Interpreter.Models.serialize.complexStatementTypes
 
                 public IList<FunctionDeclarator> functionCallsWithoutImplementation = new List<FunctionDeclarator>();
 
-                public IList<ComplexCompositeTypeSpecifier> classList = new List<ComplexCompositeTypeSpecifier>();
+                public IList<ComplexCompositeTypeSpecifier> classList = new List<ComplexCompositeTypeSpecifier>(); //done
 
-                public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>();
+                public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>(); //done
 
-                public IList<NameSpace> namespaces = new List<NameSpace>();
+                public IList<NameSpace> namespaces = new List<NameSpace>(); //done
         }
 
 }

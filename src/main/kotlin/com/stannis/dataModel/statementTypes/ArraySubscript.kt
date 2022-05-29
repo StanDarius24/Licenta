@@ -8,4 +8,8 @@ data class ArraySubscript(
     override val `$type`: String? = "ArraySubscript",
     var arrayValue: String?,
     var index: String?
-) : Statement, Arguments, NameInterface
+) : Statement, Arguments, NameInterface {
+    override fun getWrittenName(): String {
+        return arrayValue!!
+    }
+}

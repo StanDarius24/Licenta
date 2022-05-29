@@ -14,4 +14,8 @@ data class QualifiedName(
         }
         qualifier!!.add(statement as NameInterface)
     }
+
+    override fun getWrittenName(): String {
+        return lastName!!.getWrittenName()
+    }
 }

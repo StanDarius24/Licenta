@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Interpreter.Models.serialize;
 using Interpreter.Models.serialize.complexStatementTypes;
+using Interpreter.Models.serialize.statementTypes;
 using Interpreter.Utility;
+using Microsoft.Win32;
 using OperatingSystem = Interpreter.Utility.OperatingSystem;
 
 namespace Interpreter.services{
@@ -39,10 +42,99 @@ namespace Interpreter.services{
                     }
                     else
                     {
-                        element.ListOfInheritance.Add(translation);
+                        if (CheckForRelationType(element, translation))
+                        {
+                            element.ListOfInheritance.Add(translation);
+                        } else if (CheckDeclaration(element, translation))
+                        {
+                            element.ListOfDeclaration.Add(translation);
+                        }
                     }
                 }
             }
+        }
+
+        private static bool CheckDeclaration(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static bool CheckForRelationType(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            if (!CheckForClass(element, translation))
+            {
+                if (!CheckForLinkageSpecification(element, translation))
+                {
+                    if (!CheckForNameSpace(element, translation))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static bool CheckForNameSpace(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            if (translation.classOrHeader.namespaces.Count > 0)
+            {
+                if (element.classOrHeader.classList.Count > 0)
+                {
+                    foreach (var nameSpaceElement in translation.classOrHeader.namespaces)
+                    {
+                        foreach (var nameSpaceDecl in nameSpaceElement.declarations)
+                        {
+                            if (nameSpaceDecl is ComplexCompositeTypeSpecifier)
+                            {
+                                foreach (var classListElement in element.classOrHeader.classList)
+                                {
+                                    foreach (var classBaseSpecifierList in classListElement.our_class.baseSpecifier)
+                                    {
+                                        Console.Out.Write("");
+                                        if (((INameInterface) (classBaseSpecifierList as BaseSpecifier)?.name)!
+                                            .GetWrittenName().Equals(
+                                                ((nameSpaceDecl as ComplexCompositeTypeSpecifier).our_class
+                                                    .name as INameInterface)?.GetWrittenName()))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        private static bool CheckForLinkageSpecification(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            if (element.path.Contains("LinkageImplementation"))
+            {
+                Console.Out.Write("test"); // need fix here
+            }
+            return false;
+        }
+
+        private static bool CheckForClass(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            if (element.classOrHeader.classList != null)
+            {
+                foreach (var classList in element.classOrHeader.classList)
+                {
+                    if (classList.our_class.baseSpecifier != null)
+                    {
+                        foreach (var baseSpec in classList.our_class.baseSpecifier)
+                        {
+                            return (baseSpec as BaseSpecifier).name.Equals(
+                                StringService.FixPath(translation.path));
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         private static ClassOrHeaderWithPath LookUp4HeaderImplementation(string headerFileName, VcxprojStructure vcxprojStructure)

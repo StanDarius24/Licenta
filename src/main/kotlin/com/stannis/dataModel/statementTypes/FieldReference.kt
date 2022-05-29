@@ -8,4 +8,8 @@ data class FieldReference(
     override val `$type`: String? = "FieldReference",
     var fieldName: NameInterface?,
     var fieldOwner: Arguments?
-) : Statement, Arguments, NameInterface
+) : Statement, Arguments, NameInterface {
+    override fun getWrittenName(): String {
+        return fieldName!!.getWrittenName()
+    }
+}

@@ -45,7 +45,7 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
-                if(filepath == "TestB.h") {
+                if(filepath == "NameSpaceParent.h") {
                     println()
                 }
                 ASTNodeService.modifier = "public"

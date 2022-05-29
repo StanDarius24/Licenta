@@ -15,4 +15,8 @@ data class TemplateId(
         }
         templateArguments!!.add(statement as Arguments)
     }
+
+    override fun getWrittenName(): String {
+        return templateName!!.getWrittenName()
+    }
 }
