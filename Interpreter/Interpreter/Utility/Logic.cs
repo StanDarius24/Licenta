@@ -27,7 +27,6 @@ namespace Interpreter.Utility{
                 var text = Reader.ReadFromPath(solutionPath);
                 DataRegistry.deserializedData = Deserializer.DeserializeData(text);
                 DirectiveFinder.LinkDirective();
-                DataMapper.LinkClasses();
                 foreach (var repositoryModel in DataRegistry.deserializedData)
                 {
                     solution.deserializedData.Add(repositoryModel);

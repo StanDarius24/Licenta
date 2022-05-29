@@ -16,7 +16,8 @@ namespace Interpreter.Utility{
 
             var projectPath = string.Join(OperatingSystem.GetSeparator().ToString(), list);
         
-            var processInfo = new ProcessStartInfo("java.exe", "-jar " + projectPath + OperatingSystem.GetSeparator() + "target" + OperatingSystem.GetSeparator() + "KotlinLicenta-1.0-SNAPSHOT-jar-with-dependencies.jar " + path)
+            var processInfo = new ProcessStartInfo("java.exe",
+                $"-jar {projectPath}{OperatingSystem.GetSeparator()}target{OperatingSystem.GetSeparator()}KotlinLicenta-1.0-SNAPSHOT-jar-with-dependencies.jar {path} oop")
             {
                 CreateNoWindow = true,
                 UseShellExecute = false
@@ -30,6 +31,10 @@ namespace Interpreter.Utility{
 
             proc.WaitForExit();
             var exitCode = proc.ExitCode;
+            if (exitCode != 0)
+            {
+                Console.Out.Write("Error running jar, exit code " + exitCode);
+            }
             proc.Close();
         }
     }

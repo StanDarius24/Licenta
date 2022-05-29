@@ -7,4 +7,9 @@ import com.stannis.dataModel.Statement
 data class Name(
     override val `$type`: String? = "Name",
     var name: String?
-) : Statement, DeclarationParent, NameInterface
+) : Statement, DeclarationParent, NameInterface {
+    override fun getWrittenName(): String {
+        return name!!
+    }
+
+}
