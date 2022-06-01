@@ -9,6 +9,7 @@ namespace Interpreter.Utility{
     {
         public static void Solve(string data)
         {
+            var dirFinder = new DirectiveFinder();
             var project = new Project
             {
                 name = data.Split(OperatingSystem.GetSeparator()).Last()
@@ -26,7 +27,7 @@ namespace Interpreter.Utility{
                 var solution = new Solution();
                 var text = Reader.ReadFromPath(solutionPath);
                 DataRegistry.deserializedData = Deserializer.DeserializeData(text);
-                DirectiveFinder.LinkDirective();
+                dirFinder.LinkDirective();
                 foreach (var repositoryModel in DataRegistry.deserializedData)
                 {
                     solution.deserializedData.Add(repositoryModel);
