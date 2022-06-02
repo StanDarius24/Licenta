@@ -11,17 +11,20 @@ namespace Interpreter.services{
         public bool CheckDeclaration(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
             if (CheckFoClass(element, translation)) return true;
-            if (!CheckExternDeclaration(element, translation))
+            if (CheckExternDeclaration(element, translation)) return true;
+            if (CheckInternDeclaration(element, translation)) return true;
+            if (CheckExternal(element, translation)) return true;
+            return CheckFunctionsParametersWithoutImpr(element, translation);
+        }
+
+        private bool CheckExternal(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
+        {
+            var numberOfExternals = 0;
+            if (element.classOrHeader.externalMethods.Count > 0 && translation.classOrHeader.externalMethods.Count > 0)
             {
-                if (!CheckInternDeclaration(element, translation))
-                {
-                    if (!CheckFunctionsParametersWithoutImpr(element, translation))
-                    {
-                        Console.Out.Write("test");
-                    }
-                } 
+                numberOfExternals += element.classOrHeader.externalMethods.Count(elementExternal => translation.classOrHeader.externalMethods.Contains(elementExternal));
             }
-            return true;
+            return numberOfExternals == element.classOrHeader.externalMethods.Count;
         }
 
         private bool CheckFunctionsParametersWithoutImpr(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
@@ -30,10 +33,10 @@ namespace Interpreter.services{
             {
                 foreach (var functionParameter in functionDeclarator.parameter)
                 {
-                    if (functionParameter is ParameterDeclaration)
+                    if (functionParameter is ParameterDeclaration declaration)
                     {
                         if (GetClassesNamesFromRelations(translation.classOrHeader.classList).Contains(
-                                ((functionParameter as ParameterDeclaration).declarationSpecifier as INameInterface)
+                                (declaration.declarationSpecifier as INameInterface)
                                 ?.GetWrittenName()))
                         {
                             return true;
@@ -56,22 +59,19 @@ namespace Interpreter.services{
 
         private bool CheckExternDeclaration(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
-            foreach (var globalDecl in element.classOrHeader.globalDeclaration)
-            {
-                if (translation.classOrHeader.classList.Count > 0)
-                {
-                    if (GetClassesNamesFromRelations(translation.classOrHeader.classList)
-                        .Contains((globalDecl.declaration.declSpecifier as INameInterface)?.GetWrittenName()))
-                    {
-                        return true;
-                    }
-                }
-            }
-            
-            return false;
+            return element.classOrHeader.globalDeclaration.Where(
+                    globalDecl => translation.classOrHeader.classList.Count > 0)
+                .Any(globalDecl => GetClassesNamesFromRelations(translation.classOrHeader.classList)
+                    .Contains((globalDecl.declaration.declSpecifier as INameInterface)?.GetWrittenName())) || CheckExternDefinition(translation);
         }
 
-        private static IList<string> GetClassesNamesFromRelations(IEnumerable<ComplexCompositeTypeSpecifier> classList)
+        private bool CheckExternDefinition(ClassOrHeaderWithPath translation)
+        {
+            return translation.classOrHeader.globalDeclaration.Any(declaration => StringService.FixPath(translation.path)
+                .Equals((declaration.declaration.declSpecifier as INameInterface)?.GetWrittenName()));
+        }
+
+        public static IList<string> GetClassesNamesFromRelations(IEnumerable<ComplexCompositeTypeSpecifier> classList)
         {
             return classList.Select(classElement => (classElement.our_class.name as INameInterface)?.GetWrittenName()).ToList();
         }
@@ -83,11 +83,23 @@ namespace Interpreter.services{
                 foreach (var declarationElement in classElement.our_class.declarations)
                 {
                     if (declarationElement is not SimpleDeclaration declaration) continue;
-                    if (translation.classOrHeader.classList.Any(
-                            translationClassElement => ((INameInterface) declaration.declSpecifier).GetWrittenName()
-                            .Equals((translationClassElement.our_class.name as INameInterface)?.GetWrittenName())))
+                    foreach (var translationClassElement in translation.classOrHeader.classList)
                     {
-                        return true;
+                        if (declaration.declSpecifier is SimpleDeclaration)
+                        {
+                            if (((INameInterface) declaration.declSpecifier).GetWrittenName()
+                                .Equals((translationClassElement.our_class.name as INameInterface)?.GetWrittenName()))
+                            {
+                                return true;
+                            }
+                        } else if (declaration.declSpecifier is INameInterface @interface)
+                        {
+                            if (@interface.GetWrittenName()
+                                .Equals((translationClassElement.our_class.name as INameInterface)?.GetWrittenName()))
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
 

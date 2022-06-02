@@ -24,7 +24,8 @@ object TranslationUnitRegistry {
                 functionCallsWithoutImplementation = null,
                 linkageSpecification = null,
                 methodsWithFunctionCalls = null,
-                namespaces = null
+                namespaces = null,
+                externalMethods = null
             )
         classOrHeader.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
         classOrHeader.internDeclaration = SimpleDeclarationRegistry.internDeclaration
@@ -34,6 +35,7 @@ object TranslationUnitRegistry {
         classOrHeader.classList = CompositeTypeRegistry.list
         classOrHeader.linkageSpecification = ExternDefinitionRegistry.listOfExtern
         classOrHeader.namespaces = NameSpaceRegistry.listOfNameSpace
+        classOrHeader.externalMethods = ExternalRegistry.listOfExternal
         ProjectVcxprojComplexRegistry.addFinalTranslation(classOrHeader, boolean)
     }
 
@@ -66,9 +68,7 @@ object TranslationUnitRegistry {
                 }
             }
         }
-
         removeLinks()
-        println()
     }
 
     private fun removeLinks() {
@@ -103,6 +103,7 @@ object TranslationUnitRegistry {
         NameSpaceRegistry.listOfNameSpace = null
         SimpleDeclarationRegistry.internDeclaration = null
         SimpleDeclarationRegistry.globalDeclaration = null
+        FunctionDefinitionRegistry.list = null
         FunctionDefinitionRegistry.listOfComplexFunctionCalls = null
         FunctionDeclaratorRegistry.list = null
         CompositeTypeRegistry.list = null

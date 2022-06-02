@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Interpreter.Models.serialize;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 using Interpreter.Utility;
@@ -27,21 +29,44 @@ namespace Interpreter.services{
             }
             return false;
         }
+
+        public static IList<string> GetParentClassNameList(IEnumerable<ComplexCompositeTypeSpecifier> listOfClasses)
+        {
+            var listToReturn = new List<string>();
+            foreach (var classToTest in listOfClasses)
+            {
+                listToReturn.AddRange(
+                    classToTest.our_class.baseSpecifier.Select(
+                        superClass => ((superClass as BaseSpecifier)?.name as INameInterface)?.GetWrittenName()));
+            }
+            return listToReturn;
+        }
         
         private bool CheckForNameSpace(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
             if (translation.classOrHeader.namespaces.Count <= 0) return false;
-            return element.classOrHeader.classList.Count > 0 && 
-                   (from nameSpaceElement in translation.classOrHeader.namespaces
-                       from nameSpaceDecl in nameSpaceElement.declarations
-                       where nameSpaceDecl is ComplexCompositeTypeSpecifier 
-                       from classListElement in element.classOrHeader.classList
-                       from classBaseSpecifierList in classListElement.our_class.baseSpecifier
-                       where ((INameInterface) (classBaseSpecifierList as BaseSpecifier)?.name)!.GetWrittenName()
-                           .Equals(
-                               ((nameSpaceDecl as ComplexCompositeTypeSpecifier).our_class.name as INameInterface)?.GetWrittenName()
-                               ) 
-                               select nameSpaceDecl).Any();
+            if (element.classOrHeader.classList.Count <= 0) return false;
+            foreach (NameSpace nameSpaceElement in translation.classOrHeader.namespaces)
+            foreach (var nameSpaceDecl in nameSpaceElement.declarations)
+            {
+                if (nameSpaceDecl is ComplexCompositeTypeSpecifier)
+                    foreach (var classListElement in element.classOrHeader.classList)
+                    {
+                        foreach (var classBaseSpecifierList in classListElement.our_class.baseSpecifier)
+                        {
+                            if (((INameInterface) (classBaseSpecifierList as BaseSpecifier)?.name)!.GetWrittenName()
+                                .Equals(((nameSpaceDecl as ComplexCompositeTypeSpecifier).our_class.name as INameInterface)?.GetWrittenName()))
+                                return true;
+                        }
+                    }
+                if ((nameSpaceDecl as SimpleDeclaration)?.declSpecifier is not ElaboratedTypeSpecifier) continue;
+                if (GetParentClassNameList(element.classOrHeader.classList).Contains(
+                        ((nameSpaceDecl as SimpleDeclaration).declSpecifier as INameInterface)?.GetWrittenName()))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 };

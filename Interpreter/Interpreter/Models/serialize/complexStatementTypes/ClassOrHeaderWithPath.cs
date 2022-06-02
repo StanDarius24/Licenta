@@ -13,7 +13,7 @@ namespace Interpreter.Models.serialize.complexStatementTypes
 
         public IList<ClassOrHeaderWithPath> ListOfInheritance = new List<ClassOrHeaderWithPath>();
 
-        public IList<ClassOrHeaderWithPath> ListOfDeclaration = new List<ClassOrHeaderWithPath>();
+        public IList<ClassOrHeaderWithPath> ListOfComposition = new List<ClassOrHeaderWithPath>();
 
     }
 

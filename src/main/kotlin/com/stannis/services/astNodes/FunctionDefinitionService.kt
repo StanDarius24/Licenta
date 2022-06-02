@@ -14,11 +14,11 @@ object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
         val functionDefinition = setFunction(funcDef)
         val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
-        FunctionDefinitionRegistry.addToList(functionDefinition)
         if (funcDef.body != null) {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
         functionDefinition.addToBody(anonimStatement3.statement as Statement)
+        FunctionDefinitionRegistry.addToList(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
     }
 

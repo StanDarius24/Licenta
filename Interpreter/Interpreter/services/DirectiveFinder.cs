@@ -48,7 +48,7 @@ namespace Interpreter.services{
                             element.ListOfInheritance.Add(translation);
                         } else if (declarationType.CheckDeclaration(element, translation))
                         {
-                            element.ListOfDeclaration.Add(translation);
+                            element.ListOfComposition.Add(translation);
                         }
                         else
                         {
