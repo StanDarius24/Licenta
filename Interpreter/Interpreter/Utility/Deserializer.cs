@@ -19,6 +19,7 @@ namespace Interpreter.Utility{
                     knownTypes = new List<Type>
                     {
                         typeof(NameSpace),
+                        typeof(CatchHandler),
                         typeof(Capture),
                         typeof(ComplexCompositeTypeSpecifier),
                         typeof(DeclarationWithParent),

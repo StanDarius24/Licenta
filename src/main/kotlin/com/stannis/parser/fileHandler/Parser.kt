@@ -45,9 +45,6 @@ class Parser {
         DirReader.folder = projectPath
         filesPath.iterator().forEachRemaining { filepath ->
             run {
-                if(filepath == "NameSpaceParent.h") {
-                    println()
-                }
                 ASTNodeService.modifier = "public"
                 val fileCorectedPath = FileSelector.solvePath(absolutPath, filepath)
                 CompositeTypeRegistry.setPath(fileCorectedPath)

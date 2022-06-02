@@ -66,6 +66,7 @@
         <Compile Include="Models\serialize\statementTypes\Capture.cs" />
         <Compile Include="Models\serialize\statementTypes\CaseStatement.cs" />
         <Compile Include="Models\serialize\statementTypes\CastExpression.cs" />
+        <Compile Include="Models\serialize\statementTypes\CatchHandler.cs" />
         <Compile Include="Models\serialize\statementTypes\CompositeTypeSpecifier.cs" />
         <Compile Include="Models\serialize\statementTypes\CompoundStatement.cs" />
         <Compile Include="Models\serialize\statementTypes\ConditionalExpression.cs" />

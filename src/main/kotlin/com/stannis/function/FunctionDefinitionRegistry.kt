@@ -255,15 +255,17 @@ object FunctionDefinitionRegistry {
     ) {
         val parentStructure = FunctionDefinitionService.setFunction(parent)
         if (!checkInternComplex(parentStructure, functionCalls)) {
-            list!!.iterator().forEachRemaining { functionDefinition ->
-                run {
-                    if (parentStructure == functionDefinition) {
-                        resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
+            if (list != null) {
+                list!!.iterator().forEachRemaining { functionDefinition ->
+                    run {
+                        if (parentStructure == functionDefinition) {
+                            resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
+                        }
                     }
                 }
-            }
-            if (!ParentExtractor.checkParentFunctionDefinition(parent)) {
-                addToComplexFunctions(parentStructure)
+                if (!ParentExtractor.checkParentFunctionDefinition(parent)) {
+                    addToComplexFunctions(parentStructure)
+                }
             }
         }
     }
