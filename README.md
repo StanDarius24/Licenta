@@ -24,4 +24,27 @@ In this project I tried to cover all types of suffixes for this language.
 
 ___
 
+## Metrics
+|name|calculation formula|
+|----|-------------------|
+|AMW (Average Method Weight)|The sum of all of the methods' cyclomatic complexity divided by the number of methods
+|WMC (Weighted Method Count)|The sum of all of the methods' cyclomatic complexity
+|NOM (Number of Methods)|The methods defined in the class
+|NOPA (Number of Public Attributes)|The number of public fields defined in the class
+|NProtM (Number of Protected Members)|The number of protected methods and fields defined in the class
+|ATFD (Access to Foreign Data)|The sum of all public accessed attributes (outside of constructors) from inside a class
+|ATFD2 (Access to Foreign Data 2)|The sum of all public accessed attributes which have a user-defined type (outside of constructors) from inside a class
+|FDP (Foreign Data Provider)|The classes in which the attributes for ATFD are provided
+|WOC (Weight Of a Class)|The number of functional public methods that are not divided by the total number of public members
+|BOvR (Base Class Overriding Ratio)|The number of overriding methods divided by the total number of methods in the class
+|CC (Changing Classes)|The number of classes that call methods defined in the class
+|CM (Changing Methods)|The number of methods that call methods defined in the class
+|CINT (Coupling Intensity)|The number of methods called by the class
+|CDISP (Coupling Dispersion)|The number of classes in which the methods that are called by the class are defined, divided by CINT
+|BUR (Baseclass Usage Ratio)|The number of protected fields and methods that are used inside the measured class and are defined in the superclass of the measured class divided by the total protected members defined in the superclass
+|HIT (Height In Tree)|The length from the measured class to its deepest subclass
+|DIT (Depth In Tree)|The length from the measured class to its highest defined superclass
+|NOC (Number Of Children)|The amount of all classes that extend the measured class
+|RFC (Response For a Class)|The sum of all the defined methods in the measured classed and all of the called methods from the measured class
+
 Still in development...
