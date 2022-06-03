@@ -11,7 +11,7 @@ object JsonWriter {
         val checkSum = stringToWrite?.let { CheckSum.getMD5EncryptedString(it) }
         val fileToWrite = DirReader.createfile("$element{$checkSum}.json", joinToString)
             if (stringToWrite != null) {
-                fileToWrite?.bufferedWriter()?.write(stringToWrite)
+                fileToWrite?.bufferedWriter().use { out -> out!!.write(stringToWrite) }
             }
         }
 }

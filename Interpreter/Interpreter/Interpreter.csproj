@@ -47,6 +47,7 @@
         <Compile Include="Models\mapper\RepositoryModel.cs" />
         <Compile Include="Models\mapper\Solutions.cs" />
         <Compile Include="Models\mapper\VcxProject.cs" />
+        <Compile Include="Models\metrics\MetricsModel.cs" />
         <Compile Include="Models\serialize\Project.cs" />
         <Compile Include="Models\serialize\Solution.cs" />
         <Compile Include="Models\serialize\RepositoryModel.cs" />
@@ -136,6 +137,7 @@
         <Compile Include="services\DataRegistry.cs" />
         <Compile Include="services\DeclarationType.cs" />
         <Compile Include="services\DirectiveFinder.cs" />
+        <Compile Include="services\Metrics.cs" />
         <Compile Include="services\RelationsBetweenClassesAndHeaders.cs" />
         <Compile Include="services\RelationType.cs" />
         <Compile Include="Utility\Deserializer.cs" />

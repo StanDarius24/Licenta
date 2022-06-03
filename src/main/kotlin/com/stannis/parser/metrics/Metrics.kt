@@ -4,28 +4,54 @@ import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.FunctionDeclaratorRegistry
+import com.stannis.function.NameSpaceRegistry
 import com.stannis.parser.visitor.ASTVisitorOverride
 
 object Metrics {
 
-    fun calculateCyclomaticComplexity() {
+    fun calculateCyclomaticComplexity(filepath: String) {
         if (ASTVisitorOverride.getPrimaryBlock().statements != null) {
             ASTVisitorOverride.getPrimaryBlock().statements!!.forEach { statement ->
                 run {
                     if (statement is FunctionDefinition) {
-                        var count = 1
-                        if (statement.body != null) {
-                            if ((statement.body!![0] as CompoundStatement).statements != null) {
-                                (statement.body!![0] as CompoundStatement).statements!!.forEach {
-                                    element ->
-                                    run { count = checkCyclomaticType(element, count) }
-                                }
-                            }
-                        }
-                        addCyclomaticComplexToFunction(statement, count)
+                        solveFunctionDefinition(statement, false)
+                    } else if (statement is SimpleDeclaration &&
+                            statement.declSpecifier is CompositeTypeSpecifier
+                    ) {
+                        solveClassDefinition(statement)
                     }
                 }
             }
+        }
+    }
+
+    private fun solveClassDefinition(statement: SimpleDeclaration) {
+        if ((statement.declSpecifier as CompositeTypeSpecifier).declarations != null) {
+            (statement.declSpecifier as CompositeTypeSpecifier).declarations!!.forEach {
+                declarationParent ->
+                run {
+                    if (declarationParent is FunctionDefinition) {
+                        solveFunctionDefinition(declarationParent, true)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun solveFunctionDefinition(statement: FunctionDefinition, bool: Boolean) {
+        var count = 1
+        if (statement.body != null) {
+            if ((statement.body!![0] as CompoundStatement).statements != null) {
+                (statement.body!![0] as CompoundStatement).statements!!.forEach { element ->
+                    run { count = checkCyclomaticType(element, count) }
+                }
+            }
+        }
+        if (!bool) {
+            addCyclomaticComplexToFunction(statement, count)
+            statement.setCyclomatic(count)
+        } else {
+            statement.setCyclomatic(count)
         }
     }
 
@@ -39,6 +65,18 @@ object Metrics {
                     }
                 if (fc != null) {
                     fc.cyclomaticComplexity = count
+                } else {
+                    if (NameSpaceRegistry.listOfNameSpace != null) {
+                        val fcx =
+                            NameSpaceRegistry.listOfNameSpace!!.find { nameSpace ->
+                                nameSpace.declarations!!.contains(statement)
+                            }
+                        if (fcx != null) {
+                            fcx.declarations!!
+                                .find { element -> element.equals(statement) }
+                                ?.let { (it as FunctionDefinition).setCyclomatic(count) }
+                        }
+                    }
                 }
             }
         }

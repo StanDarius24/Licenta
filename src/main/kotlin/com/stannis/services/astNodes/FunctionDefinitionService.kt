@@ -24,7 +24,7 @@ object FunctionDefinitionService {
 
     fun setFunction(funcDef: CPPASTFunctionDefinition): FunctionDefinition {
         val functionDefinition =
-            FunctionDefinition(declaratorSpecifier = null, declarator = null, body = null) // only functions with implementation
+            FunctionDefinition(declaratorSpecifier = null, declarator = null, body = null, cyclomaticComplexity = 1) // only functions with implementation
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
