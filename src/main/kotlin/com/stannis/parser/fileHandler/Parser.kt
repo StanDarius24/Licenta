@@ -4,6 +4,7 @@ import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
 import com.stannis.function.CompositeTypeRegistry
 import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
+import com.stannis.parser.metrics.Metrics
 import com.stannis.parser.sln.VcxprojParser
 import com.stannis.parser.visitor.ASTVisitorOverride
 import com.stannis.services.astNodes.NameSpaceService
@@ -93,7 +94,6 @@ class Parser {
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
                     TranslationUnitRegistry.createTranslationUnit(boolean) //here
-                    TranslationUnitRegistry.clearAllData()
                     if (listOf.contains("parse")) {
                         val newPath = absolutPath.split(OperatingSystem.getSeparator())
                         newPath.dropLast(1)
@@ -107,6 +107,8 @@ class Parser {
                             out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                         }
                     }
+                    Metrics.calculateCyclomaticComplexity()
+                    TranslationUnitRegistry.clearAllData()
                 } else {
                     println()
                 }

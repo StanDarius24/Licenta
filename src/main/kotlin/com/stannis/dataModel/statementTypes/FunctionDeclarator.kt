@@ -7,7 +7,8 @@ import com.stannis.dataModel.Statement
 data class FunctionDeclarator(
     override val `$type`: String? = "FunctionDeclarator",
     var parameter: ArrayList<ParameterDeclaration>?,
-    var name: NameInterface?
+    var name: NameInterface?,
+    var cyclomaticComplexity: Int
 ) : Statement, DeclaratorInterface {
     fun addParameter(statement: Statement) {
         if (parameter == null) {

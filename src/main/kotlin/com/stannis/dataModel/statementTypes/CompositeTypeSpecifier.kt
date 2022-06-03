@@ -11,7 +11,7 @@ data class CompositeTypeSpecifier(
     var baseSpecifier: ArrayList<BaseSpecifier>?,
     var declarations: ArrayList<DeclarationParent>?,
     var key: Int?
-) : Statement, DeclarationSpecifierParent {
+) : Statement, DeclarationSpecifierParent, NameInterface {
     fun addStatement(statement: Statement) {
         if (declarations == null) {
             declarations = ArrayList()
@@ -24,5 +24,9 @@ data class CompositeTypeSpecifier(
             baseSpecifier = ArrayList()
         }
         baseSpecifier!!.add(statement as BaseSpecifier)
+    }
+
+    override fun getWrittenName(): String {
+        return name!!.getWrittenName()
     }
 }

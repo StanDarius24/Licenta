@@ -8,5 +8,7 @@ namespace Interpreter.Models.serialize.statementTypes
         public IList<IStatement> parameter = new List<IStatement>();
 
         public IStatement name;
+
+        public int cyclomaticComplexity;
     }
 };
