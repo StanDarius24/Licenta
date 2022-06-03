@@ -1,6 +1,7 @@
 package com.stannis.function
 
 import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
+import com.stannis.dataModel.DeclarationParent
 import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.complexStatementTypes.ClassOrHeader
@@ -47,15 +48,47 @@ object TranslationUnitRegistry {
                         run {
                             nameSpace.declarations!!.forEach { nameSpaceDeclaration ->
                                 run {
-                                    if ((nameSpaceDeclaration as SimpleDeclaration).declSpecifier
-                                            is ElaboratedTypeSpecifier
-                                    ) {
-                                        if (classElement.our_class.name is QualifiedName) {
-                                            if ((classElement.our_class.name as QualifiedName)
-                                                    .getWrittenName() ==
-                                                    (nameSpaceDeclaration.declSpecifier
-                                                            as ElaboratedTypeSpecifier)
-                                                        .getWrittenName()
+                                    if (nameSpaceDeclaration is SimpleDeclaration) {
+                                        if (nameSpaceDeclaration.declSpecifier
+                                                is ElaboratedTypeSpecifier
+                                        ) {
+                                            if (classElement.our_class.name is QualifiedName) {
+                                                if ((classElement.our_class.name as QualifiedName)
+                                                        .getWrittenName() ==
+                                                        (nameSpaceDeclaration.declSpecifier
+                                                                as ElaboratedTypeSpecifier)
+                                                            .getWrittenName()
+                                                ) {
+                                                    nameSpaceClass[nameSpace] = classElement
+                                                }
+                                            }
+                                        }
+                                    } else if (nameSpaceDeclaration is TemplateDeclaration && nameSpaceDeclaration.declaration is SimpleDeclaration) {
+                                        if ((nameSpaceDeclaration.declaration as SimpleDeclaration)
+                                                .declSpecifier is ElaboratedTypeSpecifier
+                                        ) {
+                                            if ((classElement.our_class.name as NameInterface)
+                                                    .getWrittenName()
+                                                    .equals(
+                                                        ((nameSpaceDeclaration.declaration
+                                                                    as SimpleDeclaration)
+                                                                .declSpecifier
+                                                                as ElaboratedTypeSpecifier)
+                                                            .name
+                                                    )
+                                            ) {
+                                                nameSpaceClass[nameSpace] = classElement
+                                            }
+                                        } else {
+                                            if (classElement.our_class.name != null && (classElement.our_class.name as NameInterface)
+                                                    .getWrittenName()
+                                                    .equals(
+                                                        ((nameSpaceDeclaration.declaration
+                                                                        as SimpleDeclaration)
+                                                                    .declSpecifier
+                                                                as NameInterface)
+                                                            .getWrittenName()
+                                                    )
                                             ) {
                                                 nameSpaceClass[nameSpace] = classElement
                                             }
@@ -72,17 +105,29 @@ object TranslationUnitRegistry {
     }
 
     private fun removeLinks() {
-        var elementToDelete: SimpleDeclaration? = null
+        var elementToDelete: DeclarationParent? = null
         nameSpaceClass.forEach { (name, composite) ->
             run {
                 if (name.declarations != null) {
                     name.declarations!!.forEach { nameDecl ->
                         run {
-                            if ((nameDecl as SimpleDeclaration).declSpecifier
-                                    is ElaboratedTypeSpecifier
-                            ) {
-                                if ((nameDecl.declSpecifier as ElaboratedTypeSpecifier).name ==
-                                        (composite.our_class.name as NameInterface).getWrittenName()
+                            if (nameDecl is SimpleDeclaration) {
+                                if (nameDecl.declSpecifier is ElaboratedTypeSpecifier) {
+                                    if ((nameDecl.declSpecifier as ElaboratedTypeSpecifier).name ==
+                                            (composite.our_class.name as NameInterface)
+                                                .getWrittenName()
+                                    ) {
+                                        elementToDelete = nameDecl
+                                    }
+                                }
+                            } else if (nameDecl is TemplateDeclaration && nameDecl.declaration is SimpleDeclaration) {
+                                if (((nameDecl.declaration as SimpleDeclaration).declSpecifier
+                                                as NameInterface)
+                                        .getWrittenName()
+                                        .equals(
+                                            (composite.our_class.name as NameInterface)
+                                                .getWrittenName()
+                                        )
                                 ) {
                                     elementToDelete = nameDecl
                                 }

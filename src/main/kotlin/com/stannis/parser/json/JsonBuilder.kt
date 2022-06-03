@@ -7,13 +7,13 @@ import com.stannis.dataModel.complexStatementTypes.RepositoryModel
 
 object JsonBuilder {
     fun createJson(primaryBlock: PrimaryBlock): String {
-        val gson = GsonBuilder().create()
+        val gson = GsonBuilder().setPrettyPrinting().create()
         return gson.toJson(primaryBlock)
     }
 
     fun createComplexJson(list: List<RepositoryModel>?): String? {
         if (list != null) {
-            val gson = GsonBuilder().create()
+            val gson = GsonBuilder().setPrettyPrinting().create()
             return gson.toJson(list)
         }
         return null

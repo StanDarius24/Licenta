@@ -12,7 +12,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator
 
 object FunctionDeclaratorService {
     fun solveFunctionDeclarator(node: CPPASTFunctionDeclarator, statement: Statement?) {
-        val functionDeclarator = FunctionDeclarator(parameter = null, name = null)
+        val functionDeclarator = FunctionDeclarator(parameter = null, name = null, cyclomaticComplexity = 1)
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         if (node.name != null) {
             ASTNodeService.solveASTNode(node.name as ASTNode, anonimStatement)
