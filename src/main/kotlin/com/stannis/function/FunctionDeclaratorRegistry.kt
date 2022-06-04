@@ -6,6 +6,7 @@ import com.stannis.dataModel.statementTypes.QualifiedName
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 object FunctionDeclaratorRegistry {
 
@@ -17,10 +18,10 @@ object FunctionDeclaratorRegistry {
         functionDeclarator: FunctionDeclarator,
         node: CPPASTFunctionDeclarator
     ) {
-        if (ParentExtractor.extractParentForFunctionDeclarator(node)
-                !is CPPASTCompositeTypeSpecifier &&
-                ParentExtractor.extractParentForFunctionDeclarator(node)
-                    !is CPPASTLinkageSpecification
+        val parentPrinc = ParentExtractor.extractParentForFunctionDeclarator(node)
+        if (parentPrinc !is CPPASTCompositeTypeSpecifier &&
+                parentPrinc !is CPPASTLinkageSpecification &&
+                    parentPrinc !is CPPASTNamespaceDefinition
         ) {
             if (list == null) {
                 list = ArrayList()

@@ -107,7 +107,7 @@ class Parser {
                             out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
                         }
                     }
-                    Metrics.calculateCyclomaticComplexity()
+                    Metrics.calculateCyclomaticComplexity(filepath)
                     TranslationUnitRegistry.clearAllData()
                 } else {
                     println()

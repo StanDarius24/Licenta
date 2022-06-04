@@ -9,8 +9,13 @@ data class FunctionDefinition(
     override val `$type`: String? = "FunctionDefinition",
     var declaratorSpecifier: DeclarationSpecifierParent?,
     var declarator: ArrayList<FunctionDeclarator>?,
-    var body: ArrayList<BodyParent>?
+    var body: ArrayList<BodyParent>?,
+    var cyclomaticComplexity: Int
 ) : Statement, DeclarationParent {
+
+    fun setCyclomatic(number: Int) {
+        cyclomaticComplexity = number
+    }
     fun addDeclarator(statement: Statement) {
         if (declarator == null) {
             declarator = ArrayList()
