@@ -51,6 +51,30 @@ object Metrics {
             addCyclomaticComplexToFunction(statement, count)
             statement.setCyclomatic(count)
         } else {
+            if (NameSpaceRegistry.listOfNameSpace != null) {
+                NameSpaceRegistry.listOfNameSpace!!.forEach { nameSpace ->
+                    run {
+                        if (nameSpace.declarations != null) {
+                            nameSpace.declarations!!.forEach { decl ->
+                                run {
+                                    if (decl is SimpleDeclaration &&
+                                            decl.declSpecifier is CompositeTypeSpecifier
+                                    ) {
+                                        val stat =
+                                            (decl.declSpecifier as CompositeTypeSpecifier)
+                                                .declarations!!.find { declInClass ->
+                                                    declInClass == statement
+                                                }
+                                        if (stat != null) {
+                                            (stat as FunctionDefinition).setCyclomatic(count)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             statement.setCyclomatic(count)
         }
     }
@@ -73,7 +97,7 @@ object Metrics {
                             }
                         if (fcx != null) {
                             fcx.declarations!!
-                                .find { element -> element.equals(statement) }
+                                .find { element -> element == statement }
                                 ?.let { (it as FunctionDefinition).setCyclomatic(count) }
                         }
                     }

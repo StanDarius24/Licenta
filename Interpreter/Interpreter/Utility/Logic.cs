@@ -34,7 +34,7 @@ namespace Interpreter.Utility{
                 }
                 project.solution.Add(solution);
             }
-            Metrics.calculateMetrics();
+            Metrics.CalculateMetrics();
             Console.Out.Write("test");
         }    
     }

@@ -8,6 +8,6 @@ data class ConversionName(
     var typeId: TypeId?
     ): Statement, NameInterface {
     override fun getWrittenName(): String {
-        return ""
+        return (typeId!!.declSpecifier as NameInterface).getWrittenName()
     }
 }

@@ -11,6 +11,8 @@ namespace Interpreter.Models.serialize.statementTypes
         public IList<IStatement> declarator = new List<IStatement>();
 
         public IList<IStatement> body = new List<IStatement>();
+        
+        public int cyclomaticComplexity { set; get; }
 
     }
 
