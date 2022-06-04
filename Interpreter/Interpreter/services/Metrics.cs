@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services{
+namespace Interpreter.services
+{
     public class Metrics
     {
         public static void CalculateMetrics()
@@ -19,32 +23,34 @@ namespace Interpreter.services{
         {
             foreach (var file in repositoryModelListOfCppFiles)
             {
-                CalculateNumberOfMethodsAndCyclomaticComplexity(file);
+                var filler = CalculateNumberOfMethodsAndCyclomaticComplexity(file);
             }
         }
 
-        private static bool IsConstructor(ComplexCompositeTypeSpecifier classToTest, FunctionDefinition functionDefinition)
+        private static bool IsConstructor(FunctionDefinition functionDefinition)
         {
-            return ((INameInterface) classToTest.our_class.name).GetWrittenName().Equals(
-                ((functionDefinition.declarator[0] as FunctionDeclarator)?.name as INameInterface)?.GetWrittenName());
+            return ((SimpleDeclSpecifier) functionDefinition.declaratorSpecifier).declarationSpecifier.Equals("");
         }
 
-        private static void CalculateNumberOfMethodsAndCyclomaticComplexity(ClassOrHeaderWithPath classOrHeaderWithPath)
+        private static ArrayList CalculateNumberOfMethodsAndCyclomaticComplexity(
+            ClassOrHeaderWithPath classOrHeaderWithPath)
         {
-            unsafe
+            var fillersClass = new MetricsAditionalData();
+            var fillersExtern = new MetricsAditionalData();
+            var fillersNamespace = new MetricsAditionalData();
+            CalculateClassMethodAndComplexity(classOrHeaderWithPath, fillersClass);
+            CalculateNameSpaceMethodsComplexity(classOrHeaderWithPath, fillersNamespace);
+            CalculateExternMethodAndComplexity(classOrHeaderWithPath, fillersExtern);
+            return new ArrayList
             {
-                var numberOfMethods = 0;
-                var numberOfConstructors = 0;
-                var numberOfContainedFields = 0;
-                var numberOfProtectedMethodsFields = 0;
-                var totalComplexity = 0;
-                CalculateClassMethodAndComplexity(classOrHeaderWithPath, &numberOfMethods,&totalComplexity, &numberOfConstructors);
-                CalculateExternMethodAndComplexity(classOrHeaderWithPath, &numberOfMethods, &totalComplexity);
-                CalculateNameSpaceMethodsComplexity(classOrHeaderWithPath, &numberOfMethods, &totalComplexity, &numberOfConstructors);
-            }
+                fillersClass,
+                fillersExtern,
+                fillersNamespace
+            };
         }
 
-        private static unsafe void CalculateNameSpaceMethodsComplexity(ClassOrHeaderWithPath classOrHeaderWithPath, int* numberOfMethods, int* totalComplexity, int* numberOfConstructors)
+        private static void CalculateNameSpaceMethodsComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
+            MetricsAditionalData filler)
         {
             foreach (var nameSpace in classOrHeaderWithPath.classOrHeader.namespaces)
             {
@@ -52,42 +58,80 @@ namespace Interpreter.services{
                 {
                     if ((declaration as SimpleDeclaration)?.declSpecifier is CompositeTypeSpecifier)
                     {
-                        foreach (var declarationInNamespace in ((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier)?.declarations!)
+                        foreach (var declarationInNamespace in
+                                 ((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier)
+                                 ?.declarations!)
                         {
-                            
+                            if (declarationInNamespace is not FunctionDefinition) continue;
+                            if (IsConstructor(declarationInNamespace as FunctionDefinition))
+                            {
+                                filler.numberOfConstructors++;
+                            }
+                            filler.numberOfMethods++;
+                            filler.totalComplexity +=
+                                ((FunctionDefinition) declarationInNamespace).cyclomaticComplexity;
                         }
                     }
+
                     if (declaration is not FunctionDefinition definition) continue;
-                    *(numberOfMethods) += 1;
-                    *(totalComplexity) += definition.cyclomaticComplexity;
+                    filler.numberOfMethods++;
+                    filler.totalComplexity += definition.cyclomaticComplexity;
                 }
             }
         }
 
-        private static unsafe void CalculateExternMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath, int* numberOfMethods, int* totalComplexity)
+        private static void CalculateExternMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
+            MetricsAditionalData filler)
         {
             foreach (var functionDeclarator in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
             {
-                (*numberOfMethods) += 1;
-                (*totalComplexity) += functionDeclarator.cyclomaticComplexity;
+                filler.numberOfMethods++;
+                filler.totalComplexity += functionDeclarator.cyclomaticComplexity;
             }
         }
 
-        private static unsafe void CalculateClassMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
-            int* numberOfMethods, int* totalComplexity, int* numberOfConstructors)
+        private static void CalculateClassMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
+            MetricsAditionalData filler)
         {
             foreach (var classeElement in classOrHeaderWithPath.classOrHeader.classList)
             {
                 foreach (var declaration in classeElement.our_class.declarations)
                 {
-                    if (declaration is not FunctionDefinition definition) continue;
-                    if (IsConstructor(classeElement, definition))
+                    switch (declaration)
                     {
-                        (*numberOfConstructors) += 1;
+                        case FunctionDefinition definition:
+                        {
+                            if (IsConstructor(definition))
+                            {
+                                filler.numberOfConstructors++;
+                            }
+                            filler.numberOfMethods++;
+                            filler.totalComplexity += definition.cyclomaticComplexity;
+                            break;
+                        }
+                        case SimpleDeclaration simpleDeclaration when simpleDeclaration.declarators[0] is not FunctionDeclarator:
+                            continue;
+                        case SimpleDeclaration simpleDeclaration:
+                        {
+                            var abstractMethod =
+                                simpleDeclaration.declarators[0] as FunctionDeclarator;
+                            foreach (var functionCall in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
+                            {
+                                if (abstractMethod == null || functionCall.name is not QualifiedName ||
+                                    !((QualifiedName) functionCall.name).GetWrittenName()
+                                        .Equals((abstractMethod.name as INameInterface)?.GetWrittenName())) continue;
+                                if (classeElement.our_class.name.Equals(
+                                        (functionCall.name as QualifiedName)?.qualifier[0]))
+                                {
+                                    filler.totalComplexity += functionCall.cyclomaticComplexity - 1;
+                                }
+                            }
+
+                            break;
+                        }
                     }
-                    (*numberOfMethods) += 1;
-                    (*totalComplexity) += definition.cyclomaticComplexity;
                 }
+                
             }
         }
     }

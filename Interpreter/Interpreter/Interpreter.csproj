@@ -48,6 +48,7 @@
         <Compile Include="Models\mapper\RepositoryModel.cs" />
         <Compile Include="Models\mapper\Solutions.cs" />
         <Compile Include="Models\mapper\VcxProject.cs" />
+        <Compile Include="Models\metrics\MetricsAditionalData.cs" />
         <Compile Include="Models\metrics\MetricsModel.cs" />
         <Compile Include="Models\serialize\Project.cs" />
         <Compile Include="Models\serialize\Solution.cs" />

@@ -8,7 +8,7 @@ namespace Interpreter.Models.serialize.complexStatementTypes{
 
         public string path;
 
-        public IList<IStatement> declarations = new List<IStatement>();
+        public IList<IStatement> library = new List<IStatement>();
     
     }
 }

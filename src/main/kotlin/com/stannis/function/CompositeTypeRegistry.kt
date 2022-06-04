@@ -6,6 +6,7 @@ import com.stannis.dataModel.statementTypes.Name
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTranslationUnit
 
 object CompositeTypeRegistry {
@@ -21,13 +22,23 @@ object CompositeTypeRegistry {
             list = ArrayList()
         }
         var parent: ASTNode = cppastCompositeTypeSpecifier
-        while (parent !is CPPASTTranslationUnit && parent !is CPPASTLinkageSpecification) {
+        while (parent !is CPPASTTranslationUnit && parent !is CPPASTLinkageSpecification && parent !is CPPASTNamespaceDefinition) {
             parent = parent.parent as ASTNode
         }
         if (parent is CPPASTTranslationUnit) {
             val datax =
-                (parent.allPreprocessorStatements).map { library -> Name(name = library.rawSignature) }
-            list!!.add(ComplexCompositeTypeSpecifier(our_class = node, path = this.filepath, library = datax))
+                (parent.allPreprocessorStatements).map { library ->
+                    Name(name = library.rawSignature)
+                }
+            val classToAdd =
+                ComplexCompositeTypeSpecifier(
+                    our_class = node,
+                    path = this.filepath,
+                    library = datax
+                )
+            if (list != null && !list!!.contains(classToAdd)) {
+                list!!.add(classToAdd)
+            }
         }
     }
 
