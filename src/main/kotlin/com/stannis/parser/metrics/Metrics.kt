@@ -117,6 +117,19 @@ object Metrics {
             is SwitchStatement -> {
                 return count + calculateSwitchStatementComplexity(element)
             }
+            is For -> {
+                return count + calculateForComplexity(element)
+            }
+        }
+        return count
+    }
+
+    private fun calculateForComplexity(element: For): Int {
+        var count = 1
+        if(element.body != null) {
+            element.body!!.forEach { ev -> run {
+                count += checkCyclomaticType(ev, count)
+            }}
         }
         return count
     }

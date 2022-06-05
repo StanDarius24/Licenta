@@ -7,6 +7,7 @@
             numberOfMethods = 0;
             totalComplexity = 0;
             numberOfPublicFields = 0;
+            numberOfAbstractMethods = 0;
             
             numberOfContainedFields = 0;
             numberOfProtectedMethodsFields = 0;
@@ -19,5 +20,7 @@
         public float numberOfContainedFields { set; get; }
         public float numberOfProtectedMethodsFields { set; get; }
         public float totalComplexity { set; get; }
+        
+        public float numberOfAbstractMethods { set; get; }
     }
 };
