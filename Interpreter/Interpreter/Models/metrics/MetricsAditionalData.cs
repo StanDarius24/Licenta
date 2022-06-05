@@ -6,11 +6,13 @@
             numberOfConstructors = 0;
             numberOfMethods = 0;
             totalComplexity = 0;
-
-            numberOfContainedFields = 0;
             numberOfPublicFields = 0;
+            
+            numberOfContainedFields = 0;
             numberOfProtectedMethodsFields = 0;
         }
+        
+        public string path { set; get; }
         public float numberOfMethods { set; get; }
         public float numberOfConstructors { set; get; }
         public float numberOfPublicFields { set; get; }

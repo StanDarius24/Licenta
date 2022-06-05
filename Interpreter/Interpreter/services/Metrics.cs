@@ -52,23 +52,13 @@ namespace Interpreter.services
             var fillersNamespace = new MetricsAditionalData();
             ClassMethodComplexity.CalculateClassMethodAndComplexity(classOrHeaderWithPath, fillersClass);
             NameSpaceMetrics.CalculateNameSpaceMethodsComplexity(classOrHeaderWithPath, fillersNamespace);
-            CalculateExternMethodAndComplexity(classOrHeaderWithPath, fillersExtern);
+            ExternMetrics.CalculateExternMethodAndComplexity(classOrHeaderWithPath, fillersExtern);
             return new ArrayList
             {
                 fillersClass,
                 fillersExtern,
                 fillersNamespace
             };
-        }
-
-        private static void CalculateExternMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
-            MetricsAditionalData filler)
-        {
-            foreach (var functionDeclarator in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
-            {
-                filler.numberOfMethods++;
-                filler.totalComplexity += functionDeclarator.cyclomaticComplexity;
-            }
         }
     }
 }

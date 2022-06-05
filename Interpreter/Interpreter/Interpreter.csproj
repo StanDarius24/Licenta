@@ -49,6 +49,7 @@
         <Compile Include="Models\mapper\Solutions.cs" />
         <Compile Include="Models\mapper\VcxProject.cs" />
         <Compile Include="Models\metrics\ClassMethodComplexity.cs" />
+        <Compile Include="Models\metrics\ExternMetrics.cs" />
         <Compile Include="Models\metrics\MetricsAditionalData.cs" />
         <Compile Include="Models\metrics\MetricsModel.cs" />
         <Compile Include="Models\metrics\NameSpaceMetrics.cs" />

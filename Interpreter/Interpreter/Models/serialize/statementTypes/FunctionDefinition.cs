@@ -13,6 +13,8 @@ namespace Interpreter.Models.serialize.statementTypes
         public IList<IStatement> body = new List<IStatement>();
         
         public int cyclomaticComplexity { set; get; }
+        
+        public string modifier { set; get; }
 
     }
 

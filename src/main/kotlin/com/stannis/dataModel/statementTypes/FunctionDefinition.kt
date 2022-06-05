@@ -10,7 +10,8 @@ data class FunctionDefinition(
     var declaratorSpecifier: DeclarationSpecifierParent?,
     var declarator: ArrayList<FunctionDeclarator>?,
     var body: ArrayList<BodyParent>?,
-    var cyclomaticComplexity: Int
+    var cyclomaticComplexity: Int,
+    var modifier: String
 ) : Statement, DeclarationParent {
 
     fun setCyclomatic(number: Int) {
