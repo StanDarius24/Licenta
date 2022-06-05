@@ -1,9 +1,8 @@
-﻿using Interpreter.Models.serialize;
+﻿using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
-using Interpreter.services;
 
-namespace Interpreter.Models.metrics{
+namespace Interpreter.services.metrics{
     public class ClassMethodComplexity
     {
 

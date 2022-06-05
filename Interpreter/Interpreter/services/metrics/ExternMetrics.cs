@@ -1,7 +1,8 @@
-﻿using Interpreter.Models.serialize.complexStatementTypes;
+﻿using Interpreter.Models.metrics;
+using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.Models.metrics{
+namespace Interpreter.services.metrics{
     public class ExternMetrics
     {
         public static void CalculateExternMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
