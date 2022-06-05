@@ -45,6 +45,10 @@ namespace Interpreter.Models.metrics{
                     {
                         filler.numberOfProtectedMethodsFields++;
                     }
+                    if (((SimpleDeclSpecifier) declaration.declSpecifier).isVirtual)
+                    {
+                        filler.numberOfAbstractMethods++;
+                    }
                 }
                 else if (declarator is Declarator)
                 {
@@ -118,7 +122,7 @@ namespace Interpreter.Models.metrics{
                             boolean = true;
                         }
                     }
-                    if ((classeElement.name as INameInterface).GetWrittenName().Equals(((INameInterface) qualifiers).GetWrittenName()))
+                    if (((INameInterface) classeElement.name).GetWrittenName().Equals(((INameInterface) qualifiers).GetWrittenName()))
                     {
                         if (nameSpace == null)
                         {
