@@ -65,10 +65,10 @@ namespace Interpreter.Models.metrics{
         {
             foreach (var declarator in declaration.declarators)
             {
-                if (((Declarator) declarator).modifier.Equals("public:"))
+                if (((Declarator) declarator).modifier.Equals("public"))
                 {
                     filler.numberOfPublicFields++;
-                } else if(((Declarator) declarator).modifier.Equals("protected:"))
+                } else if(((Declarator) declarator).modifier.Equals("protected"))
                 {
                     filler.numberOfProtectedMethodsFields++;
                 }
