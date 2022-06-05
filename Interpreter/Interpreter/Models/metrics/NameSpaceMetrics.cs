@@ -16,11 +16,20 @@ namespace Interpreter.Models.metrics{
                     if ((declaration as SimpleDeclaration)?.declSpecifier is CompositeTypeSpecifier)
                     {
                         ClassMethodComplexity.CalculateClassMatrics((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier, filler, classOrHeaderWithPath, nameSpace);
-                        // CalculateNameSpaceMethodsComplexitySimpleDeclaration(classOrHeaderWithPath, filler,
-                        //     declaration as SimpleDeclaration);
-                    }
-
-                    if (declaration is FunctionDefinition definition)
+                    } else if ((declaration as SimpleDeclaration)?.declSpecifier is SimpleDeclSpecifier)
+                    {
+                        foreach (var functionImplementation in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
+                        {
+                            if (((INameInterface) functionImplementation.name).GetWrittenName()
+                                .Equals(
+                                    ((INameInterface) ((declaration as SimpleDeclaration).declarators[0] as FunctionDeclarator)!
+                                        .name).GetWrittenName()))
+                            {
+                                filler.totalComplexity += functionImplementation.cyclomaticComplexity;
+                                filler.numberOfMethods++;
+                            }
+                        }
+                    } else if (declaration is FunctionDefinition definition)
                     {
                         filler.numberOfMethods++;
                         filler.totalComplexity += definition.cyclomaticComplexity;

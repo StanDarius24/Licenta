@@ -76,13 +76,14 @@ namespace Interpreter.Models.metrics{
                     {
                         if (nameSpace == null)
                         {
-                            filler.totalComplexity += functionCall.cyclomaticComplexity - 1;
+                            filler.totalComplexity += functionCall.cyclomaticComplexity;
                         }
                         else
                         {
                             if (boolean)
                             {
-                                filler.totalComplexity += functionCall.cyclomaticComplexity - 1;
+                                filler.numberOfMethods += 1;
+                                filler.totalComplexity += functionCall.cyclomaticComplexity;
                             }
                         }
                     }
