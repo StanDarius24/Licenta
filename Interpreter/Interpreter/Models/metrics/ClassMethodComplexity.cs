@@ -1,4 +1,5 @@
-﻿using Interpreter.Models.serialize.complexStatementTypes;
+﻿using Interpreter.Models.serialize;
+using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 using Interpreter.services;
 
@@ -17,6 +18,9 @@ namespace Interpreter.Models.metrics{
                         CalculateClassMethodAndComplexityFunctionDefinition(definition, filler);
                         break;
                     }
+                    case SimpleDeclaration simpleDeclaration when simpleDeclaration.declarators[0] is Declarator:
+                        CheckFieldType(simpleDeclaration, filler);
+                        break;
                     case SimpleDeclaration simpleDeclaration
                         when simpleDeclaration.declarators[0] is not FunctionDeclarator:
                         continue;
@@ -24,12 +28,53 @@ namespace Interpreter.Models.metrics{
                     {
                         CalculateClassMethodAndComplexitySimpleDeclaration(simpleDeclaration, classOrHeaderWithPath,
                             filler, classeElement, nameSpace);
+                        CheckModifier(simpleDeclaration, filler);
                         break;
                     }
                 }
             }
         }
-        
+
+        public static void CheckModifier(SimpleDeclaration declaration, MetricsAditionalData filler)
+        {
+            foreach (var declarator in declaration.declarators)
+            {
+                if (declarator is FunctionDeclarator)
+                {
+                    if ((declarator as FunctionDeclarator).modifier.Equals("protected:"))
+                    {
+                        filler.numberOfProtectedMethodsFields++;
+                    }
+                }
+                else if (declarator is Declarator)
+                {
+                    switch ((declarator as Declarator).modifier)
+                    {
+                        case "public":
+                            filler.numberOfPublicFields++;
+                            break;
+                        case "protected":
+                            filler.numberOfProtectedMethodsFields++;
+                            break;
+                    }
+                }
+            }
+        }
+
+        private static void CheckFieldType(SimpleDeclaration declaration, MetricsAditionalData filler)
+        {
+            foreach (var declarator in declaration.declarators)
+            {
+                if (((Declarator) declarator).modifier.Equals("public:"))
+                {
+                    filler.numberOfPublicFields++;
+                } else if(((Declarator) declarator).modifier.Equals("protected:"))
+                {
+                    filler.numberOfProtectedMethodsFields++;
+                }
+            }
+        }
+
         public static void CalculateClassMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
             MetricsAditionalData filler)
         {
@@ -55,6 +100,7 @@ namespace Interpreter.Models.metrics{
             ClassOrHeaderWithPath classOrHeaderWithPath, MetricsAditionalData filler,
             CompositeTypeSpecifier classeElement, NameSpace nameSpace)
         {
+            var checkIfItsImplemented = false;
             var abstractMethod =
                 simpleDeclaration.declarators[0] as FunctionDeclarator;
             foreach (var functionCall in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
@@ -77,17 +123,24 @@ namespace Interpreter.Models.metrics{
                         if (nameSpace == null)
                         {
                             filler.totalComplexity += functionCall.cyclomaticComplexity;
+                            checkIfItsImplemented = true;
                         }
                         else
                         {
                             if (boolean)
                             {
+                                checkIfItsImplemented = true;
                                 filler.numberOfMethods += 1;
                                 filler.totalComplexity += functionCall.cyclomaticComplexity;
                             }
                         }
                     }
                 }
+            }
+
+            if (!checkIfItsImplemented)
+            {
+                filler.numberOfMethods += 1;
             }
         }
     }

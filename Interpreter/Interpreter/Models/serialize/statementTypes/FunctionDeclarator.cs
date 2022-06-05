@@ -10,5 +10,7 @@ namespace Interpreter.Models.serialize.statementTypes
         public IStatement name;
 
         public int cyclomaticComplexity;
+        
+        public string modifier { set; get; }
     }
 };
