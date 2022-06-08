@@ -30,7 +30,7 @@ object LogicHandler {
                     )
                 }
                 ProjectVcxprojComplexRegistry.parsedFiles = ArrayList()
-                SlnParser.slnDataList = null
+                SlnParser.slnDataList?.clear()
                 VcxprojParser.mapOfData = emptyMap()
             }
         }

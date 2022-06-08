@@ -19,10 +19,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 class Parser {
 
-    companion object {
-        var bool = false
-    }
-
     private fun getIASTTranslationUnit(code: CharArray): IASTTranslationUnit {
         val fc = FileContent.create("", code)
         val macroDefinitions: Map<String, String> = HashMap()

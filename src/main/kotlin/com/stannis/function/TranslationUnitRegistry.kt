@@ -41,8 +41,8 @@ object TranslationUnitRegistry {
     }
 
     private fun fixNameSpaceClassInheritance() {
-        if (NameSpaceRegistry.listOfNameSpace != null && CompositeTypeRegistry.list != null) {
-            NameSpaceRegistry.listOfNameSpace!!.forEach { nameSpace ->
+        if (CompositeTypeRegistry.list != null) {
+            NameSpaceRegistry.listOfNameSpace.forEach { nameSpace ->
                 run {
                     CompositeTypeRegistry.list!!.forEach { classElement ->
                         run {
@@ -68,27 +68,21 @@ object TranslationUnitRegistry {
                                                 .declSpecifier is ElaboratedTypeSpecifier
                                         ) {
                                             if ((classElement.our_class.name as NameInterface)
-                                                    .getWrittenName()
-                                                    .equals(
-                                                        ((nameSpaceDeclaration.declaration
-                                                                    as SimpleDeclaration)
-                                                                .declSpecifier
-                                                                as ElaboratedTypeSpecifier)
-                                                            .name
-                                                    )
+                                                    .getWrittenName() == ((nameSpaceDeclaration.declaration
+                                                                as SimpleDeclaration)
+                                                            .declSpecifier
+                                                            as ElaboratedTypeSpecifier)
+                                                        .name
                                             ) {
                                                 nameSpaceClass[nameSpace] = classElement
                                             }
                                         } else {
                                             if (classElement.our_class.name != null && (classElement.our_class.name as NameInterface)
-                                                    .getWrittenName()
-                                                    .equals(
-                                                        ((nameSpaceDeclaration.declaration
-                                                                        as SimpleDeclaration)
-                                                                    .declSpecifier
-                                                                as NameInterface)
-                                                            .getWrittenName()
-                                                    )
+                                                    .getWrittenName() == ((nameSpaceDeclaration.declaration
+                                                                    as SimpleDeclaration)
+                                                                .declSpecifier
+                                                            as NameInterface)
+                                                        .getWrittenName()
                                             ) {
                                                 nameSpaceClass[nameSpace] = classElement
                                             }
@@ -123,11 +117,8 @@ object TranslationUnitRegistry {
                             } else if (nameDecl is TemplateDeclaration && nameDecl.declaration is SimpleDeclaration) {
                                 if (((nameDecl.declaration as SimpleDeclaration).declSpecifier
                                                 as NameInterface)
-                                        .getWrittenName()
-                                        .equals(
-                                            (composite.our_class.name as NameInterface)
-                                                .getWrittenName()
-                                        )
+                                        .getWrittenName() == (composite.our_class.name as NameInterface)
+                                            .getWrittenName()
                                 ) {
                                     elementToDelete = nameDecl
                                 }
@@ -145,13 +136,13 @@ object TranslationUnitRegistry {
     }
 
     fun clearAllData() {
-        NameSpaceRegistry.listOfNameSpace = null
-        SimpleDeclarationRegistry.internDeclaration = null
-        SimpleDeclarationRegistry.globalDeclaration = null
-        FunctionDefinitionRegistry.list = null
-        FunctionDefinitionRegistry.listOfComplexFunctionCalls = null
-        FunctionDeclaratorRegistry.list = null
+        NameSpaceRegistry.listOfNameSpace.clear()
+        SimpleDeclarationRegistry.internDeclaration.clear()
+        SimpleDeclarationRegistry.globalDeclaration.clear()
+        FunctionDefinitionRegistry.list.clear()
+        FunctionDefinitionRegistry.listOfComplexFunctionCalls.clear()
+        FunctionDeclaratorRegistry.list.clear()
         CompositeTypeRegistry.list = null
-        ExternDefinitionRegistry.listOfExtern = null
+        ExternDefinitionRegistry.listOfExtern.clear()
     }
 }

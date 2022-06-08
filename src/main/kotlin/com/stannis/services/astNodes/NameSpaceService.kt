@@ -33,7 +33,7 @@ object NameSpaceService {
             }
         }
         if (bool) {
-            NameSpaceRegistry.addNameSpace(nameSpace)
+            NameSpaceRegistry.listOfNameSpace.add(nameSpace)
         }
         if (statement != null) {
             StatementMapper.addStatementToStatement(statement, nameSpace)

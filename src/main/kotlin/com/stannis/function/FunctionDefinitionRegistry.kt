@@ -8,23 +8,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object FunctionDefinitionRegistry {
 
-    var list: ArrayList<FunctionDefinition>? = null
+    val list: ArrayList<FunctionDefinition> by lazy { ArrayList() }
 
-    var listOfComplexFunctionCalls: ArrayList<FunctionDefinition>? = null
-
-    private fun addToComplexFunctions(functionDefinition: FunctionDefinition) {
-        if (listOfComplexFunctionCalls == null) {
-            listOfComplexFunctionCalls = ArrayList()
-        }
-        listOfComplexFunctionCalls!!.add(functionDefinition)
-    }
-
-    fun addToList(data: FunctionDefinition) {
-        if (list == null) {
-            list = ArrayList()
-        }
-        list!!.add(data)
-    }
+    val listOfComplexFunctionCalls: ArrayList<FunctionDefinition> by lazy { ArrayList() }
 
     private fun resolveWhenStatementIsFunctionCall(
         statement: FunctionCalls,
@@ -46,27 +32,25 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        if (FunctionDeclaratorRegistry.list != null) {
-            FunctionDeclaratorRegistry.list!!.iterator().forEachRemaining { functionDeclarator ->
-                run {
-                    if (statement.name is IdExpression) {
-                        if (functionDeclarator.name == (statement.name as IdExpression).expression
-                        ) {
-                            bool1 = true
-                            val decl =
-                                DeclarationWithParent(
-                                    declaration =
-                                        SimpleDeclaration(declarators = null, declSpecifier = null),
-                                    parent = Name(name = "Internal Method Declaration")
-                                )
-                            val functionCallWithDeclaration =
-                                FunctionCallWithDeclaration(
-                                    functionCalls = statement,
-                                    declaration = decl,
-                                    complexClass = null
-                                )
-                            newFunctionDefinition.addToBody(functionCallWithDeclaration)
-                        }
+        FunctionDeclaratorRegistry.list.iterator().forEachRemaining { functionDeclarator ->
+            run {
+                if (statement.name is IdExpression) {
+                    if (functionDeclarator.name == (statement.name as IdExpression).expression
+                    ) {
+                        bool1 = true
+                        val decl =
+                            DeclarationWithParent(
+                                declaration =
+                                    SimpleDeclaration(declarators = null, declSpecifier = null),
+                                parent = Name(name = "Internal Method Declaration")
+                            )
+                        val functionCallWithDeclaration =
+                            FunctionCallWithDeclaration(
+                                functionCalls = statement,
+                                declaration = decl,
+                                complexClass = null
+                            )
+                        newFunctionDefinition.addToBody(functionCallWithDeclaration)
                     }
                 }
             }
@@ -137,18 +121,16 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        if (SimpleDeclarationRegistry.globalDeclaration != null) {
-            SimpleDeclarationRegistry.globalDeclaration!!.iterator().forEachRemaining { declaration
-                ->
-                run {
-                    bool1 =
-                        verifyIfFunctionCallDeclaration(
-                            statement,
-                            declaration,
-                            newFunctionDefinition,
-                            true
-                        )
-                }
+        SimpleDeclarationRegistry.globalDeclaration.iterator().forEachRemaining { declaration
+            ->
+            run {
+                bool1 =
+                    verifyIfFunctionCallDeclaration(
+                        statement,
+                        declaration,
+                        newFunctionDefinition,
+                        true
+                    )
             }
         }
         return bool1
@@ -159,30 +141,28 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        if (SimpleDeclarationRegistry.internDeclaration != null) {
-            SimpleDeclarationRegistry.internDeclaration!!.iterator().forEachRemaining { declaration
-                ->
-                run {
-                    if (declaration.parent is FunctionDefinition) {
-                        if ((declaration.parent as FunctionDefinition).declarator?.get(0)
-                                is FunctionDeclarator
+        SimpleDeclarationRegistry.internDeclaration.iterator().forEachRemaining { declaration
+            ->
+            run {
+                if (declaration.parent is FunctionDefinition) {
+                    if ((declaration.parent as FunctionDefinition).declarator?.get(0)
+                            is FunctionDeclarator
+                    ) {
+                        if (((declaration.parent as FunctionDefinition).declarator?.get(0)
+                                    as FunctionDeclarator)
+                                .name?.equals(
+                                    (newFunctionDefinition.declarator?.get(0)
+                                            as FunctionDeclarator)
+                                        .name
+                                ) == true
                         ) {
-                            if (((declaration.parent as FunctionDefinition).declarator?.get(0)
-                                        as FunctionDeclarator)
-                                    .name?.equals(
-                                        (newFunctionDefinition.declarator?.get(0)
-                                                as FunctionDeclarator)
-                                            .name
-                                    ) == true
-                            ) {
-                                bool1 =
-                                    verifyIfFunctionCallDeclaration(
-                                        statement,
-                                        declaration,
-                                        newFunctionDefinition,
-                                        false
-                                    )
-                            }
+                            bool1 =
+                                verifyIfFunctionCallDeclaration(
+                                    statement,
+                                    declaration,
+                                    newFunctionDefinition,
+                                    false
+                                )
                         }
                     }
                 }
@@ -255,17 +235,15 @@ object FunctionDefinitionRegistry {
     ) {
         val parentStructure = FunctionDefinitionService.setFunction(parent)
         if (!checkInternComplex(parentStructure, functionCalls)) {
-            if (list != null) {
-                list!!.iterator().forEachRemaining { functionDefinition ->
-                    run {
-                        if (parentStructure == functionDefinition) {
-                            resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
-                        }
+            list.iterator().forEachRemaining { functionDefinition ->
+                run {
+                    if (parentStructure == functionDefinition) {
+                        resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
                     }
                 }
-                if (!ParentExtractor.checkParentFunctionDefinition(parent)) {
-                    addToComplexFunctions(parentStructure)
-                }
+            }
+            if (!ParentExtractor.checkParentFunctionDefinition(parent)) {
+                listOfComplexFunctionCalls.add(parentStructure)
             }
         }
     }
@@ -275,16 +253,14 @@ object FunctionDefinitionRegistry {
         functionCalls: FunctionCalls
     ): Boolean {
         var bool = false
-        if (listOfComplexFunctionCalls != null) {
-            listOfComplexFunctionCalls!!.iterator().forEachRemaining { complex ->
-                run {
-                    parentStructure.body = complex.body
-                    if (parentStructure == complex) {
-                        resolveWhenStatementIsFunctionCall(functionCalls, complex)
-                        bool = true
-                    }
-                    parentStructure.body = null
+        listOfComplexFunctionCalls.iterator().forEachRemaining { complex ->
+            run {
+                parentStructure.body = complex.body
+                if (parentStructure == complex) {
+                    resolveWhenStatementIsFunctionCall(functionCalls, complex)
+                    bool = true
                 }
+                parentStructure.body = null
             }
         }
         return bool

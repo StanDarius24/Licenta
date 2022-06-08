@@ -4,12 +4,6 @@ import com.stannis.dataModel.statementTypes.NameSpace
 
 object NameSpaceRegistry {
 
-    var listOfNameSpace: ArrayList<NameSpace>? = null
+    val listOfNameSpace: ArrayList<NameSpace> by lazy { ArrayList() }
 
-    fun addNameSpace(registry: NameSpace){
-        if(listOfNameSpace == null) {
-            listOfNameSpace = ArrayList()
-        }
-        listOfNameSpace!!.add(registry)
-    }
 }
