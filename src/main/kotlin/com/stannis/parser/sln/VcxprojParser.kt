@@ -4,6 +4,7 @@ import com.stannis.parser.fileHandler.DirReader
 import com.stannis.parser.fileHandler.LogicHandler
 import com.stannis.parser.fileHandler.OperatingSystem
 import com.stannis.parser.fileHandler.Reader
+import mu.KotlinLogging
 import java.io.File
 import java.io.FileNotFoundException
 import java.nio.file.Files
@@ -47,7 +48,8 @@ object VcxprojParser {
                             }
                         }
                     } catch (e: FileNotFoundException) {
-                        println(e.printStackTrace())
+                        val logger = KotlinLogging.logger {}
+                        logger.error { e.printStackTrace() }
                     }
                 } else {
                     val listOfDirectoryVcxproj = ArrayList<String>()
@@ -130,9 +132,6 @@ object VcxprojParser {
                             }
                         }
                     }
-                    if (!boolean1) {
-                        println()
-                    }
                 }
             }
         }
@@ -142,7 +141,6 @@ object VcxprojParser {
             val listOfStructureX = listOf(structure)
             mapOfData = mutableMapOf(slnStructure to listOfStructureX) + mapOfData
         }
-        println(structure)
     }
 
     private fun solveProjectReference(structure: VcxprojStructure, text: String) {

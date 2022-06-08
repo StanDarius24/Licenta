@@ -19,7 +19,6 @@ class StatementMapper {
                     statementParent.statement = statementChild
                 }
                 is For -> {
-                    println(statementParent)
                     if (statementParent.initializer == null) {
                         statementParent.addInitializer(statementChild)
                     } else if (statementParent.conditionExpr == null) {

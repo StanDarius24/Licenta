@@ -1,5 +1,6 @@
 package com.stannis.parser.checkSum
 
+import mu.KotlinLogging
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -12,8 +13,9 @@ object CheckSum {
         try {
             mdEnc = MessageDigest.getInstance("MD5")
         } catch (e: NoSuchAlgorithmException) {
-            println("Exception while encrypting to md5")
-            e.printStackTrace()
+            val logger = KotlinLogging.logger {}
+            logger.error { "Exception while encrypting to md5" }
+            logger.error { e.printStackTrace() }
         }
         mdEnc!!.update(encTarget.toByteArray(), 0, encTarget.length)
         var md5 = BigInteger(1, mdEnc.digest()).toString(16)

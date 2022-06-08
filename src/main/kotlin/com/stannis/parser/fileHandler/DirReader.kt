@@ -1,5 +1,6 @@
 package com.stannis.parser.fileHandler
 
+import mu.KotlinLogging
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -54,9 +55,11 @@ object DirReader {
                     }
                 }
                 if (file.createNewFile()) {
-                    println("File created!")
+                    val logger = KotlinLogging.logger {}
+                    logger.info { "File created!" }
                 } else {
-                    println("File alredy exists")
+                    val logger = KotlinLogging.logger {}
+                    logger.info { "File alredy exists" }
                     return null
                 }
             } catch (e: Exception) {
