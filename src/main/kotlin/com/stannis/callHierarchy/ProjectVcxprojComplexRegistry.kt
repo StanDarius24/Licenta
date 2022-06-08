@@ -52,7 +52,6 @@ object ProjectVcxprojComplexRegistry {
                 )
             }
         }
-        println()
     }
 
     fun setVcxProj(valueElement: VcxprojStructure) {

@@ -4,6 +4,7 @@ import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.services.astNodes.*
 import com.stannis.services.mapper.StatementMapper
+import mu.KotlinLogging
 import org.eclipse.cdt.core.dom.ast.IASTPreprocessorIncludeStatement
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
@@ -13,6 +14,8 @@ object ASTNodeService {
     var modifier = "public"
 
     fun solveASTNode(node: ASTNode, statement: Statement?) {
+        val logger = KotlinLogging.logger {}
+        logger.info { node.rawSignature }
         when (node) {
             is CPPASTBinaryExpression -> {
                 BinaryExpressionService.solveBinaryExpressionService(node, statement)
