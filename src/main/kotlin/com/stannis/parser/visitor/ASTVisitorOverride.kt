@@ -16,7 +16,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration
 
 class ASTVisitorOverride : ASTVisitor() {
 
-    var text = ""
 
 
     companion object {
@@ -107,7 +106,6 @@ class ASTVisitorOverride : ASTVisitor() {
     }
 
     override fun visit(iastStatement: IASTStatement): Int {
-        text = iastStatement.rawSignature
         println("Found an IASTStatement: " + iastStatement.rawSignature)
         return PROCESS_CONTINUE
     }

@@ -29,7 +29,7 @@ object MultipleDeclarationWhenComposite {
                                                     if (declArr is Declarator) {
                                                         if (declaration is CPPASTSimpleDeclaration
                                                         ) {
-                                                            if (declaration.declarators.size > 0) {
+                                                            if (declaration.declarators.isNotEmpty()) {
                                                                 if (declArr.name ==
                                                                         declaration.declarators[0]
                                                                             .name
@@ -44,7 +44,7 @@ object MultipleDeclarationWhenComposite {
                                                             if (declaration is
                                                                     CPPASTSimpleDeclaration
                                                             ) {
-                                                                if (declaration.declarators.size > 0
+                                                                if (declaration.declarators.isNotEmpty()
                                                                 ) {
                                                                     if ((declArr.name as Name)
                                                                             .name ==
@@ -65,20 +65,18 @@ object MultipleDeclarationWhenComposite {
                                             decl.declarator!!.iterator().forEachRemaining {
                                                 declarator ->
                                                 run {
-                                                    if (declarator is FunctionDeclarator) {
-                                                        if (declarator.name is Name) {
-                                                            if (declaration is
-                                                                    CPPASTFunctionDefinition
+                                                    if (declarator.name is Name) {
+                                                        if (declaration is
+                                                                CPPASTFunctionDefinition
+                                                        ) {
+                                                            if ((declarator.name as Name)
+                                                                    .name ==
+                                                                    declaration
+                                                                        .declarator
+                                                                        .name
+                                                                        .rawSignature
                                                             ) {
-                                                                if ((declarator.name as Name)
-                                                                        .name ==
-                                                                        declaration
-                                                                            .declarator
-                                                                            .name
-                                                                            .rawSignature
-                                                                ) {
-                                                                    switch = true
-                                                                }
+                                                                switch = true
                                                             }
                                                         }
                                                     }
@@ -91,22 +89,20 @@ object MultipleDeclarationWhenComposite {
                     } else if (statement is FunctionDefinition) {
                         statement.declarator!!.iterator().forEachRemaining { decl ->
                             run {
-                                if (decl is FunctionDeclarator) {
-                                    if (declaration is CPPASTFunctionDefinition) {
-                                        if (decl.name is Name) {
-                                            if ((decl.name as Name).name ==
+                                if (declaration is CPPASTFunctionDefinition) {
+                                    if (decl.name is Name) {
+                                        if ((decl.name as Name).name ==
+                                                declaration.declarator.name.rawSignature
+                                        ) {
+                                            switch = true
+                                        }
+                                    } else if (decl.name is QualifiedName) {
+                                        if ((decl.name as QualifiedName).lastName is Name) {
+                                            if (((decl.name as QualifiedName).lastName as Name)
+                                                    .name ==
                                                     declaration.declarator.name.rawSignature
                                             ) {
                                                 switch = true
-                                            }
-                                        } else if (decl.name is QualifiedName) {
-                                            if ((decl.name as QualifiedName).lastName is Name) {
-                                                if (((decl.name as QualifiedName).lastName as Name)
-                                                        .name ==
-                                                        declaration.declarator.name.rawSignature
-                                                ) {
-                                                    switch = true
-                                                }
                                             }
                                         }
                                     }

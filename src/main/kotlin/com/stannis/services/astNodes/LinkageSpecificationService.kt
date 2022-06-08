@@ -20,7 +20,7 @@ object LinkageSpecificationService {
             ASTNodeService.solveASTNode(decl as ASTNode, anonimStatement)
             anonimStatement.statement?.let { linkageSpecification.declarations?.add(it) }
         } }
-        ExternDefinitionRegistry.addToList(linkageSpecification)
+        ExternDefinitionRegistry.listOfExtern.add(linkageSpecification)
         StatementMapper.addStatementToStatement(statement!!, linkageSpecification)
     }
 }

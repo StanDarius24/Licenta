@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 object FunctionDeclaratorRegistry {
 
-    var list: ArrayList<FunctionDeclarator>? = null
+    val list: ArrayList<FunctionDeclarator> by lazy { ArrayList() }
 
     var sw: Boolean = false
 
@@ -23,19 +23,16 @@ object FunctionDeclaratorRegistry {
                 parentPrinc !is CPPASTLinkageSpecification &&
                     parentPrinc !is CPPASTNamespaceDefinition
         ) {
-            if (list == null) {
-                list = ArrayList()
-            } else {
-                if (functionDeclarator.name is Name) {
-                    sw = solveName(functionDeclarator)
-                } else if (functionDeclarator.name is QualifiedName) {
-                    sw = solveQualifiedName(functionDeclarator)
-                }
+
+            if (functionDeclarator.name is Name) {
+                sw = solveName(functionDeclarator)
+            } else if (functionDeclarator.name is QualifiedName) {
+                sw = solveQualifiedName(functionDeclarator)
             }
             if (!sw) {
-                if (!list!!.contains(functionDeclarator)) {
+                if (!list.contains(functionDeclarator)) {
                     if (!ParentExtractor.checkParentFuntionDeclarator(node)) {
-                        list!!.add(functionDeclarator)
+                        list.add(functionDeclarator)
                     }
                 }
             }
@@ -44,7 +41,7 @@ object FunctionDeclaratorRegistry {
 
     private fun solveQualifiedName(functionDeclarator: FunctionDeclarator): Boolean {
         var sw1 = false
-        list!!.iterator().forEachRemaining { element ->
+        list.iterator().forEachRemaining { element ->
             run {
                 if (element.name is QualifiedName) {
                     if ((element.name as QualifiedName) == functionDeclarator.name) {
@@ -90,7 +87,7 @@ object FunctionDeclaratorRegistry {
 
     private fun solveName(functionDeclarator: FunctionDeclarator): Boolean {
         var sw1 = false
-        list!!.iterator().forEachRemaining { element ->
+        list.iterator().forEachRemaining { element ->
             run {
                 if (element.name is Name) {
                     if ((element.name as Name) == functionDeclarator.name) {

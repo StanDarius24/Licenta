@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services
+namespace Interpreter.services.metrics
 {
     public class Metrics
     {

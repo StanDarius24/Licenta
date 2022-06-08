@@ -51,23 +51,21 @@ object Metrics {
             addCyclomaticComplexToFunction(statement, count)
             statement.setCyclomatic(count)
         } else {
-            if (NameSpaceRegistry.listOfNameSpace != null) {
-                NameSpaceRegistry.listOfNameSpace!!.forEach { nameSpace ->
-                    run {
-                        if (nameSpace.declarations != null) {
-                            nameSpace.declarations!!.forEach { decl ->
-                                run {
-                                    if (decl is SimpleDeclaration &&
-                                            decl.declSpecifier is CompositeTypeSpecifier
-                                    ) {
-                                        val stat =
-                                            (decl.declSpecifier as CompositeTypeSpecifier)
-                                                .declarations!!.find { declInClass ->
-                                                    declInClass == statement
-                                                }
-                                        if (stat != null) {
-                                            (stat as FunctionDefinition).setCyclomatic(count)
-                                        }
+            NameSpaceRegistry.listOfNameSpace.forEach { nameSpace ->
+                run {
+                    if (nameSpace.declarations != null) {
+                        nameSpace.declarations!!.forEach { decl ->
+                            run {
+                                if (decl is SimpleDeclaration &&
+                                        decl.declSpecifier is CompositeTypeSpecifier
+                                ) {
+                                    val stat =
+                                        (decl.declSpecifier as CompositeTypeSpecifier)
+                                            .declarations!!.find { declInClass ->
+                                                declInClass == statement
+                                            }
+                                    if (stat != null) {
+                                        (stat as FunctionDefinition).setCyclomatic(count)
                                     }
                                 }
                             }
@@ -81,26 +79,22 @@ object Metrics {
 
     private fun addCyclomaticComplexToFunction(statement: FunctionDefinition, count: Int) {
         if (statement.declarator != null) {
-            if (FunctionDeclaratorRegistry.list != null) {
-                val fc =
-                    FunctionDeclaratorRegistry.list!!.find { functionDeclarator ->
-                        (functionDeclarator.name as NameInterface).getWrittenName() ==
-                            (statement.declarator!![0].name as NameInterface).getWrittenName()
+            val fc =
+                FunctionDeclaratorRegistry.list.find { functionDeclarator ->
+                    (functionDeclarator.name as NameInterface).getWrittenName() ==
+                        (statement.declarator!![0].name as NameInterface).getWrittenName()
+                }
+            if (fc != null) {
+                fc.cyclomaticComplexity = count
+            } else {
+                val fcx =
+                    NameSpaceRegistry.listOfNameSpace.find { nameSpace ->
+                        nameSpace.declarations!!.contains(statement)
                     }
-                if (fc != null) {
-                    fc.cyclomaticComplexity = count
-                } else {
-                    if (NameSpaceRegistry.listOfNameSpace != null) {
-                        val fcx =
-                            NameSpaceRegistry.listOfNameSpace!!.find { nameSpace ->
-                                nameSpace.declarations!!.contains(statement)
-                            }
-                        if (fcx != null) {
-                            fcx.declarations!!
-                                .find { element -> element == statement }
-                                ?.let { (it as FunctionDefinition).setCyclomatic(count) }
-                        }
-                    }
+                if (fcx != null) {
+                    fcx.declarations!!
+                        .find { element -> element == statement }
+                        ?.let { (it as FunctionDefinition).setCyclomatic(count) }
                 }
             }
         }

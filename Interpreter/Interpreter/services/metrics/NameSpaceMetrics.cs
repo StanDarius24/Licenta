@@ -1,7 +1,8 @@
-﻿using Interpreter.Models.serialize.complexStatementTypes;
+﻿using Interpreter.Models.metrics;
+using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.Models.metrics{
+namespace Interpreter.services.metrics{
     public class NameSpaceMetrics
     {
         public static void CalculateNameSpaceMethodsComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,

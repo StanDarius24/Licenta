@@ -6,7 +6,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 object SlnParser {
-    var slnDataList: List<SlnStructure>? = null
+    val slnDataList: ArrayList<SlnStructure>? by lazy {
+        ArrayList()
+    }
 
     fun solveSln(pathToSln: String) {
         val file = Reader.readFileAsLinesUsingBufferedReader(pathToSln)
@@ -25,9 +27,6 @@ object SlnParser {
                     val name = element.split("\"")[2]
                     val pathx = element.split("\"")[4]
                     val alias = element.split("\"")[6]
-                    if (slnDataList == null) {
-                        slnDataList = ArrayList()
-                    }
                     if (element.contains("ProjectSection(ProjectDependencies)")) {
                         var dependencylist: List<String>?
                         val dependency =
@@ -45,7 +44,7 @@ object SlnParser {
                             }
                         }
                     }
-                    (slnDataList!! as ArrayList).add(SlnStructure(token = token,name = name, path = pathx, alias= alias, antebuild = map))
+                    slnDataList!!.add(SlnStructure(token = token,name = name, path = pathx, alias= alias, antebuild = map))
                 }
             }
         }

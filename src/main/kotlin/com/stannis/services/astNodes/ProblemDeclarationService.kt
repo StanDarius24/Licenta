@@ -14,7 +14,7 @@ object ProblemDeclarationService {
     ) {
         val data = ProblemDeclaration(expression = problemDeclaration.rawSignature)
         if(problemDeclaration.rawSignature.contains("EXPORT")) {
-            ExternalRegistry.addExternal(problemDeclaration.rawSignature)
+            ExternalRegistry.listOfExternal.add(problemDeclaration.rawSignature)
         }
         StatementMapper.addStatementToStatement(statement!!, data)
     }
