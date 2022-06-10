@@ -1,21 +1,16 @@
 package com.stannis.function
 
 import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
-import com.stannis.dataModel.DeclarationParent
-import com.stannis.dataModel.NameInterface
-import com.stannis.dataModel.Statement
 import com.stannis.dataModel.complexStatementTypes.ClassOrHeader
-import com.stannis.dataModel.complexStatementTypes.ComplexCompositeTypeSpecifier
 import com.stannis.dataModel.statementTypes.*
+import com.stannis.services.astNodes.TranslationUnitService
 
 object TranslationUnitRegistry {
 
     lateinit var listOfDirectives: List<String>
-    private lateinit var nameSpaceClass: HashMap<NameSpace, ComplexCompositeTypeSpecifier>
 
     fun createTranslationUnit(boolean: Boolean) {
-        nameSpaceClass = HashMap()
-        fixNameSpaceClassInheritance()
+        fixElements()
         val classOrHeader =
             ClassOrHeader(
                 directives = listOfDirectives as ArrayList,
@@ -30,9 +25,7 @@ object TranslationUnitRegistry {
             )
         classOrHeader.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
         classOrHeader.internDeclaration = SimpleDeclarationRegistry.internDeclaration
-        classOrHeader.methodsWithFunctionCalls =
-            FunctionDefinitionRegistry.listOfComplexFunctionCalls
-        classOrHeader.functionCallsWithoutImplementation = FunctionDeclaratorRegistry.list
+        classOrHeader.methodsWithFunctionCalls = FunctionDefinitionRegistry.listFromTranslationUnit
         classOrHeader.classList = CompositeTypeRegistry.list
         classOrHeader.linkageSpecification = ExternDefinitionRegistry.listOfExtern
         classOrHeader.namespaces = NameSpaceRegistry.listOfNameSpace
@@ -40,98 +33,25 @@ object TranslationUnitRegistry {
         ProjectVcxprojComplexRegistry.addFinalTranslation(classOrHeader, boolean)
     }
 
-    private fun fixNameSpaceClassInheritance() {
-        if (CompositeTypeRegistry.list != null) {
-            NameSpaceRegistry.listOfNameSpace.forEach { nameSpace ->
+    private fun fixElements() {
+        if (TranslationUnitService.translationUnitCache.listOfDeclarations != null) {
+            TranslationUnitService.translationUnitCache.listOfDeclarations!!.forEach { element ->
                 run {
-                    CompositeTypeRegistry.list!!.forEach { classElement ->
-                        run {
-                            nameSpace.declarations!!.forEach { nameSpaceDeclaration ->
-                                run {
-                                    if (nameSpaceDeclaration is SimpleDeclaration) {
-                                        if (nameSpaceDeclaration.declSpecifier
-                                                is ElaboratedTypeSpecifier
-                                        ) {
-                                            if (classElement.our_class.name is QualifiedName) {
-                                                if ((classElement.our_class.name as QualifiedName)
-                                                        .getWrittenName() ==
-                                                        (nameSpaceDeclaration.declSpecifier
-                                                                as ElaboratedTypeSpecifier)
-                                                            .getWrittenName()
-                                                ) {
-                                                    nameSpaceClass[nameSpace] = classElement
-                                                }
-                                            }
-                                        }
-                                    } else if (nameSpaceDeclaration is TemplateDeclaration && nameSpaceDeclaration.declaration is SimpleDeclaration) {
-                                        if ((nameSpaceDeclaration.declaration as SimpleDeclaration)
-                                                .declSpecifier is ElaboratedTypeSpecifier
-                                        ) {
-                                            if ((classElement.our_class.name as NameInterface)
-                                                    .getWrittenName() == ((nameSpaceDeclaration.declaration
-                                                                as SimpleDeclaration)
-                                                            .declSpecifier
-                                                            as ElaboratedTypeSpecifier)
-                                                        .name
-                                            ) {
-                                                nameSpaceClass[nameSpace] = classElement
-                                            }
-                                        } else {
-                                            if (classElement.our_class.name != null && (classElement.our_class.name as NameInterface)
-                                                    .getWrittenName() == ((nameSpaceDeclaration.declaration
-                                                                    as SimpleDeclaration)
-                                                                .declSpecifier
-                                                            as NameInterface)
-                                                        .getWrittenName()
-                                            ) {
-                                                nameSpaceClass[nameSpace] = classElement
-                                            }
-                                        }
-                                    }
-                                }
+                    when (element) {
+                        is FunctionDefinition -> {
+                            FunctionDefinitionRegistry.addToList(element)
+                        }
+                        is NameSpace -> {
+                            NameSpaceRegistry.listOfNameSpace.add(element)
+                        }
+                        is SimpleDeclaration -> {
+                            if (element.declSpecifier is NamedTypeSpecifier) {
+                                SimpleDeclarationRegistry.addToList(element, null)
                             }
                         }
                     }
                 }
             }
-        }
-        removeLinks()
-    }
-
-    private fun removeLinks() {
-        var elementToDelete: DeclarationParent? = null
-        nameSpaceClass.forEach { (name, composite) ->
-            run {
-                if (name.declarations != null) {
-                    name.declarations!!.forEach { nameDecl ->
-                        run {
-                            if (nameDecl is SimpleDeclaration) {
-                                if (nameDecl.declSpecifier is ElaboratedTypeSpecifier) {
-                                    if ((nameDecl.declSpecifier as ElaboratedTypeSpecifier).name ==
-                                            (composite.our_class.name as NameInterface)
-                                                .getWrittenName()
-                                    ) {
-                                        elementToDelete = nameDecl
-                                    }
-                                }
-                            } else if (nameDecl is TemplateDeclaration && nameDecl.declaration is SimpleDeclaration) {
-                                if (((nameDecl.declaration as SimpleDeclaration).declSpecifier
-                                                as NameInterface)
-                                        .getWrittenName() == (composite.our_class.name as NameInterface)
-                                            .getWrittenName()
-                                ) {
-                                    elementToDelete = nameDecl
-                                }
-                            }
-                        }
-                    }
-                }
-                if (elementToDelete != null) {
-                    name.declarations!!.remove(elementToDelete as Statement)
-                    name.declarations!!.add(composite)
-                }
-            }
-            CompositeTypeRegistry.list!!.remove(composite)
         }
     }
 
@@ -139,8 +59,6 @@ object TranslationUnitRegistry {
         NameSpaceRegistry.listOfNameSpace.clear()
         SimpleDeclarationRegistry.internDeclaration.clear()
         SimpleDeclarationRegistry.globalDeclaration.clear()
-        FunctionDefinitionRegistry.list.clear()
-        FunctionDefinitionRegistry.listOfComplexFunctionCalls.clear()
         FunctionDeclaratorRegistry.list.clear()
         CompositeTypeRegistry.list = null
         ExternDefinitionRegistry.listOfExtern.clear()

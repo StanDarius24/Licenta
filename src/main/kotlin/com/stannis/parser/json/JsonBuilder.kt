@@ -1,14 +1,14 @@
 package com.stannis.parser.json
 
 import com.google.gson.GsonBuilder
-import com.stannis.dataModel.PrimaryBlock
+import com.stannis.dataModel.TranslationUnit
 import com.stannis.dataModel.complexStatementTypes.RepositoryModel
 
 
 object JsonBuilder {
-    fun createJson(primaryBlock: PrimaryBlock): String {
+    fun createJson(translationUnit: TranslationUnit): String? {
         val gson = GsonBuilder().setPrettyPrinting().create()
-        return gson.toJson(primaryBlock)
+        return gson.toJson(translationUnit)
     }
 
     fun createComplexJson(list: List<RepositoryModel>?): String? {

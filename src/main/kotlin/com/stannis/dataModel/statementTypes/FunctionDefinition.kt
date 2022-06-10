@@ -1,6 +1,5 @@
 package com.stannis.dataModel.statementTypes
 
-import com.stannis.dataModel.BodyParent
 import com.stannis.dataModel.DeclarationParent
 import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
@@ -9,7 +8,7 @@ data class FunctionDefinition(
     override val `$type`: String? = "FunctionDefinition",
     var declaratorSpecifier: DeclarationSpecifierParent?,
     var declarator: ArrayList<FunctionDeclarator>?,
-    var body: ArrayList<BodyParent>?,
+    var body: ArrayList<Statement>?,
     var cyclomaticComplexity: Int,
     var modifier: String
 ) : Statement, DeclarationParent {
@@ -27,6 +26,6 @@ data class FunctionDefinition(
         if (body == null) {
             body = ArrayList()
         }
-        body!!.add(statement as BodyParent)
+        body!!.add(statement)
     }
 }

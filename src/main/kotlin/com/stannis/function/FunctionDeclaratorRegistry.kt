@@ -18,7 +18,7 @@ object FunctionDeclaratorRegistry {
         functionDeclarator: FunctionDeclarator,
         node: CPPASTFunctionDeclarator
     ) {
-        val parentPrinc = ParentExtractor.extractParentForFunctionDeclarator(node)
+        val parentPrinc = ParentExtractor.extractParent(node)
         if (parentPrinc !is CPPASTCompositeTypeSpecifier &&
                 parentPrinc !is CPPASTLinkageSpecification &&
                     parentPrinc !is CPPASTNamespaceDefinition
@@ -31,7 +31,7 @@ object FunctionDeclaratorRegistry {
             }
             if (!sw) {
                 if (!list.contains(functionDeclarator)) {
-                    if (!ParentExtractor.checkParentFuntionDeclarator(node)) {
+                    if (!ParentExtractor.checkParent(node)) {
                         list.add(functionDeclarator)
                     }
                 }

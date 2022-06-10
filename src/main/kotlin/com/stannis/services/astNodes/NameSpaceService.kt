@@ -3,7 +3,6 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.NameSpace
-import com.stannis.function.NameSpaceRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -12,7 +11,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 object NameSpaceService {
     fun solveNameSpace(
         declaration: CPPASTNamespaceDefinition,
-        bool: Boolean,
         statement: Statement?
     ) {
         val nameSpace =
@@ -31,9 +29,6 @@ object NameSpaceService {
                     }
                 }
             }
-        }
-        if (bool) {
-            NameSpaceRegistry.listOfNameSpace.add(nameSpace)
         }
         if (statement != null) {
             StatementMapper.addStatementToStatement(statement, nameSpace)

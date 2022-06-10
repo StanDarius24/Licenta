@@ -3,16 +3,15 @@ package com.stannis.function
 import com.stannis.dataModel.complexStatementTypes.DeclarationWithParent
 import com.stannis.dataModel.complexStatementTypes.FunctionCallWithDeclaration
 import com.stannis.dataModel.statementTypes.*
-import com.stannis.services.astNodes.FunctionDefinitionService
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
+import com.stannis.parser.metrics.Metrics
 
 object FunctionDefinitionRegistry {
 
-    val list: ArrayList<FunctionDefinition> by lazy { ArrayList() }
+    val listFromTranslationUnit: ArrayList<FunctionDefinition> by lazy { ArrayList() }
 
-    val listOfComplexFunctionCalls: ArrayList<FunctionDefinition> by lazy { ArrayList() }
+    val listOfDefinitionOOP: ArrayList<FunctionDefinition> by lazy { ArrayList() }
 
-    private fun resolveWhenStatementIsFunctionCall(
+    fun resolveWhenStatementIsFunctionCall(
         statement: FunctionCalls,
         newFunctionDefinition: FunctionDefinition
     ) {
@@ -35,8 +34,7 @@ object FunctionDefinitionRegistry {
         FunctionDeclaratorRegistry.list.iterator().forEachRemaining { functionDeclarator ->
             run {
                 if (statement.name is IdExpression) {
-                    if (functionDeclarator.name == (statement.name as IdExpression).expression
-                    ) {
+                    if (functionDeclarator.name == (statement.name as IdExpression).expression) {
                         bool1 = true
                         val decl =
                             DeclarationWithParent(
@@ -91,11 +89,13 @@ object FunctionDefinitionRegistry {
         var bool1 = false
         if (statement.name is FieldReference) {
             if ((statement.name as FieldReference).fieldOwner is IdExpression) {
-                if (((statement.name as FieldReference).fieldOwner as IdExpression).expression
+                if (
+                    ((statement.name as FieldReference).fieldOwner as IdExpression).expression
                         is Name
                 ) {
                     if (parameter.declarator is Declarator) {
-                        if ((parameter.declarator as Declarator).name!! ==
+                        if (
+                            (parameter.declarator as Declarator).name!! ==
                                 (((statement.name as FieldReference).fieldOwner as IdExpression)
                                         .expression as Name)
                                     .name
@@ -121,8 +121,7 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        SimpleDeclarationRegistry.globalDeclaration.iterator().forEachRemaining { declaration
-            ->
+        SimpleDeclarationRegistry.globalDeclaration.iterator().forEachRemaining { declaration ->
             run {
                 bool1 =
                     verifyIfFunctionCallDeclaration(
@@ -141,18 +140,19 @@ object FunctionDefinitionRegistry {
         newFunctionDefinition: FunctionDefinition
     ): Boolean {
         var bool1 = false
-        SimpleDeclarationRegistry.internDeclaration.iterator().forEachRemaining { declaration
-            ->
+        SimpleDeclarationRegistry.internDeclaration.iterator().forEachRemaining { declaration ->
             run {
                 if (declaration.parent is FunctionDefinition) {
-                    if ((declaration.parent as FunctionDefinition).declarator?.get(0)
+                    if (
+                        (declaration.parent as FunctionDefinition).declarator?.get(0)
                             is FunctionDeclarator
                     ) {
-                        if (((declaration.parent as FunctionDefinition).declarator?.get(0)
+                        if (
+                            ((declaration.parent as FunctionDefinition).declarator?.get(0)
                                     as FunctionDeclarator)
-                                .name?.equals(
-                                    (newFunctionDefinition.declarator?.get(0)
-                                            as FunctionDeclarator)
+                                .name
+                                ?.equals(
+                                    (newFunctionDefinition.declarator?.get(0) as FunctionDeclarator)
                                         .name
                                 ) == true
                         ) {
@@ -181,7 +181,8 @@ object FunctionDefinitionRegistry {
         if (declaration.declaration.declarators != null) {
             declaration.declaration.declarators!!.iterator().forEachRemaining { declarator ->
                 run {
-                    if ((declarator as Declarator).name.equals(getStatementName(statement, boolean))
+                    if (
+                        (declarator as Declarator).name.equals(getStatementName(statement, boolean))
                     ) {
                         val functionCallWithDeclaration =
                             FunctionCallWithDeclaration(
@@ -201,16 +202,19 @@ object FunctionDefinitionRegistry {
     private fun getStatementName(statement: FunctionCalls, boolean: Boolean): String? {
         if (statement.name is FieldReference) {
             if ((statement.name as FieldReference).fieldOwner is IdExpression) {
-                if (((statement.name as FieldReference).fieldOwner as IdExpression).expression
+                if (
+                    ((statement.name as FieldReference).fieldOwner as IdExpression).expression
                         is Name
                 ) {
                     return (((statement.name as FieldReference).fieldOwner as IdExpression)
                             .expression as Name)
                         .name
-                } else if (((statement.name as FieldReference).fieldOwner as IdExpression)
-                        .expression is QualifiedName && boolean
+                } else if (
+                    ((statement.name as FieldReference).fieldOwner as IdExpression).expression is
+                        QualifiedName && boolean
                 ) {
-                    if ((((statement.name as FieldReference).fieldOwner as IdExpression).expression
+                    if (
+                        (((statement.name as FieldReference).fieldOwner as IdExpression).expression
                                 as QualifiedName)
                             .lastName is Name
                     ) {
@@ -229,40 +233,22 @@ object FunctionDefinitionRegistry {
         return null
     }
 
-    fun addFunctionCallToFunctionDefinition(
-        functionCalls: FunctionCalls,
-        parent: CPPASTFunctionDefinition
-    ) {
-        val parentStructure = FunctionDefinitionService.setFunction(parent)
-        if (!checkInternComplex(parentStructure, functionCalls)) {
-            list.iterator().forEachRemaining { functionDefinition ->
-                run {
-                    if (parentStructure == functionDefinition) {
-                        resolveWhenStatementIsFunctionCall(functionCalls, parentStructure)
-                    }
-                }
+    fun addToList(element: FunctionDefinition) {
+        Metrics.solveFunctionDefinition(element, false)
+        if ((element.declarator?.get(0) as FunctionDeclarator).name !is QualifiedName) {
+            if (element.body!![0] is CompoundStatement) {
+                element.body!!.removeAt(0)
             }
-            if (!ParentExtractor.checkParentFunctionDefinition(parent)) {
-                listOfComplexFunctionCalls.add(parentStructure)
-            }
+            listFromTranslationUnit.add(element)
+        } else {
+            checkFunctionParent(element)
         }
     }
 
-    private fun checkInternComplex(
-        parentStructure: FunctionDefinition,
-        functionCalls: FunctionCalls
-    ): Boolean {
-        var bool = false
-        listOfComplexFunctionCalls.iterator().forEachRemaining { complex ->
-            run {
-                parentStructure.body = complex.body
-                if (parentStructure == complex) {
-                    resolveWhenStatementIsFunctionCall(functionCalls, complex)
-                    bool = true
-                }
-                parentStructure.body = null
-            }
+    private fun checkFunctionParent(element: FunctionDefinition) {
+        if(!NameSpaceRegistry.checkInNameSpace(element)){
+            CompositeTypeRegistry.checkInClass(element)
         }
-        return bool
     }
+
 }

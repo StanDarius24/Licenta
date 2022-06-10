@@ -2,8 +2,9 @@ package com.stannis.services.astNodes
 
 import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
-import com.stannis.dataModel.statementTypes.AnonimStatement
-import com.stannis.dataModel.statementTypes.FunctionDefinition
+import com.stannis.dataModel.statementTypes.*
+import com.stannis.function.DeclarationRegistry
+import com.stannis.function.FunctionCallsRegistry
 import com.stannis.function.FunctionDefinitionRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -12,24 +13,60 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
+        DeclarationRegistry.listOfDeclaration.clear()
+        FunctionCallsRegistry.listOfFunctionCalls.clear()
         val functionDefinition = setFunction(funcDef)
         val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.body != null) {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
         functionDefinition.addToBody(anonimStatement3.statement as Statement)
-        FunctionDefinitionRegistry.list.add(functionDefinition)
+        solveBody(functionDefinition)
+        FunctionDefinitionRegistry.listFromTranslationUnit.add(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
+    }
+
+    private fun solveBody(functionDefinition: FunctionDefinition) {
+        val functionDefinitionOOp =
+            FunctionDefinition(
+                declaratorSpecifier = functionDefinition.declaratorSpecifier,
+                declarator = functionDefinition.declarator,
+                cyclomaticComplexity = functionDefinition.cyclomaticComplexity,
+                modifier = functionDefinition.modifier,
+                body = ArrayList()
+            )
+
+        DeclarationRegistry.listOfDeclaration.forEach { element -> run {
+            functionDefinitionOOp.body!!.add(element)
+        } }
+
+        FunctionCallsRegistry.listOfFunctionCalls.forEach { element -> run {
+            functionDefinitionOOp.body!!.add(element)
+        } }
+        FunctionCallsRegistry.listOfFunctionCalls.clear()
+        DeclarationRegistry.listOfDeclaration.clear()
+        FunctionDefinitionRegistry.listOfDefinitionOOP.add(functionDefinitionOOp)
+//        FunctionDefinitionRegistry.resolveWhenStatementIsFunctionCall(
+//            element,
+//            functionDefinition
+//        )
     }
 
     fun setFunction(funcDef: CPPASTFunctionDefinition): FunctionDefinition {
         val functionDefinition =
-            FunctionDefinition(declaratorSpecifier = null, declarator = null, body = null, cyclomaticComplexity = 1, modifier = ASTNodeService.modifier) // only functions with implementation
+            FunctionDefinition(
+                declaratorSpecifier = null,
+                declarator = null,
+                body = null,
+                cyclomaticComplexity = 1,
+                modifier = ASTNodeService.modifier
+            )
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declSpecifier != null) {
             ASTNodeService.solveASTNode(funcDef.declSpecifier as ASTNode, anonimStatement1)
         }
-        functionDefinition.declaratorSpecifier = anonimStatement1.statement as DeclarationSpecifierParent
+        functionDefinition.declaratorSpecifier =
+            anonimStatement1.statement as DeclarationSpecifierParent
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declarator != null) {
             ASTNodeService.solveASTNode(funcDef.declarator as ASTNode, anonimStatement2)

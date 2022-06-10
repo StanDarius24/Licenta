@@ -17,6 +17,9 @@ object ASTNodeService {
         val logger = KotlinLogging.logger {}
         logger.info { node.rawSignature }
         when (node) {
+            is CPPASTTranslationUnit -> {
+                TranslationUnitService.solveTranslationUnit(node)
+            }
             is CPPASTBinaryExpression -> {
                 BinaryExpressionService.solveBinaryExpressionService(node, statement)
             }
@@ -238,7 +241,7 @@ object ASTNodeService {
                 BaseSpecifierService.solveBaseSpecifier(node, statement)
             }
             is CPPASTNamespaceDefinition -> {
-                NameSpaceService.solveNameSpace(node, false, statement)
+                NameSpaceService.solveNameSpace(node, statement)
             }
             is CPPASTCapture -> {
                 CaptureService.solveCapture(node, statement)
