@@ -4,6 +4,6 @@ import com.stannis.dataModel.statementTypes.LinkageSpecification
 
 object ExternDefinitionRegistry {
 
-    val listOfExtern: ArrayList<LinkageSpecification> by lazy { ArrayList() }
+    var listOfExtern: ArrayList<LinkageSpecification> = ArrayList()
 
 }

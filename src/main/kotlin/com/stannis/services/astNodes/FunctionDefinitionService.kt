@@ -6,6 +6,7 @@ import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.DeclarationRegistry
 import com.stannis.function.FunctionCallsRegistry
 import com.stannis.function.FunctionDefinitionRegistry
+import com.stannis.parser.metrics.Metrics
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -13,8 +14,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
 
 object FunctionDefinitionService {
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
-        DeclarationRegistry.listOfDeclaration.clear()
-        FunctionCallsRegistry.listOfFunctionCalls.clear()
+//        FunctionCallsRegistry.listOfFunctionCalls.clear()
+//        DeclarationRegistry.listOfDeclaration.clear()
         val functionDefinition = setFunction(funcDef)
         val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.body != null) {
@@ -27,6 +28,7 @@ object FunctionDefinitionService {
     }
 
     private fun solveBody(functionDefinition: FunctionDefinition) {
+        Metrics.solveFunctionDefinition(functionDefinition, false)
         val functionDefinitionOOp =
             FunctionDefinition(
                 declaratorSpecifier = functionDefinition.declaratorSpecifier,

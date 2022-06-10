@@ -24,8 +24,8 @@ object TranslationUnitRegistry {
                 externalMethods = null
             )
         classOrHeader.globalDeclaration = SimpleDeclarationRegistry.globalDeclaration
-        classOrHeader.internDeclaration = SimpleDeclarationRegistry.internDeclaration
-        classOrHeader.methodsWithFunctionCalls = FunctionDefinitionRegistry.listFromTranslationUnit
+        classOrHeader.internDeclaration = DeclarationRegistry.listOfInternDeclarations
+        classOrHeader.methodsWithFunctionCalls = FunctionDefinitionRegistry.listOfDefinitionOOP
         classOrHeader.classList = CompositeTypeRegistry.list
         classOrHeader.linkageSpecification = ExternDefinitionRegistry.listOfExtern
         classOrHeader.namespaces = NameSpaceRegistry.listOfNameSpace
@@ -56,11 +56,14 @@ object TranslationUnitRegistry {
     }
 
     fun clearAllData() {
-        NameSpaceRegistry.listOfNameSpace.clear()
-        SimpleDeclarationRegistry.internDeclaration.clear()
-        SimpleDeclarationRegistry.globalDeclaration.clear()
-        FunctionDeclaratorRegistry.list.clear()
+        NameSpaceRegistry.listOfNameSpace = ArrayList()
+        DeclarationRegistry.listOfDeclaration = ArrayList()
+        DeclarationRegistry.listOfInternDeclarations = ArrayList()
+        SimpleDeclarationRegistry.globalDeclaration = ArrayList()
+        FunctionDeclaratorRegistry.list = ArrayList()
+        FunctionDefinitionRegistry.listFromTranslationUnit = ArrayList()
+        FunctionDefinitionRegistry.listOfDefinitionOOP = ArrayList()
         CompositeTypeRegistry.list = null
-        ExternDefinitionRegistry.listOfExtern.clear()
+        ExternDefinitionRegistry.listOfExtern = ArrayList()
     }
 }

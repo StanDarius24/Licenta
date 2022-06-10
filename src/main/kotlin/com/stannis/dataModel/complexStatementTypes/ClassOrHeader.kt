@@ -10,7 +10,7 @@ data class ClassOrHeader(
     override val `$type`: String = "ClassOrHeader",
     var directives: ArrayList<String>?,
     var globalDeclaration: ArrayList<DeclarationWithParent>?,
-    var internDeclaration: ArrayList<DeclarationWithParent>?,
+    var internDeclaration: ArrayList<DeclWithParent>?,
     var methodsWithFunctionCalls: ArrayList<FunctionDefinition>?,
     var functionCallsWithoutImplementation: ArrayList<FunctionDeclarator>?,
     var classList: ArrayList<ComplexCompositeTypeSpecifier>?,

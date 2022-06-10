@@ -16,7 +16,7 @@ object DeclarationStatementService {
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(node.declaration as ASTNode, anonimStatement)
         declarationStatement.addDeclaration(anonimStatement.statement as Statement)
-        DeclarationRegistry.listOfDeclaration.add(declarationStatement)
+        DeclarationRegistry.checkDeclaration(declarationStatement, node)
         StatementMapper.addStatementToStatement(statement!!, declarationStatement)
     }
 }

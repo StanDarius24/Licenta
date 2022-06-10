@@ -1,6 +1,7 @@
 package com.stannis.parser.visitor
 
 import com.stannis.dataModel.statementTypes.AnonimStatement
+import com.stannis.function.TranslationUnitRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import mu.KotlinLogging
 import org.eclipse.cdt.core.dom.ast.*
@@ -30,6 +31,7 @@ class ASTVisitorOverride : ASTVisitor() {
     }
 
     override fun visit(translationUnit: IASTTranslationUnit): Int {
+        TranslationUnitRegistry.clearAllData()
         val anonimStatement = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(translationUnit as ASTNode, anonimStatement)
         return PROCESS_CONTINUE

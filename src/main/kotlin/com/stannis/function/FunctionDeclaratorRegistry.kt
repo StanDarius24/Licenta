@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 object FunctionDeclaratorRegistry {
 
-    val list: ArrayList<FunctionDeclarator> by lazy { ArrayList() }
+    var list: ArrayList<FunctionDeclarator> = ArrayList()
 
     var sw: Boolean = false
 

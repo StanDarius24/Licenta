@@ -4,8 +4,7 @@ import com.stannis.dataModel.statementTypes.*
 
 object NameSpaceRegistry {
 
-    val listOfNameSpace: ArrayList<NameSpace> by lazy { ArrayList() }
-
+    var listOfNameSpace: ArrayList<NameSpace> = ArrayList()
 
     fun checkInNameSpace(element: FunctionDefinition): Boolean {
         var nameSpaceToReplace: NameSpace? = null
