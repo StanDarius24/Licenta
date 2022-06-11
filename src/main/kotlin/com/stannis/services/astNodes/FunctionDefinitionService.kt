@@ -6,13 +6,17 @@ import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.DeclarationRegistry
 import com.stannis.function.FunctionCallsRegistry
 import com.stannis.function.FunctionDefinitionRegistry
+import com.stannis.function.ParentExtractor
 import com.stannis.parser.metrics.Metrics
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 object FunctionDefinitionService {
+
+    var name: String? = ""
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
 //        FunctionCallsRegistry.listOfFunctionCalls.clear()
 //        DeclarationRegistry.listOfDeclaration.clear()
@@ -22,6 +26,12 @@ object FunctionDefinitionService {
             ASTNodeService.solveASTNode(funcDef.body as ASTNode, anonimStatement3)
         }
         functionDefinition.addToBody(anonimStatement3.statement as Statement)
+        val parent = ParentExtractor.extractNameSpace(funcDef)
+        name = if (parent != null) {
+            (parent as CPPASTNamespaceDefinition).name.rawSignature
+        } else {
+            null
+        }
         solveBody(functionDefinition)
         FunctionDefinitionRegistry.listFromTranslationUnit.add(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
@@ -35,7 +45,8 @@ object FunctionDefinitionService {
                 declarator = functionDefinition.declarator,
                 cyclomaticComplexity = functionDefinition.cyclomaticComplexity,
                 modifier = functionDefinition.modifier,
-                body = ArrayList()
+                body = ArrayList(),
+                namespace = name
             )
 
         DeclarationRegistry.listOfDeclaration.forEach { element -> run {
@@ -61,7 +72,8 @@ object FunctionDefinitionService {
                 declarator = null,
                 body = null,
                 cyclomaticComplexity = 1,
-                modifier = ASTNodeService.modifier
+                modifier = ASTNodeService.modifier,
+                namespace = name
             )
         val anonimStatement1 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.declSpecifier != null) {

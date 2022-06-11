@@ -16,6 +16,15 @@ object ParentExtractor {
         return parent as ASTNode?
     }
 
+    fun extractNameSpace(declaration: ASTNode): ASTNode? {
+        var parent = declaration.parent
+        while (parent != null &&
+            parent !is CPPASTNamespaceDefinition) {
+            parent = parent.parent
+        }
+        return parent as ASTNode?
+    }
+
     fun checkParent(node: ASTNode): Boolean {
         return extractParent(node) != null
     }
