@@ -32,8 +32,61 @@ object TranslationUnitRegistry {
         classOrHeader.linkageSpecification = ExternDefinitionRegistry.listOfExtern
         classOrHeader.namespaces = NameSpaceRegistry.listOfNameSpace
         classOrHeader.externalMethods = ExternalRegistry.listOfExternal
+        removeConstructors(classOrHeader)
         fixOverrideMethods(classOrHeader)
         ProjectVcxprojComplexRegistry.addFinalTranslation(classOrHeader, boolean)
+    }
+
+    private fun removeConstructors(classOrHeader: ClassOrHeader) {
+        val listToRemove = ArrayList<FunctionDefinition>()
+        if (classOrHeader.classList != null && classOrHeader.classList!!.isNotEmpty()) {
+            classOrHeader.classList!!.forEach { classElement ->
+                run {
+                    classOrHeader.methodsWithFunctionCalls!!.forEach { method ->
+                        run {
+                            if ( classElement.our_class.name != null &&
+                                method.declarator!![0].name!!.getWrittenName() ==
+                                    classElement.our_class.name!!.getWrittenName()
+                            ) {
+                                listToRemove.add(method)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (classOrHeader.namespaces != null && classOrHeader.namespaces!!.isNotEmpty()) {
+            classOrHeader.namespaces!!.forEach { nameSpace ->
+                run {
+                    nameSpace.declarations!!.forEach { declaration ->
+                        run {
+                            if (
+                                declaration is SimpleDeclaration &&
+                                    declaration.declSpecifier is CompositeTypeSpecifier
+                            ) {
+                                classOrHeader.methodsWithFunctionCalls!!.forEach { method ->
+                                    run {
+                                        if (
+                                            method.declarator!![0].name!!.getWrittenName() ==
+                                                (declaration.declSpecifier
+                                                        as CompositeTypeSpecifier)
+                                                    .name!!
+                                                    .getWrittenName()
+                                        ) {
+                                            listToRemove.add(method)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        listToRemove.forEach { element ->
+            run { classOrHeader.methodsWithFunctionCalls!!.remove(element) }
+        }
     }
 
     private fun fixClass(
@@ -50,33 +103,35 @@ object TranslationUnitRegistry {
         classOrHeader: ClassOrHeader,
         nameSpace: NameSpace?
     ) {
-        classElement.declarations!!.forEach { declarationParent ->
-            run {
-                if (nameSpace != null && declarationParent is FunctionDefinition) {
-                    if (declarationParent.declarator!![0].name is QualifiedName) {
-                        (declarationParent.declarator!![0].name as QualifiedName)
-                            .qualifier!!
-                            .forEach { qualifiedName ->
-                                run {
-                                    if (qualifiedName.getWrittenName() == nameSpace.name) {
-                                        findMethodThatFits(
-                                            declarationParent,
-                                            classOrHeader,
-                                            classElement.name,
-                                            nameSpace
-                                        )
+        if (classElement.declarations != null) {
+            classElement.declarations!!.forEach { declarationParent ->
+                run {
+                    if (nameSpace != null && declarationParent is FunctionDefinition) {
+                        if (declarationParent.declarator!![0].name is QualifiedName) {
+                            (declarationParent.declarator!![0].name as QualifiedName)
+                                .qualifier!!
+                                .forEach { qualifiedName ->
+                                    run {
+                                        if (qualifiedName.getWrittenName() == nameSpace.name) {
+                                            findMethodThatFits(
+                                                declarationParent,
+                                                classOrHeader,
+                                                classElement.name,
+                                                nameSpace
+                                            )
+                                        }
                                     }
                                 }
-                            }
-                    }
-                } else {
-                    if (declarationParent is FunctionDefinition) {
-                        findMethodThatFits(
-                            declarationParent,
-                            classOrHeader,
-                            classElement.name,
-                            null
-                        )
+                        }
+                    } else {
+                        if (declarationParent is FunctionDefinition) {
+                            findMethodThatFits(
+                                declarationParent,
+                                classOrHeader,
+                                classElement.name,
+                                null
+                            )
+                        }
                     }
                 }
             }
@@ -139,14 +194,20 @@ object TranslationUnitRegistry {
                                 declarationParent.body = methodCall.body
                                 listToRemove.add(methodCall)
                             }
-                        } else if (methodCall.declarator != null && methodCall.declarator!!.isNotEmpty()) {
+                        } else if (
+                            methodCall.declarator != null && methodCall.declarator!!.isNotEmpty()
+                        ) {
                             if (methodCall.declarator!![0].name is QualifiedName) {
-                                (methodCall.declarator!![0].name as QualifiedName).qualifier!!.forEach { qualifier -> run {
-                                    if (qualifier.getWrittenName() == nameSpace.name) {
-                                        declarationParent.body = methodCall.body
-                                        listToRemove.add(methodCall)
+                                (methodCall.declarator!![0].name as QualifiedName)
+                                    .qualifier!!
+                                    .forEach { qualifier ->
+                                        run {
+                                            if (qualifier.getWrittenName() == nameSpace.name) {
+                                                declarationParent.body = methodCall.body
+                                                listToRemove.add(methodCall)
+                                            }
+                                        }
                                     }
-                                } }
                             }
                         }
                     } else {
