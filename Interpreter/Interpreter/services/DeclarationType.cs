@@ -53,8 +53,21 @@ namespace Interpreter.services{
 
         private bool CheckInternDeclaration(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
-            return element.classOrHeader.internDeclaration.Any(internDecl => GetClassesNamesFromRelations(translation.classOrHeader.classList)
-                .Contains((internDecl.declaration.declSpecifier as INameInterface)?.GetWrittenName()));
+            if (element.classOrHeader.internDeclaration != null && element.classOrHeader.internDeclaration.Count != 0)
+            {
+                Console.Out.Write("test");
+                foreach (var internDecl in element.classOrHeader.internDeclaration)
+                {
+                    if (internDecl != null)
+                    {
+                        Console.Out.Write("test");
+
+                    }
+
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool CheckExternDeclaration(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)

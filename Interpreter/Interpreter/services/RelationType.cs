@@ -11,14 +11,25 @@ namespace Interpreter.services{
     {
         public bool CheckForRelationType(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
-            if (CheckForClass(element, translation)) return false;
+            if (CheckForClass(element, translation)) return true;
             if (CheckForLinkageSpecification(element, translation)) return false;
             return CheckForNameSpace(element, translation);
         }
         
         private bool CheckForClass(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
-            return element.classOrHeader.classList != null && (from classList in element.classOrHeader.classList where classList.our_class.baseSpecifier != null from baseSpec in classList.our_class.baseSpecifier select (baseSpec as BaseSpecifier).name.Equals(StringService.FixPath(translation.path))).FirstOrDefault();
+            bool first = false;
+            foreach (ComplexCompositeTypeSpecifier classList in element.classOrHeader.classList)
+            {
+                if (classList.our_class.baseSpecifier != null)
+                    foreach (var baseSpec in classList.our_class.baseSpecifier)
+                    {
+                        first = ((INameInterface) (baseSpec as BaseSpecifier)?.name)!.GetWrittenName().Equals(StringService.FixPath(translation.path));
+                        break;
+                    }
+            }
+
+            return element.classOrHeader.classList != null && first;
         }
         
         private bool CheckForLinkageSpecification(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
