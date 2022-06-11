@@ -66,13 +66,17 @@ object TranslationUnitRegistry {
                                             nameSpace
                                         )
                                     }
-                                    println()
                                 }
                             }
                     }
                 } else {
                     if (declarationParent is FunctionDefinition) {
-                        findMethodThatFits(declarationParent, classOrHeader, classElement.name, null)
+                        findMethodThatFits(
+                            declarationParent,
+                            classOrHeader,
+                            classElement.name,
+                            null
+                        )
                     }
                 }
             }
@@ -96,8 +100,10 @@ object TranslationUnitRegistry {
         if (nameSpace.declarations != null && nameSpace.declarations!!.isNotEmpty()) {
             nameSpace.declarations!!.forEach { declaration ->
                 run {
-                    if (declaration is FunctionDefinition) {
-                        println()
+                    if (
+                        declaration is FunctionDefinition && nameSpace.name == declaration.namespace
+                    ) {
+                        findMethodThatFits(declaration, classOrHeader, null, nameSpace)
                     } else if (declaration is SimpleDeclaration) {
                         if (declaration.declSpecifier is CompositeTypeSpecifier) {
                             refactorClass(
@@ -122,10 +128,33 @@ object TranslationUnitRegistry {
         if (classOrHeader.methodsWithFunctionCalls != null) {
             classOrHeader.methodsWithFunctionCalls!!.forEach { methodCall ->
                 run {
-                    if (!lookForExactName(methodCall, declarationParent, name)) {
-                        lookForQualifyName(methodCall, declarationParent)
+                    if (nameSpace != null) {
+                        if (methodCall.namespace == nameSpace.name) {
+                            if (
+                                (methodCall.declarator!![0].name as NameInterface)
+                                    .getWrittenName() ==
+                                    (declarationParent.declarator!![0].name as NameInterface)
+                                        .getWrittenName()
+                            ) {
+                                declarationParent.body = methodCall.body
+                                listToRemove.add(methodCall)
+                            }
+                        } else if (methodCall.declarator != null && methodCall.declarator!!.isNotEmpty()) {
+                            if (methodCall.declarator!![0].name is QualifiedName) {
+                                (methodCall.declarator!![0].name as QualifiedName).qualifier!!.forEach { qualifier -> run {
+                                    if (qualifier.getWrittenName() == nameSpace.name) {
+                                        declarationParent.body = methodCall.body
+                                        listToRemove.add(methodCall)
+                                    }
+                                } }
+                            }
+                        }
                     } else {
-                        listToRemove.add(methodCall)
+                        if (!lookForExactName(methodCall, declarationParent, name)) {
+                            lookForQualifyName(methodCall, declarationParent)
+                        } else {
+                            listToRemove.add(methodCall)
+                        }
                     }
                 }
             }
@@ -156,9 +185,10 @@ object TranslationUnitRegistry {
                 ) {
                     if (declarationParent.declarator!![0].name is QualifiedName) {
                         if (
-                            (declarationParent.declarator!![0].name as QualifiedName)
-                                .qualifier!!
-                                .contains(classOrHeader!!)
+                            classOrHeader != null &&
+                                (declarationParent.declarator!![0].name as QualifiedName)
+                                    .qualifier!!
+                                    .contains(classOrHeader)
                         ) {
                             declarationParent.body = methodCall.body
                             return true
