@@ -4,18 +4,15 @@ import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
 import com.stannis.function.CompositeTypeRegistry
 import com.stannis.function.TranslationUnitRegistry
 import com.stannis.parser.json.JsonBuilder
-import com.stannis.parser.metrics.Metrics
 import com.stannis.parser.sln.VcxprojParser
 import com.stannis.parser.visitor.ASTVisitorOverride
-import com.stannis.services.astNodes.NameSpaceService
+import com.stannis.services.astNodes.TranslationUnitService
 import com.stannis.services.cppastService.ASTNodeService
-import org.eclipse.cdt.core.dom.ast.IASTDeclaration
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage
 import org.eclipse.cdt.core.index.IIndex
 import org.eclipse.cdt.core.model.ILanguage
 import org.eclipse.cdt.core.parser.*
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition
 
 class Parser {
 
@@ -85,11 +82,11 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNames = true
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
-                    checkForNamespace(translationUnit.declarations)
+//                    checkForNamespace(translationUnit.declarations)
                     TranslationUnitRegistry.listOfDirectives =
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
-                    TranslationUnitRegistry.createTranslationUnit(boolean) //here
+                    TranslationUnitRegistry.createTranslationUnit(boolean)
                     if (listOf.contains("parse")) {
                         val newPath = absolutPath.split(OperatingSystem.getSeparator())
                         newPath.dropLast(1)
@@ -100,24 +97,16 @@ class Parser {
                                 null
                             )
                         fileToWrite?.bufferedWriter()?.use { out ->
-                            out.write(JsonBuilder.createJson(ASTVisitorOverride.getPrimaryBlock()))
+                            JsonBuilder.createJson(TranslationUnitService.translationUnitCache)?.let { out.write(it) }
                         }
                     }
-                    Metrics.calculateCyclomaticComplexity(filepath)
+//                    Metrics.calculateCyclomaticComplexity(filepath)
                     TranslationUnitRegistry.clearAllData()
                 } else {
                     println()
                 }
             }
         }
-    }
-
-    private fun checkForNamespace(declarations: Array<IASTDeclaration>?) {
-        declarations?.forEach { declaration -> run {
-            if (declaration is CPPASTNamespaceDefinition) {
-                NameSpaceService.solveNameSpace(declaration, true, null)
-            }
-        }}
     }
 
     private fun parseFiles(
@@ -167,7 +156,7 @@ class Parser {
     }
 
     fun parseCppFiles(astVisitorOverride: ASTVisitorOverride, projectPath: String, listOf: List<String>) {
-        VcxprojParser.mapOfData.forEach { (slnStructure, vcxprojStructures) -> run {
+        VcxprojParser.mapOfData.forEach { (_, vcxprojStructures) -> run {
             vcxprojStructures.forEach { element -> run {
                 ProjectVcxprojComplexRegistry.setVcxProj(element)
                 val absolutProjectPath =

@@ -3,6 +3,8 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
+import com.stannis.dataModel.statementTypes.NamedTypeSpecifier
+import com.stannis.dataModel.statementTypes.SimpleDeclSpecifier
 import com.stannis.dataModel.statementTypes.SimpleDeclaration
 import com.stannis.function.ParentExtractor
 import com.stannis.function.SimpleDeclarationRegistry
@@ -26,9 +28,11 @@ object SimpleDeclarationService {
         ASTNodeService.solveASTNode(declaration.declSpecifier as ASTNode, anonimStatement2)
         simpleDeclaration.declSpecifier = anonimStatement2.statement as DeclarationSpecifierParent
         StatementMapper.addStatementToStatement(statement!!, simpleDeclaration)
-        SimpleDeclarationRegistry.addToList(
-            simpleDeclaration,
-            ParentExtractor.extractParentasFunctionCall(declaration)
-        )
+        if (anonimStatement2.statement is SimpleDeclSpecifier || anonimStatement2.statement is NamedTypeSpecifier) {
+            SimpleDeclarationRegistry.addToList(
+                simpleDeclaration,
+                ParentExtractor.extractParent(declaration),
+            )
+        }
     }
 }

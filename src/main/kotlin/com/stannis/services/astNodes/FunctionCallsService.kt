@@ -4,7 +4,7 @@ import com.stannis.dataModel.HigherClass
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FunctionCalls
-import com.stannis.function.FunctionDefinitionRegistry
+import com.stannis.function.FunctionCallsRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -24,29 +24,8 @@ object FunctionCallsService {
                 functionCalls.addArgument(anonimStatement.statement as Statement)
             }
         }
-        findParent(functionCalls, node)
+        FunctionCallsRegistry.listOfFunctionCalls.add(functionCalls)
         StatementMapper.addStatementToStatement(statement!!, functionCalls)
     }
-
-    private fun findParent(functionCalls: FunctionCalls, node: ASTNode) {
-        var parent = node
-        while (!(parent is CPPASTFunctionDefinition) && !(parent is CPPASTTranslationUnit)) {
-            parent = parent.parent as ASTNode
-        }
-        if(!checkIfClassDefinition(parent)) {
-            if (parent is CPPASTFunctionDefinition) {
-                FunctionDefinitionRegistry.addFunctionCallToFunctionDefinition(functionCalls, parent)
-            }
-        }
-    }
-
-    private fun checkIfClassDefinition(parent: ASTNode): Boolean {
-        var newparent = parent.parent
-        while (newparent != null && !(newparent is CPPASTCompositeTypeSpecifier) && !(newparent is CPPASTTranslationUnit)) {
-            newparent = newparent.parent
-        }
-        return newparent is CPPASTCompositeTypeSpecifier
-    }
-
 
 }

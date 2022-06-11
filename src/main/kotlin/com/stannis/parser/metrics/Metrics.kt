@@ -5,13 +5,13 @@ import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
 import com.stannis.function.FunctionDeclaratorRegistry
 import com.stannis.function.NameSpaceRegistry
-import com.stannis.parser.visitor.ASTVisitorOverride
+import com.stannis.services.astNodes.TranslationUnitService
 
 object Metrics {
 
     fun calculateCyclomaticComplexity(filepath: String) {
-        if (ASTVisitorOverride.getPrimaryBlock().statements != null) {
-            ASTVisitorOverride.getPrimaryBlock().statements!!.forEach { statement ->
+        if (TranslationUnitService.translationUnitCache.listOfDeclarations != null) {
+            TranslationUnitService.translationUnitCache.listOfDeclarations!!.forEach { statement ->
                 run {
                     if (statement is FunctionDefinition) {
                         solveFunctionDefinition(statement, false)
@@ -38,7 +38,7 @@ object Metrics {
         }
     }
 
-    private fun solveFunctionDefinition(statement: FunctionDefinition, bool: Boolean) {
+    fun solveFunctionDefinition(statement: FunctionDefinition, bool: Boolean) {
         var count = 1
         if (statement.body != null) {
             if ((statement.body!![0] as CompoundStatement).statements != null) {

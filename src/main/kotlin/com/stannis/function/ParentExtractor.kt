@@ -1,12 +1,11 @@
 package com.stannis.function
 
-import org.eclipse.cdt.core.dom.ast.IASTNode
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
 import org.eclipse.cdt.internal.core.dom.parser.cpp.*
 
 object ParentExtractor {
 
-    fun extractParentasFunctionCall(declaration: CPPASTSimpleDeclaration): ASTNode? {
+    fun extractParent(declaration: ASTNode): ASTNode? {
         var parent = declaration.parent
         while (parent != null &&
             parent !is CPPASTFunctionDefinition &&
@@ -17,35 +16,17 @@ object ParentExtractor {
         return parent as ASTNode?
     }
 
-    fun extractParentForFunctionDeclarator(node: CPPASTFunctionDeclarator): IASTNode? {
-        var parent = node.parent
+    fun extractNameSpace(declaration: ASTNode): ASTNode? {
+        var parent = declaration.parent
         while (parent != null &&
-            parent !is CPPASTCompositeTypeSpecifier &&
-            parent !is CPPASTLinkageSpecification &&
             parent !is CPPASTNamespaceDefinition) {
             parent = parent.parent
         }
-        return parent
+        return parent as ASTNode?
     }
 
-    fun checkParentFuntionDeclarator(node: CPPASTFunctionDeclarator): Boolean {
-        var parent = node.parent
-        while (parent != null &&
-            parent !is CPPASTCompositeTypeSpecifier &&
-            parent !is CPPASTLinkageSpecification &&
-            parent !is CPPASTNamespaceDefinition) {
-            parent = parent.parent
-        }
-        return parent != null
+    fun checkParent(node: ASTNode): Boolean {
+        return extractParent(node) != null
     }
-    fun checkParentFunctionDefinition(node: CPPASTFunctionDefinition): Boolean {
-        var parent = node.parent
-        while (parent != null &&
-            parent !is CPPASTCompositeTypeSpecifier &&
-            parent !is CPPASTLinkageSpecification &&
-            parent !is CPPASTNamespaceDefinition) {
-            parent = parent.parent
-        }
-        return parent != null
-    }
+
 }

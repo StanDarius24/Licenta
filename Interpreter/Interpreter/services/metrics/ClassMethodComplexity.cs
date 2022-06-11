@@ -44,9 +44,12 @@ namespace Interpreter.services.metrics{
                     {
                         filler.numberOfProtectedMethodsFields++;
                     }
-                    if (((SimpleDeclSpecifier) declaration.declSpecifier).isVirtual)
+                    if (declaration.declSpecifier is SimpleDeclSpecifier)
                     {
-                        filler.numberOfAbstractMethods++;
+                        if (((SimpleDeclSpecifier) declaration.declSpecifier).isVirtual)
+                        {
+                            filler.numberOfAbstractMethods++;
+                        }
                     }
                 }
                 else if (declarator is Declarator)
