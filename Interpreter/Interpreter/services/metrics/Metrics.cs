@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
@@ -22,6 +23,18 @@ namespace Interpreter.services.metrics
             foreach (var file in repositoryModelListOfCppFiles)
             {
                 var filler = CalculateNumberOfMethodsAndCyclomaticComplexity(file);
+                var metrics = new ArrayList
+                {
+                    new MetricsModel(file.path, "class"),
+                    new MetricsModel(file.path, "extern"),
+                    new MetricsModel(file.path, "namespace")
+                };
+                AverageMethodWeight.CalculateAmw(filler, metrics);
+                WeightedMethodCount.CalculateWmc(filler, metrics);
+                NumberOfMethods.CalculateNom(filler, metrics);
+                NumberOfPublicAttributes.CalculateNopa(filler, metrics);
+                NumberOfProtectedMembers.CalculateNopm(filler, metrics);
+                Console.Out.Write("test");
             }
         }
 

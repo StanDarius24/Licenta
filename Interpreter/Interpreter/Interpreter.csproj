@@ -140,10 +140,16 @@
         <Compile Include="services\DataRegistry.cs" />
         <Compile Include="services\DeclarationType.cs" />
         <Compile Include="services\DirectiveFinder.cs" />
+        <Compile Include="services\metrics\AccessToForeignData.cs" />
+        <Compile Include="services\metrics\AverageMethodWeight.cs" />
         <Compile Include="services\metrics\ClassMethodComplexity.cs" />
         <Compile Include="services\metrics\ExternMetrics.cs" />
         <Compile Include="services\metrics\Metrics.cs" />
         <Compile Include="services\metrics\NameSpaceMetrics.cs" />
+        <Compile Include="services\metrics\NumberOfMethods.cs" />
+        <Compile Include="services\metrics\NumberOfProtectedMembers.cs" />
+        <Compile Include="services\metrics\NumberOfPublicAttributes.cs" />
+        <Compile Include="services\metrics\WeightedMethodCount.cs" />
         <Compile Include="services\RelationsBetweenClassesAndHeaders.cs" />
         <Compile Include="services\RelationType.cs" />
         <Compile Include="Utility\Deserializer.cs" />

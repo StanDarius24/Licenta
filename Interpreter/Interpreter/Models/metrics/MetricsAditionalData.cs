@@ -20,7 +20,6 @@
         public float numberOfContainedFields { set; get; }
         public float numberOfProtectedMethodsFields { set; get; }
         public float totalComplexity { set; get; }
-        
         public float numberOfAbstractMethods { set; get; }
     }
 };
