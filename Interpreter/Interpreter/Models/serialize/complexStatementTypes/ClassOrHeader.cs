@@ -9,7 +9,7 @@ namespace Interpreter.Models.serialize.complexStatementTypes
 
                 public IList<DeclarationWithParent> globalDeclaration = new List<DeclarationWithParent>();
 
-                public IList<DeclarationWithParent> internDeclaration = new List<DeclarationWithParent>();
+                public IList<DeclWithParent> internDeclaration = new List<DeclWithParent>();
 
                 public IList<FunctionDefinition> methodsWithFunctionCalls = new List<FunctionDefinition>();
 

@@ -78,6 +78,7 @@
         <Compile Include="Models\serialize\statementTypes\ConversionName.cs" />
         <Compile Include="Models\serialize\statementTypes\DeclarationStatement.cs" />
         <Compile Include="Models\serialize\statementTypes\Declarator.cs" />
+        <Compile Include="Models\serialize\statementTypes\DeclWithParent.cs" />
         <Compile Include="Models\serialize\statementTypes\DefaultStatement.cs" />
         <Compile Include="Models\serialize\statementTypes\DeleteExpression.cs" />
         <Compile Include="Models\serialize\statementTypes\DoStatement.cs" />

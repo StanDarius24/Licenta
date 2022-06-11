@@ -47,7 +47,8 @@ namespace Interpreter.services{
                         {
                             element.ListOfInheritance.Add(translation);
                             translation.ClassesThatUseThisClass.Add(element);
-                        } else if (declarationType.CheckDeclaration(element, translation))
+                        } 
+                        if (declarationType.CheckDeclaration(element, translation))
                         {
                             element.ListOfComposition.Add(translation);
                             translation.ClassesThatUseThisClass.Add(element);
