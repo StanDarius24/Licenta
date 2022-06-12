@@ -1,7 +1,6 @@
-﻿namespace Interpreter.Models.metrics{
+﻿namespace Interpreter.Models.metrics {
     public class MetricsModel
     {
-        public string path { set; get; }
         
         public float AMW { set; get; }
         

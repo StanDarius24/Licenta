@@ -29,9 +29,9 @@ namespace Interpreter.services{
 
         private bool CheckFunctionsParametersWithoutImpr(ClassOrHeaderWithPath element, ClassOrHeaderWithPath translation)
         {
-            foreach (var functionDeclarator in element.classOrHeader.functionCallsWithoutImplementation)
+            foreach (var functionDeclarator in element.classOrHeader.methodsWithFunctionCalls)
             {
-                foreach (var functionParameter in functionDeclarator.parameter)
+                foreach (var functionParameter in (functionDeclarator.declarator[0] as FunctionDeclarator)?.parameter!)
                 {
                     if (functionParameter is ParameterDeclaration declaration)
                     {

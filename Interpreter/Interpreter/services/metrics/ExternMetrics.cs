@@ -6,14 +6,18 @@ namespace Interpreter.services.metrics{
     public class ExternMetrics
     {
         public static void CalculateExternMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
-            MetricsAditionalData filler)
+            MetricsInFile filler)
         {
-            foreach (var functionDeclarator in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
+            if (filler.ExternalClasses == null)
             {
-                if (functionDeclarator.name is Name)
+                filler.ExternalClasses = new MetricsAditionalData();
+            }
+            foreach (var functionDeclarator in classOrHeaderWithPath.classOrHeader.methodsWithFunctionCalls)
+            {
+                if ((functionDeclarator.declarator[0] as FunctionDeclarator)?.name is Name)
                 {
-                    filler.numberOfMethods++;
-                    filler.totalComplexity += functionDeclarator.cyclomaticComplexity;
+                    filler.ExternalClasses.numberOfMethods++;
+                    filler.ExternalClasses.totalComplexity += functionDeclarator.cyclomaticComplexity;
                 }
             }
         }

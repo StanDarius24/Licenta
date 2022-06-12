@@ -2,6 +2,7 @@ package com.stannis.function
 
 import com.stannis.callHierarchy.ProjectVcxprojComplexRegistry
 import com.stannis.dataModel.NameInterface
+import com.stannis.dataModel.Statement
 import com.stannis.dataModel.complexStatementTypes.ClassOrHeader
 import com.stannis.dataModel.complexStatementTypes.ComplexCompositeTypeSpecifier
 import com.stannis.dataModel.statementTypes.*
@@ -44,9 +45,10 @@ object TranslationUnitRegistry {
                 run {
                     classOrHeader.methodsWithFunctionCalls!!.forEach { method ->
                         run {
-                            if ( classElement.our_class.name != null &&
-                                method.declarator!![0].name!!.getWrittenName() ==
-                                    classElement.our_class.name!!.getWrittenName()
+                            if (
+                                classElement.our_class.name != null &&
+                                    method.declarator!![0].name!!.getWrittenName() ==
+                                        classElement.our_class.name!!.getWrittenName()
                             ) {
                                 listToRemove.add(method)
                             }
@@ -106,22 +108,31 @@ object TranslationUnitRegistry {
         if (classElement.declarations != null) {
             classElement.declarations!!.forEach { declarationParent ->
                 run {
-                    if (nameSpace != null && declarationParent is FunctionDefinition) {
-                        if (declarationParent.declarator!![0].name is QualifiedName) {
-                            (declarationParent.declarator!![0].name as QualifiedName)
-                                .qualifier!!
-                                .forEach { qualifiedName ->
-                                    run {
-                                        if (qualifiedName.getWrittenName() == nameSpace.name) {
-                                            findMethodThatFits(
-                                                declarationParent,
-                                                classOrHeader,
-                                                classElement.name,
-                                                nameSpace
-                                            )
+                    if (nameSpace != null) {
+                        if (declarationParent is FunctionDefinition) {
+                            if (declarationParent.declarator!![0].name is QualifiedName) {
+                                (declarationParent.declarator!![0].name as QualifiedName)
+                                    .qualifier!!
+                                    .forEach { qualifiedName ->
+                                        run {
+                                            if (qualifiedName.getWrittenName() == nameSpace.name) {
+                                                findMethodThatFits(
+                                                    declarationParent,
+                                                    classOrHeader,
+                                                    classElement.name,
+                                                    nameSpace
+                                                )
+                                            }
                                         }
                                     }
-                                }
+                            } else if (
+                                declarationParent.declarator!![0].name is Name &&
+                                    (declarationParent.declarator!![0].name as NameInterface)
+                                        .getWrittenName() ==
+                                        (classElement.name as NameInterface).getWrittenName()
+                            ) {
+                                removeConstructorDataThat(declarationParent)
+                            }
                         }
                     } else {
                         if (declarationParent is FunctionDefinition) {
@@ -131,6 +142,30 @@ object TranslationUnitRegistry {
                                 classElement.name,
                                 null
                             )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeConstructorDataThat(declarationParent: FunctionDefinition) {
+        val listOfData = ArrayList<Statement>()
+        if (declarationParent.body != null && declarationParent.body!!.isNotEmpty()) {
+            declarationParent.body!!.forEach { composite ->
+                run {
+                    if (composite is CompoundStatement) {
+                        if (composite.statements != null && composite.statements!!.isNotEmpty()) {
+                            composite.statements!!.forEach { element ->
+                                run {
+                                    if (element is FieldReference) {
+                                        listOfData.add(element)
+                                    } else if (element is DeclarationStatement) {
+                                        listOfData.add(element)
+                                    }
+                                }
+                            }
+                            declarationParent.body = listOfData
                         }
                     }
                 }
@@ -203,11 +238,40 @@ object TranslationUnitRegistry {
                                     .forEach { qualifier ->
                                         run {
                                             if (qualifier.getWrittenName() == nameSpace.name) {
-                                                declarationParent.body = methodCall.body
-                                                listToRemove.add(methodCall)
+                                                if (
+                                                    (methodCall.declarator!![0].name
+                                                            as NameInterface)
+                                                        .getWrittenName() ==
+                                                        (declarationParent.declarator!![0].name
+                                                                as NameInterface)
+                                                            .getWrittenName()
+                                                ) {
+                                                    declarationParent.body = methodCall.body
+                                                    listToRemove.add(methodCall)
+                                                }
                                             }
                                         }
                                     }
+                            } else if (
+                                declarationParent.body != null &&
+                                    declarationParent.body!!.isNotEmpty()
+                            ) {
+                                if (declarationParent.body!![0] is CompoundStatement) {
+                                    val list = ArrayList<Statement>()
+                                    (declarationParent.body!![0] as CompoundStatement)
+                                        .statements!!
+                                        .forEach { element ->
+                                            run {
+                                                if (
+                                                    element is DeclarationStatement ||
+                                                        element is FieldReference
+                                                ) {
+                                                    list.add(element)
+                                                }
+                                            }
+                                        }
+                                    declarationParent.body = list
+                                }
                             }
                         }
                     } else {
@@ -223,7 +287,6 @@ object TranslationUnitRegistry {
         listToRemove.forEach { elementToRemove ->
             run { classOrHeader.methodsWithFunctionCalls!!.remove(elementToRemove) }
         }
-        println()
     }
 
     private fun lookForQualifyName(

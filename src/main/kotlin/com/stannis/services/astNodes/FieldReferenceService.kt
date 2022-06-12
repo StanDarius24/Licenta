@@ -5,6 +5,7 @@ import com.stannis.dataModel.NameInterface
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.AnonimStatement
 import com.stannis.dataModel.statementTypes.FieldReference
+import com.stannis.function.FieldReferenceRegistry
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
 import org.eclipse.cdt.internal.core.dom.parser.ASTNode
@@ -20,6 +21,7 @@ object FieldReferenceService {
         val anonimStatement2 = AnonimStatement.getNewAnonimStatement()
         ASTNodeService.solveASTNode(expression.fieldName as ASTNode, anonimStatement2)
         fieldReference.fieldName = anonimStatement2.statement as NameInterface
+        FieldReferenceRegistry.listOfFieldReference.add(fieldReference)
         StatementMapper.addStatementToStatement(statement!!, fieldReference)
     }
 }
