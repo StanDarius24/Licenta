@@ -1,13 +1,6 @@
 ﻿namespace Interpreter.Models.metrics {
     public class MetricsModel
     {
-        public MetricsModel(string filePath, string newType)
-        {
-            type = newType;
-            path = filePath;
-        }
-        public string type { set; get; }
-        public string path { set; get; }
         
         public float AMW { set; get; }
         

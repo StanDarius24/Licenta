@@ -1,13 +1,19 @@
-﻿using Interpreter.Models.metrics;
+﻿using System;
+using System.Collections.Generic;
+using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services.metrics{
+namespace Interpreter.services.metrics
+{
     public class NameSpaceMetrics
     {
         public static void CalculateNameSpaceMethodsComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
-            MetricsAditionalData filler)
+            MetricsInFile filler)
         {
+            var newFiller = new MetricsInFile();
+            newFiller.nameSpaceMetrics = new List<MetricsInFile>();
+            newFiller.ExternalClasses = new MetricsAditionalData();
             foreach (var nameSpace in classOrHeaderWithPath.classOrHeader.namespaces)
             {
                 foreach (var declaration in nameSpace.declarations)
@@ -15,36 +21,57 @@ namespace Interpreter.services.metrics{
                     switch ((declaration as SimpleDeclaration)?.declSpecifier)
                     {
                         case CompositeTypeSpecifier:
-                            ClassMethodComplexity.CalculateClassMatrics((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier, filler, classOrHeaderWithPath, nameSpace);
+                            var classInterior = new MetricsAditionalData
+                            {
+                                name = nameSpace.name + ":" + (((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier)?.name as INameInterface)?.GetWrittenName(),
+                                path = classOrHeaderWithPath.path
+                            };
+                            ClassMethodComplexity.CalculateClassMatrics(
+                                (declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier,
+                                classInterior, classOrHeaderWithPath, nameSpace);
+                            newFiller.classMetrics.Add(classInterior);
                             break;
                         case SimpleDeclSpecifier:
                         {
-                            ClassMethodComplexity.CheckModifier(declaration as SimpleDeclaration, filler);
-                            foreach (var functionImplementation in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
-                            {
-                                if (((INameInterface) functionImplementation.name).GetWrittenName()
-                                    .Equals(
-                                        ((INameInterface) ((declaration as SimpleDeclaration).declarators[0] as FunctionDeclarator)!
-                                            .name).GetWrittenName()))
-                                {
-                                    filler.totalComplexity += functionImplementation.cyclomaticComplexity;
-                                    filler.numberOfMethods++;
-                                }
-                            }
+                            Console.Out.Write("test");
+                            // ClassMethodComplexity.CheckModifier(declaration as SimpleDeclaration, filler);
+                            // foreach (var functionImplementation in classOrHeaderWithPath.classOrHeader
+                            //              .methodsWithFunctionCalls)
+                            // {
+                            //     if (((INameInterface) (functionImplementation.declarator[0] as FunctionDeclarator)?.name)!.GetWrittenName()
+                            //         .Equals(
+                            //             ((INameInterface)
+                            //                 ((declaration as SimpleDeclaration).declarators[0] as FunctionDeclarator)!
+                            //                 .name).GetWrittenName()))
+                            //     {
+                            //         filler.totalComplexity += functionImplementation.cyclomaticComplexity;
+                            //         filler.numberOfMethods++;
+                            //     }
+                            // }
+                            //
                             break;
                         }
                         default:
                         {
                             if (declaration is FunctionDefinition definition)
                             {
-                                filler.numberOfMethods++;
-                                filler.totalComplexity += definition.cyclomaticComplexity;
+                                newFiller.ExternalClasses.numberOfMethods++;
+                                newFiller.ExternalClasses.totalComplexity += definition.cyclomaticComplexity;
+                                foreach (var elementInBody in (declaration as FunctionDefinition).body)
+                                {
+                                    if (elementInBody is FieldReference)
+                                    {
+                                        newFiller.ExternalClasses.numberOfAccessedAttributes++;
+                                    }
+                                }
                             }
+
                             break;
                         }
                     }
                 }
             }
+            filler.nameSpaceMetrics.Add(newFiller);
         }
     }
 };

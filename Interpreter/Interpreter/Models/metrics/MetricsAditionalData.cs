@@ -13,6 +13,9 @@
             numberOfAccessedAttributes = 0;
         }
 
+        public MetricsModel metricsModel = new MetricsModel();
+        public string name { set; get; }
+        
         public string path { set; get; }
         public float numberOfAccessedAttributes { set; get; }
         public float numberOfMethods { set; get; }

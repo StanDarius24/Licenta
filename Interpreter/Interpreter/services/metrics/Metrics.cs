@@ -23,17 +23,14 @@ namespace Interpreter.services.metrics
             foreach (var file in repositoryModelListOfCppFiles)
             {
                 var filler = CalculateNumberOfMethodsAndCyclomaticComplexity(file);
-                var metrics = new ArrayList
-                {
-                    new MetricsModel(file.path, "class"),
-                    new MetricsModel(file.path, "extern"),
-                    new MetricsModel(file.path, "namespace")
-                };
-                AverageMethodWeight.CalculateAmw(filler, metrics);
-                WeightedMethodCount.CalculateWmc(filler, metrics);
-                NumberOfMethods.CalculateNom(filler, metrics);
-                NumberOfPublicAttributes.CalculateNopa(filler, metrics);
-                NumberOfProtectedMembers.CalculateNopm(filler, metrics);
+                
+                AverageMethodWeight.CalculateAmw(filler);
+                WeightedMethodCount.CalculateWmc(filler);
+                NumberOfMethods.CalculateNom(filler);
+                NumberOfPublicAttributes.CalculateNopa(filler);
+                NumberOfProtectedMembers.CalculateNopm(filler);
+                AccessToForeignData.CalculateAtfd(filler);
+                // AccessToForeignData2.CalculateAtfd2(filler);
                 Console.Out.Write("test");
             }
         }
@@ -55,21 +52,14 @@ namespace Interpreter.services.metrics
 
         }
 
-        private static ArrayList CalculateNumberOfMethodsAndCyclomaticComplexity(
+        private static MetricsInFile CalculateNumberOfMethodsAndCyclomaticComplexity(
             ClassOrHeaderWithPath classOrHeaderWithPath)
         {
-            var fillersClass = new MetricsAditionalData();
-            var fillersExtern = new MetricsAditionalData();
-            var fillersNamespace = new MetricsAditionalData();
-            ClassMethodComplexity.CalculateClassMethodAndComplexity(classOrHeaderWithPath, fillersClass);
-            NameSpaceMetrics.CalculateNameSpaceMethodsComplexity(classOrHeaderWithPath, fillersNamespace);
-            ExternMetrics.CalculateExternMethodAndComplexity(classOrHeaderWithPath, fillersExtern);
-            return new ArrayList
-            {
-                fillersClass,
-                fillersExtern,
-                fillersNamespace
-            };
+            var metricsInFile = new MetricsInFile();
+            ClassMethodComplexity.CalculateClassMethodAndComplexity(classOrHeaderWithPath, metricsInFile); // modify
+            NameSpaceMetrics.CalculateNameSpaceMethodsComplexity(classOrHeaderWithPath, metricsInFile); // modify
+            ExternMetrics.CalculateExternMethodAndComplexity(classOrHeaderWithPath, metricsInFile);
+            return metricsInFile;
         }
     }
 }

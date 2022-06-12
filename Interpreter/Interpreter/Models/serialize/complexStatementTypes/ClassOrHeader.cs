@@ -13,8 +13,6 @@ namespace Interpreter.Models.serialize.complexStatementTypes
 
                 public IList<FunctionDefinition> methodsWithFunctionCalls = new List<FunctionDefinition>();
 
-                public IList<FunctionDeclarator> functionCallsWithoutImplementation = new List<FunctionDeclarator>();
-
                 public IList<ComplexCompositeTypeSpecifier> classList = new List<ComplexCompositeTypeSpecifier>(); 
 
                 public IList<LinkageSpecification> linkageSpecification = new List<LinkageSpecification>(); 

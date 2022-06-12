@@ -18,7 +18,7 @@ namespace Interpreter.services.metrics{
                         break;
                     }
                     case SimpleDeclaration simpleDeclaration when simpleDeclaration.declarators[0] is Declarator:
-                        CheckFieldType(simpleDeclaration, filler);
+                        CheckFieldType(simpleDeclaration, filler); // int x; Class y;
                         break;
                     case SimpleDeclaration simpleDeclaration
                         when simpleDeclaration.declarators[0] is not FunctionDeclarator:
@@ -71,10 +71,10 @@ namespace Interpreter.services.metrics{
         {
             foreach (var declarator in declaration.declarators)
             {
-                if (((Declarator) declarator).modifier.Equals("public"))
+                if (((Declarator) declarator).modifier.Equals("public") || ((Declarator) declarator).modifier.Equals("public:"))
                 {
                     filler.numberOfPublicFields++;
-                } else if(((Declarator) declarator).modifier.Equals("protected"))
+                } else if(((Declarator) declarator).modifier.Equals("protected") || ((Declarator) declarator).modifier.Equals("protected:"))
                 {
                     filler.numberOfProtectedMethodsFields++;
                 }
@@ -82,11 +82,15 @@ namespace Interpreter.services.metrics{
         }
 
         public static void CalculateClassMethodAndComplexity(ClassOrHeaderWithPath classOrHeaderWithPath,
-            MetricsAditionalData filler)
+            MetricsInFile filler)
         {
             foreach (var classeElement in classOrHeaderWithPath.classOrHeader.classList)
             {
-                CalculateClassMatrics(classeElement.our_class, filler, classOrHeaderWithPath, null);
+                var aditional = new MetricsAditionalData();
+                aditional.name = (classeElement.our_class.name as INameInterface)?.GetWrittenName();
+                aditional.path = classeElement.path;
+                CalculateClassMatrics(classeElement.our_class, aditional, classOrHeaderWithPath, null);
+                filler.classMetrics.Add(aditional); // check for abstract constructor, protected contained fields!
             }
         }
         
@@ -120,13 +124,13 @@ namespace Interpreter.services.metrics{
             var checkIfItsImplemented = false;
             var abstractMethod =
                 simpleDeclaration.declarators[0] as FunctionDeclarator;
-            foreach (var functionCall in classOrHeaderWithPath.classOrHeader.functionCallsWithoutImplementation)
+            foreach (var functionCall in classOrHeaderWithPath.classOrHeader.methodsWithFunctionCalls)
             {
-                if (abstractMethod == null || functionCall.name is not QualifiedName ||
-                    !((QualifiedName) functionCall.name).GetWrittenName()
+                if (abstractMethod == null || (functionCall.declarator[0] as FunctionDeclarator)?.name is not QualifiedName ||
+                    !((QualifiedName) (functionCall.declarator[0] as FunctionDeclarator)?.name)!.GetWrittenName()
                         .Equals((abstractMethod.name as INameInterface)?.GetWrittenName())) continue;
                 var boolean = false;
-                foreach (var qualifiers in (functionCall.name as QualifiedName)!.qualifier)
+                foreach (var qualifiers in ((functionCall.declarator[0] as FunctionDeclarator)?.name as QualifiedName)!.qualifier)
                 {
                     if (nameSpace != null)
                     {
