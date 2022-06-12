@@ -8,12 +8,13 @@
             totalComplexity = 0;
             numberOfPublicFields = 0;
             numberOfAbstractMethods = 0;
-            
             numberOfContainedFields = 0;
             numberOfProtectedMethodsFields = 0;
+            numberOfAccessedAttributes = 0;
         }
-        
+
         public string path { set; get; }
+        public float numberOfAccessedAttributes { set; get; }
         public float numberOfMethods { set; get; }
         public float numberOfConstructors { set; get; }
         public float numberOfPublicFields { set; get; }

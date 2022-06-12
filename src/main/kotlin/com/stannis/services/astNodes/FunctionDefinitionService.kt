@@ -3,10 +3,7 @@ package com.stannis.services.astNodes
 import com.stannis.dataModel.DeclarationSpecifierParent
 import com.stannis.dataModel.Statement
 import com.stannis.dataModel.statementTypes.*
-import com.stannis.function.DeclarationRegistry
-import com.stannis.function.FunctionCallsRegistry
-import com.stannis.function.FunctionDefinitionRegistry
-import com.stannis.function.ParentExtractor
+import com.stannis.function.*
 import com.stannis.parser.metrics.Metrics
 import com.stannis.services.cppastService.ASTNodeService
 import com.stannis.services.mapper.StatementMapper
@@ -18,8 +15,8 @@ object FunctionDefinitionService {
 
     var name: String? = ""
     fun solveFunctionDefinition(funcDef: CPPASTFunctionDefinition, statement: Statement?) {
-//        FunctionCallsRegistry.listOfFunctionCalls.clear()
-//        DeclarationRegistry.listOfDeclaration.clear()
+        //        FunctionCallsRegistry.listOfFunctionCalls.clear()
+        //        DeclarationRegistry.listOfDeclaration.clear()
         val functionDefinition = setFunction(funcDef)
         val anonimStatement3 = AnonimStatement.getNewAnonimStatement()
         if (funcDef.body != null) {
@@ -27,11 +24,12 @@ object FunctionDefinitionService {
         }
         functionDefinition.addToBody(anonimStatement3.statement as Statement)
         val parent = ParentExtractor.extractNameSpace(funcDef)
-        name = if (parent != null) {
-            (parent as CPPASTNamespaceDefinition).name.rawSignature
-        } else {
-            null
-        }
+        name =
+            if (parent != null) {
+                (parent as CPPASTNamespaceDefinition).name.rawSignature
+            } else {
+                null
+            }
         solveBody(functionDefinition)
         FunctionDefinitionRegistry.listFromTranslationUnit.add(functionDefinition)
         StatementMapper.addStatementToStatement(statement!!, functionDefinition)
@@ -49,20 +47,21 @@ object FunctionDefinitionService {
                 namespace = name
             )
 
-        DeclarationRegistry.listOfDeclaration.forEach { element -> run {
-            functionDefinitionOOp.body!!.add(element)
-        } }
+        DeclarationRegistry.listOfDeclaration.forEach { element ->
+            run { functionDefinitionOOp.body!!.add(element) }
+        }
 
-        FunctionCallsRegistry.listOfFunctionCalls.forEach { element -> run {
-            functionDefinitionOOp.body!!.add(element)
-        } }
+        FunctionCallsRegistry.listOfFunctionCalls.forEach { element ->
+            run { functionDefinitionOOp.body!!.add(element) }
+        }
+
+        FieldReferenceRegistry.listOfFieldReference.forEach { element ->
+            run { functionDefinitionOOp.body!!.add(element) }
+        }
         FunctionCallsRegistry.listOfFunctionCalls.clear()
         DeclarationRegistry.listOfDeclaration.clear()
+        FieldReferenceRegistry.listOfFieldReference.clear()
         FunctionDefinitionRegistry.listOfDefinitionOOP.add(functionDefinitionOOp)
-//        FunctionDefinitionRegistry.resolveWhenStatementIsFunctionCall(
-//            element,
-//            functionDefinition
-//        )
     }
 
     fun setFunction(funcDef: CPPASTFunctionDefinition): FunctionDefinition {

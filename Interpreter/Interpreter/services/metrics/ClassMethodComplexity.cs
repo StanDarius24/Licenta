@@ -100,6 +100,17 @@ namespace Interpreter.services.metrics{
 
             filler.numberOfMethods++;
             filler.totalComplexity += definition.cyclomaticComplexity;
+
+            if (definition.body != null && definition.body.Count > 0)
+            {
+                foreach (var element in definition.body)
+                {
+                    if (element is FieldReference)
+                    {
+                        filler.numberOfAccessedAttributes++;
+                    }
+                }
+            }
         }
         
         private static void CalculateClassMethodAndComplexitySimpleDeclaration(SimpleDeclaration simpleDeclaration,

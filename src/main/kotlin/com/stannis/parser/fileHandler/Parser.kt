@@ -82,7 +82,6 @@ class Parser {
                     astVisitorOverride.shouldVisitImplicitNames = true
                     astVisitorOverride.shouldVisitImplicitNameAlternates = true
                     astVisitorOverride.shouldVisitImplicitDestructorNames = true
-//                    checkForNamespace(translationUnit.declarations)
                     TranslationUnitRegistry.listOfDirectives =
                         translationUnit.includeDirectives.map { element -> element.toString() }
                     translationUnit.accept(astVisitorOverride)
