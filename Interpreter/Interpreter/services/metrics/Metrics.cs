@@ -31,6 +31,7 @@ namespace Interpreter.services.metrics
                 NumberOfProtectedMembers.CalculateNopm(filler);
                 AccessToForeignData.CalculateAtfd(filler);
                 // AccessToForeignData2.CalculateAtfd2(filler);
+                ForeignDataProvider.CalculateFdp(filler);
                 Console.Out.Write("test");
             }
         }

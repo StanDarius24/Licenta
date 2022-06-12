@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
 namespace Interpreter.services.metrics;
@@ -14,16 +15,28 @@ public class ForeignDataProvider
 
     private static void CalculateNameSpace(IList<MetricsInFile> fillerNameSpaceMetrics)
     {
-        throw new System.NotImplementedException();
+        if (fillerNameSpaceMetrics == null) return;
+        foreach (var fillerNameSpaceMetric in fillerNameSpaceMetrics)
+        {
+            CalculateExtern(fillerNameSpaceMetric.ExternalClasses);
+            CalculateClass(fillerNameSpaceMetric.classMetrics);
+        }
     }
 
     private static void CalculateClass(IList<MetricsAditionalData> fillerClassMetrics)
     {
-        throw new System.NotImplementedException();
+        if (fillerClassMetrics == null) return;
+        foreach (var fillerClassMetric in fillerClassMetrics)
+        {
+            fillerClassMetric.metricsModel.FDP = fillerClassMetric.numberOfattributesDifferentClass;
+        }
     }
 
     private static void CalculateExtern(MetricsAditionalData fillerExternalClasses)
     {
-        throw new System.NotImplementedException();
+        if (fillerExternalClasses!= null)
+        {
+            fillerExternalClasses.metricsModel.FDP = fillerExternalClasses.numberOfattributesDifferentClass;
+        }
     }
 }
