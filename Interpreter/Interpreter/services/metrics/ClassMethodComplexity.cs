@@ -1,4 +1,6 @@
-﻿using Interpreter.Models.metrics;
+﻿using System;
+using System.Collections;
+using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
@@ -104,19 +106,39 @@ namespace Interpreter.services.metrics{
 
             filler.numberOfMethods++;
             filler.totalComplexity += definition.cyclomaticComplexity;
-
-            if (definition.body != null && definition.body.Count > 0)
+            var listOfDeclarations = new ArrayList();
+            if (definition.body is not {Count: > 0}) return;
+            foreach (var element in definition.body)
             {
-                foreach (var element in definition.body)
+                switch (element)
                 {
-                    if (element is FieldReference)
-                    {
+                    case FieldReference:
                         filler.numberOfAccessedAttributes++;
+                        break;
+                    case DeclWithParent parent when parent.declaration is not DeclarationStatement:
+                    case DeclWithParent withParent when (withParent.declaration as DeclarationStatement)?.declarations == null:
+                        continue;
+                    case DeclWithParent parent:
+                    {
+                        foreach (var declaration in (parent.declaration as DeclarationStatement)?.declarations!)
+                        {
+                            if (declaration is not SimpleDeclaration) continue;
+                            var name = ((declaration as SimpleDeclaration).declSpecifier as INameInterface)
+                                ?.GetWrittenName();
+                            if (!listOfDeclarations.Contains(name))
+                            {
+                                listOfDeclarations.Add(name);
+                            }
+                        }
+                        break;
                     }
                 }
             }
+            filler.numberOfattributesDifferentClass = listOfDeclarations.Count;
+            listOfDeclarations.Clear();
         }
         
+
         private static void CalculateClassMethodAndComplexitySimpleDeclaration(SimpleDeclaration simpleDeclaration,
             ClassOrHeaderWithPath classOrHeaderWithPath, MetricsAditionalData filler,
             CompositeTypeSpecifier classeElement, NameSpace nameSpace)

@@ -55,17 +55,8 @@ namespace Interpreter.services.metrics
                         {
                             if (declaration is FunctionDefinition definition)
                             {
-                                newFiller.ExternalClasses.numberOfMethods++;
-                                newFiller.ExternalClasses.totalComplexity += definition.cyclomaticComplexity;
-                                foreach (var elementInBody in (declaration as FunctionDefinition).body)
-                                {
-                                    if (elementInBody is FieldReference)
-                                    {
-                                        newFiller.ExternalClasses.numberOfAccessedAttributes++;
-                                    }
-                                }
+                                ExternMetrics.CalculateFunctionDefinition(newFiller, definition);
                             }
-
                             break;
                         }
                     }
