@@ -17,6 +17,7 @@ namespace Interpreter.services.metrics{
                     case FunctionDefinition definition:
                     {
                         CalculateClassMethodAndComplexityFunctionDefinition(definition, filler);
+                        ExternMetrics.CheckIfOverridesMethod(filler, definition, classOrHeaderWithPath);
                         break;
                     }
                     case SimpleDeclaration simpleDeclaration when simpleDeclaration.declarators[0] is Declarator:
@@ -185,6 +186,7 @@ namespace Interpreter.services.metrics{
             {
                 filler.numberOfMethods += 1;
             }
+            
         }
     }
 }

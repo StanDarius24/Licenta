@@ -64,22 +64,24 @@ object CompositeTypeRegistry {
 
     fun solveFunction(declaration: CompositeTypeSpecifier, element: FunctionDefinition): Boolean {
         var elementToReplace: SimpleDeclaration? = null
-        declaration.declarations!!.forEach { declarationClass ->
-            run {
-                if (
-                    declarationClass is SimpleDeclaration &&
-                        declarationClass.declarators?.get(0) is FunctionDeclarator
-                ) {
+        if (declaration.declarations != null) {
+            declaration.declarations!!.forEach { declarationClass ->
+                run {
                     if (
-                        (declarationClass.declarators?.get(0) as FunctionDeclarator).name ==
-                            (element.declarator!![0].name as QualifiedName).lastName
+                        declarationClass is SimpleDeclaration &&
+                            declarationClass.declarators?.get(0) is FunctionDeclarator
                     ) {
                         if (
-                            (element.declarator!![0].name as QualifiedName)
-                                .qualifier!!
-                                .contains(declaration.name)
+                            (declarationClass.declarators?.get(0) as FunctionDeclarator).name ==
+                                (element.declarator!![0].name as QualifiedName).lastName
                         ) {
-                            elementToReplace = declarationClass
+                            if (
+                                (element.declarator!![0].name as QualifiedName)
+                                    .qualifier!!
+                                    .contains(declaration.name)
+                            ) {
+                                elementToReplace = declarationClass
+                            }
                         }
                     }
                 }

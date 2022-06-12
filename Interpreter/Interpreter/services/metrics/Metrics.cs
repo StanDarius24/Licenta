@@ -32,6 +32,9 @@ namespace Interpreter.services.metrics
                 AccessToForeignData.CalculateAtfd(filler);
                 // AccessToForeignData2.CalculateAtfd2(filler);
                 ForeignDataProvider.CalculateFdp(filler);
+                WeightOfaClass.CalculateWoc(filler);
+                BaseClassOverridingRatio.CalculateBOvR(filler);
+                
                 Console.Out.Write("test");
             }
         }

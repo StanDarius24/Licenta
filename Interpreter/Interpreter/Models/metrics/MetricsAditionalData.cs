@@ -18,6 +18,8 @@
         public string name { set; get; }
         
         public string path { set; get; }
+        
+        public float numberOfOverridingMethods { set; get; }
         public float numberOfattributesDifferentClass { set; get; }
         public float numberOfAccessedAttributes { set; get; }
         public float numberOfMethods { set; get; }

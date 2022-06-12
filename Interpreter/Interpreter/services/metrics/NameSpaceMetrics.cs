@@ -55,7 +55,7 @@ namespace Interpreter.services.metrics
                         {
                             if (declaration is FunctionDefinition definition)
                             {
-                                ExternMetrics.CalculateFunctionDefinition(newFiller, definition);
+                                ExternMetrics.CalculateFunctionDefinition(newFiller, definition, classOrHeaderWithPath);
                             }
                             break;
                         }

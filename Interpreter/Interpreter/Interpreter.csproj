@@ -144,6 +144,8 @@
         <Compile Include="services\metrics\AccessToForeignData.cs" />
         <Compile Include="services\metrics\AccessToForeignData2.cs" />
         <Compile Include="services\metrics\AverageMethodWeight.cs" />
+        <Compile Include="services\metrics\BaseClassOverridingRatio.cs" />
+        <Compile Include="services\metrics\ChangingClasses.cs" />
         <Compile Include="services\metrics\ClassMethodComplexity.cs" />
         <Compile Include="services\metrics\ExternMetrics.cs" />
         <Compile Include="services\metrics\ForeignDataProvider.cs" />
@@ -153,6 +155,7 @@
         <Compile Include="services\metrics\NumberOfProtectedMembers.cs" />
         <Compile Include="services\metrics\NumberOfPublicAttributes.cs" />
         <Compile Include="services\metrics\WeightedMethodCount.cs" />
+        <Compile Include="services\metrics\WeightOfaClass.cs" />
         <Compile Include="services\RelationsBetweenClassesAndHeaders.cs" />
         <Compile Include="services\RelationType.cs" />
         <Compile Include="Utility\Deserializer.cs" />
