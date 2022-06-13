@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
@@ -157,87 +158,84 @@ namespace Interpreter.services.metrics
                 classOrHeaderWithPath.ListOfComposition.Count <= 0) return;
             foreach (var compositionClass in classOrHeaderWithPath.ListOfComposition)
             {
-                var nr = CheckExtern(compositionClass.classOrHeader.methodsWithFunctionCalls, definition, filler);
-                if (nr > 0)
-                {
-                    var name = ((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
-                        .GetWrittenName();
-                    var newDic = new Dictionary<string, float>();
-                    newDic.Add(name, nr);
-                    filler.numberOfClassesThatCallsMethodX.Add(compositionClass.path, newDic);
-                }
+                CheckExtern(compositionClass.path, compositionClass.classOrHeader.methodsWithFunctionCalls, definition, filler);
+                
 
                 CheckInClass(compositionClass.classOrHeader.classList, definition, filler);
-
             }
         }
 
-        private static void CheckInClass(IEnumerable<ComplexCompositeTypeSpecifier> classList, FunctionDefinition definition,
+        private static void CheckInClass(IEnumerable<ComplexCompositeTypeSpecifier> classList,
+            FunctionDefinition definition,
             MetricsAditionalData filler)
         {
             var counter = 0;
             foreach (var elemInClass in classList)
             {
+                
                 foreach (var declarationInClass in elemInClass.our_class.declarations)
                 {
-                    
+                    var name = "";
                     if (declarationInClass is FunctionDefinition)
-                    {                            
-                        var boolEx = false;
+                    {
                         foreach (var elementInFunctionClassDefinition in
                                  (declarationInClass as FunctionDefinition).body)
                         {
                             if (elementInFunctionClassDefinition is FunctionCalls)
                             {
-                                if ((((elementInFunctionClassDefinition as FunctionCalls).name as FieldReference)!
-                                        .fieldName as INameInterface)!.GetWrittenName().Equals(
+                                name = (((elementInFunctionClassDefinition as FunctionCalls).name as FieldReference)!
+                                    .fieldName as INameInterface)!.GetWrittenName();
+                                if (name.Equals(
                                         ((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
                                         .GetWrittenName()))
                                 {
-                                    boolEx = true;
+                                    counter++;
                                 }
                             }
                         }
-                        if (boolEx)
-                        {
-                            counter++;
-                        }
+                    }
+                    if (counter > 0)
+                    {
+                        filler.numberOfClassesThatCallsMethodX.Add(new Tuple<string, string, int>(elemInClass.path +" "+ (elemInClass.our_class.name as INameInterface)!.GetWrittenName(),
+                            (((declarationInClass as FunctionDefinition)!.declarator[0] as FunctionDeclarator).name as INameInterface)!.GetWrittenName(),
+                            counter));
+                        counter = 0;
                     }
                 }
-                var newDic = new Dictionary<string, float>();
+
                 
-                newDic.Add(((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!.GetWrittenName(), counter);
-                counter = 0;
-                filler.numberOfClassesThatCallsMethodX.Add(elemInClass.path, newDic);
             }
         }
 
-        private static int CheckExtern(ICollection<FunctionDefinition> methodsWithFunctionCalls,
+        private static void CheckExtern(string compositionClassPath,
+            ICollection<FunctionDefinition> methodsWithFunctionCalls,
             FunctionDefinition definition, MetricsAditionalData filler)
         {
-            var varBool = 0;
-            if (methodsWithFunctionCalls.Count <= 0) return varBool;
-            foreach (var methodIntern in methodsWithFunctionCalls)
+            
+            if (methodsWithFunctionCalls.Count > 0)
             {
-                var booleanValue = false;
-                foreach (var elementInBody in methodIntern.body)
+                foreach (var methodIntern in methodsWithFunctionCalls)
                 {
-                    if (elementInBody is not FunctionCalls) continue;
-                    if (((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
-                        .GetWrittenName() == ((elementInBody as FunctionCalls).name as INameInterface)!
-                        .GetWrittenName())
+                    var booleanValue = 0;
+                    foreach (var elementInBody in methodIntern.body)
                     {
-                        booleanValue = true;
+                        if (elementInBody is not FunctionCalls) continue;
+                        if (((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
+                            .GetWrittenName() == ((elementInBody as FunctionCalls).name as INameInterface)!
+                            .GetWrittenName())
+                        {
+                            booleanValue ++;
+                        }
+                    }
+                    if (booleanValue > 0)
+                    {
+                        filler.numberOfClassesThatCallsMethodX.Add(new Tuple<string, string, int>(compositionClassPath,
+                            ((methodIntern.declarator[0] as FunctionDeclarator)!.name as INameInterface)!.GetWrittenName(),
+                            booleanValue));
                     }
                 }
-
-                if (booleanValue)
-                {
-                    varBool++;
-                }
             }
-
-            return varBool;
+          
         }
 
 

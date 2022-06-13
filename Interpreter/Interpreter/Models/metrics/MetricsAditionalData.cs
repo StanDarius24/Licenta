@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Interpreter.Models.metrics{
     public class MetricsAditionalData
@@ -21,7 +22,8 @@ namespace Interpreter.Models.metrics{
         
         public string path { set; get; }
 
-        public Dictionary<string, Dictionary<string,float>> numberOfClassesThatCallsMethodX = new();
+        public List<Tuple<string, string, int>>
+            numberOfClassesThatCallsMethodX = new List<Tuple<string, string, int>>();
         public float numberOfOverridingMethods { set; get; }
         public float numberOfattributesDifferentClass { set; get; }
         public float numberOfAccessedAttributes { set; get; }
