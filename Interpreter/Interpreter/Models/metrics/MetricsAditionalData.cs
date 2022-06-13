@@ -1,4 +1,6 @@
-﻿namespace Interpreter.Models.metrics{
+﻿using System.Collections.Generic;
+
+namespace Interpreter.Models.metrics{
     public class MetricsAditionalData
     {
         public MetricsAditionalData()
@@ -18,7 +20,8 @@
         public string name { set; get; }
         
         public string path { set; get; }
-        
+
+        public Dictionary<string, Dictionary<string,float>> numberOfClassesThatCallsMethodX = new();
         public float numberOfOverridingMethods { set; get; }
         public float numberOfattributesDifferentClass { set; get; }
         public float numberOfAccessedAttributes { set; get; }

@@ -31,6 +31,8 @@ namespace Interpreter.services.metrics
                 filler.ExternalClasses.numberOfConstructors++;
             }
 
+            CallFromDifferentClassesCount(filler, functionDefinition, classOrHeaderWithPath);
+
             if ((functionDefinition.declarator[0] as FunctionDeclarator)?.name is Name)
             {
                 filler.ExternalClasses.numberOfMethods++;
@@ -72,6 +74,12 @@ namespace Interpreter.services.metrics
             listOfDeclarations.Clear();
 
             CheckIfOverridesMethod(filler.ExternalClasses, functionDefinition, classOrHeaderWithPath);
+        }
+
+        private static void CallFromDifferentClassesCount(MetricsInFile filler, FunctionDefinition functionDefinition,
+            ClassOrHeaderWithPath classOrHeaderWithPath)
+        {
+            Console.Out.Write("test");
         }
 
         public static void CheckIfOverridesMethod(MetricsAditionalData filler, FunctionDefinition functionDefinition, ClassOrHeaderWithPath classOrHeaderWithPath)

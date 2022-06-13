@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services.metrics{
+namespace Interpreter.services.metrics
+{
     public class ClassMethodComplexity
     {
-
-        public static void CalculateClassMatrics(CompositeTypeSpecifier classeElement, MetricsAditionalData filler, ClassOrHeaderWithPath classOrHeaderWithPath, NameSpace nameSpace)
+        public static void CalculateClassMatrics(CompositeTypeSpecifier classeElement, MetricsAditionalData filler,
+            ClassOrHeaderWithPath classOrHeaderWithPath, NameSpace nameSpace)
         {
             foreach (var declaration in classeElement.declarations)
             {
@@ -16,7 +17,7 @@ namespace Interpreter.services.metrics{
                 {
                     case FunctionDefinition definition:
                     {
-                        CalculateClassMethodAndComplexityFunctionDefinition(definition, filler);
+                        CalculateClassMethodAndComplexityFunctionDefinition(definition, filler, classOrHeaderWithPath);
                         ExternMetrics.CheckIfOverridesMethod(filler, definition, classOrHeaderWithPath);
                         break;
                     }
@@ -47,6 +48,7 @@ namespace Interpreter.services.metrics{
                     {
                         filler.numberOfProtectedMethodsFields++;
                     }
+
                     if (declaration.declSpecifier is SimpleDeclSpecifier)
                     {
                         if (((SimpleDeclSpecifier) declaration.declSpecifier).isVirtual)
@@ -74,10 +76,13 @@ namespace Interpreter.services.metrics{
         {
             foreach (var declarator in declaration.declarators)
             {
-                if (((Declarator) declarator).modifier.Equals("public") || ((Declarator) declarator).modifier.Equals("public:"))
+                if (((Declarator) declarator).modifier.Equals("public") ||
+                    ((Declarator) declarator).modifier.Equals("public:"))
                 {
                     filler.numberOfPublicFields++;
-                } else if(((Declarator) declarator).modifier.Equals("protected") || ((Declarator) declarator).modifier.Equals("protected:"))
+                }
+                else if (((Declarator) declarator).modifier.Equals("protected") ||
+                         ((Declarator) declarator).modifier.Equals("protected:"))
                 {
                     filler.numberOfProtectedMethodsFields++;
                 }
@@ -96,14 +101,17 @@ namespace Interpreter.services.metrics{
                 filler.classMetrics.Add(aditional); // check for abstract constructor, protected contained fields!
             }
         }
-        
+
         private static void CalculateClassMethodAndComplexityFunctionDefinition(FunctionDefinition definition,
-            MetricsAditionalData filler)
+            MetricsAditionalData filler, ClassOrHeaderWithPath classOrHeaderWithPath)
         {
             if (Metrics.IsConstructor(definition))
             {
                 filler.numberOfConstructors++;
             }
+
+            CallFromDifferentClassesCount(filler, definition, classOrHeaderWithPath);
+
 
             filler.numberOfMethods++;
             filler.totalComplexity += definition.cyclomaticComplexity;
@@ -117,7 +125,8 @@ namespace Interpreter.services.metrics{
                         filler.numberOfAccessedAttributes++;
                         break;
                     case DeclWithParent parent when parent.declaration is not DeclarationStatement:
-                    case DeclWithParent withParent when (withParent.declaration as DeclarationStatement)?.declarations == null:
+                    case DeclWithParent withParent
+                        when (withParent.declaration as DeclarationStatement)?.declarations == null:
                         continue;
                     case DeclWithParent parent:
                     {
@@ -131,14 +140,106 @@ namespace Interpreter.services.metrics{
                                 listOfDeclarations.Add(name);
                             }
                         }
+
                         break;
                     }
                 }
             }
+
             filler.numberOfattributesDifferentClass = listOfDeclarations.Count;
             listOfDeclarations.Clear();
         }
-        
+
+        public static void CallFromDifferentClassesCount(MetricsAditionalData filler, FunctionDefinition definition,
+            ClassOrHeaderWithPath classOrHeaderWithPath)
+        {
+            if (classOrHeaderWithPath.ListOfComposition == null ||
+                classOrHeaderWithPath.ListOfComposition.Count <= 0) return;
+            foreach (var compositionClass in classOrHeaderWithPath.ListOfComposition)
+            {
+                var nr = CheckExtern(compositionClass.classOrHeader.methodsWithFunctionCalls, definition, filler);
+                if (nr > 0)
+                {
+                    var name = ((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
+                        .GetWrittenName();
+                    var newDic = new Dictionary<string, float>();
+                    newDic.Add(name, nr);
+                    filler.numberOfClassesThatCallsMethodX.Add(compositionClass.path, newDic);
+                }
+
+                CheckInClass(compositionClass.classOrHeader.classList, definition, filler);
+
+            }
+        }
+
+        private static void CheckInClass(IEnumerable<ComplexCompositeTypeSpecifier> classList, FunctionDefinition definition,
+            MetricsAditionalData filler)
+        {
+            var counter = 0;
+            foreach (var elemInClass in classList)
+            {
+                foreach (var declarationInClass in elemInClass.our_class.declarations)
+                {
+                    
+                    if (declarationInClass is FunctionDefinition)
+                    {                            
+                        var boolEx = false;
+                        foreach (var elementInFunctionClassDefinition in
+                                 (declarationInClass as FunctionDefinition).body)
+                        {
+                            if (elementInFunctionClassDefinition is FunctionCalls)
+                            {
+                                if ((((elementInFunctionClassDefinition as FunctionCalls).name as FieldReference)!
+                                        .fieldName as INameInterface)!.GetWrittenName().Equals(
+                                        ((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
+                                        .GetWrittenName()))
+                                {
+                                    boolEx = true;
+                                }
+                            }
+                        }
+                        if (boolEx)
+                        {
+                            counter++;
+                        }
+                    }
+                }
+                var newDic = new Dictionary<string, float>();
+                
+                newDic.Add(((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!.GetWrittenName(), counter);
+                counter = 0;
+                filler.numberOfClassesThatCallsMethodX.Add(elemInClass.path, newDic);
+            }
+        }
+
+        private static int CheckExtern(ICollection<FunctionDefinition> methodsWithFunctionCalls,
+            FunctionDefinition definition, MetricsAditionalData filler)
+        {
+            var varBool = 0;
+            if (methodsWithFunctionCalls.Count <= 0) return varBool;
+            foreach (var methodIntern in methodsWithFunctionCalls)
+            {
+                var booleanValue = false;
+                foreach (var elementInBody in methodIntern.body)
+                {
+                    if (elementInBody is not FunctionCalls) continue;
+                    if (((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
+                        .GetWrittenName() == ((elementInBody as FunctionCalls).name as INameInterface)!
+                        .GetWrittenName())
+                    {
+                        booleanValue = true;
+                    }
+                }
+
+                if (booleanValue)
+                {
+                    varBool++;
+                }
+            }
+
+            return varBool;
+        }
+
 
         private static void CalculateClassMethodAndComplexitySimpleDeclaration(SimpleDeclaration simpleDeclaration,
             ClassOrHeaderWithPath classOrHeaderWithPath, MetricsAditionalData filler,
@@ -149,11 +250,13 @@ namespace Interpreter.services.metrics{
                 simpleDeclaration.declarators[0] as FunctionDeclarator;
             foreach (var functionCall in classOrHeaderWithPath.classOrHeader.methodsWithFunctionCalls)
             {
-                if (abstractMethod == null || (functionCall.declarator[0] as FunctionDeclarator)?.name is not QualifiedName ||
+                if (abstractMethod == null ||
+                    (functionCall.declarator[0] as FunctionDeclarator)?.name is not QualifiedName ||
                     !((QualifiedName) (functionCall.declarator[0] as FunctionDeclarator)?.name)!.GetWrittenName()
                         .Equals((abstractMethod.name as INameInterface)?.GetWrittenName())) continue;
                 var boolean = false;
-                foreach (var qualifiers in ((functionCall.declarator[0] as FunctionDeclarator)?.name as QualifiedName)!.qualifier)
+                foreach (var qualifiers in ((functionCall.declarator[0] as FunctionDeclarator)?.name as QualifiedName)!
+                         .qualifier)
                 {
                     if (nameSpace != null)
                     {
@@ -162,7 +265,9 @@ namespace Interpreter.services.metrics{
                             boolean = true;
                         }
                     }
-                    if (((INameInterface) classeElement.name).GetWrittenName().Equals(((INameInterface) qualifiers).GetWrittenName()))
+
+                    if (((INameInterface) classeElement.name).GetWrittenName()
+                        .Equals(((INameInterface) qualifiers).GetWrittenName()))
                     {
                         if (nameSpace == null)
                         {
@@ -186,7 +291,6 @@ namespace Interpreter.services.metrics{
             {
                 filler.numberOfMethods += 1;
             }
-            
         }
     }
 }

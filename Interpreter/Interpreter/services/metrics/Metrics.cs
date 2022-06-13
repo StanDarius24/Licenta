@@ -29,12 +29,12 @@ namespace Interpreter.services.metrics
                 NumberOfMethods.CalculateNom(filler);
                 NumberOfPublicAttributes.CalculateNopa(filler);
                 NumberOfProtectedMembers.CalculateNopm(filler);
-                AccessToForeignData.CalculateAtfd(filler);
+                // AccessToForeignData.CalculateAtfd(filler); not sure
                 // AccessToForeignData2.CalculateAtfd2(filler);
                 ForeignDataProvider.CalculateFdp(filler);
                 WeightOfaClass.CalculateWoc(filler);
                 BaseClassOverridingRatio.CalculateBOvR(filler);
-                
+                ChangingClasses.calculateCc(filler); 
                 Console.Out.Write("test");
             }
         }
