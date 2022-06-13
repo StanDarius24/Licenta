@@ -99,7 +99,6 @@ class Parser {
                             JsonBuilder.createJson(TranslationUnitService.translationUnitCache)?.let { out.write(it) }
                         }
                     }
-//                    Metrics.calculateCyclomaticComplexity(filepath)
                     TranslationUnitRegistry.clearAllData()
                 } else {
                     println()

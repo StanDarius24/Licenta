@@ -37,7 +37,7 @@ object CompositeTypeRegistry {
 
             val classToAdd =
                 ComplexCompositeTypeSpecifier(
-                    our_class = keepImportantType(node),
+                    our_class = node,
                     path = this.filepath,
                     library = datax
                 )
@@ -45,17 +45,6 @@ object CompositeTypeRegistry {
                 list!!.add(classToAdd)
             }
         }
-    }
-
-    private fun keepImportantType(node: CompositeTypeSpecifier): CompositeTypeSpecifier {
-        if (node.declarations != null) {
-            node.declarations!!.forEach { declaration -> run { locateDesireTypes(declaration) } }
-        }
-        return node
-    }
-
-    private fun locateDesireTypes(declaration: DeclarationParent) {
-        println()
     }
 
     fun setPath(filepath: String) {

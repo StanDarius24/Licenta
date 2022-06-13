@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
-namespace Interpreter.Utility{
+namespace Interpreter.Utility
+{
     public class JarRunner
     {
         public static void RunJar(string path)
         {
-            var process = Process.GetCurrentProcess(); // Or whatever method you are using
+            var process = Process.GetCurrentProcess();
             if (process.MainModule == null) return;
             var fullPath = process.MainModule.FileName;
-            
             var list = fullPath.Split(OperatingSystem.GetSeparator());
             list = list.Take(Array.IndexOf(list, "Interpreter")).ToArray();
-
             var projectPath = string.Join(OperatingSystem.GetSeparator().ToString(), list);
-        
             var processInfo = new ProcessStartInfo("java.exe",
                 $"-jar {projectPath}{OperatingSystem.GetSeparator()}target{OperatingSystem.GetSeparator()}KotlinLicenta-1.0-SNAPSHOT-jar-with-dependencies.jar {path} oop")
             {
@@ -33,9 +32,33 @@ namespace Interpreter.Utility{
             var exitCode = proc.ExitCode;
             if (exitCode != 0)
             {
-                Console.Out.Write("Error running jar, exit code " + exitCode);
+                if (exitCode == 1)
+                {
+                    Console.Out.Write("Jar Not CREATED!");
+                    CreateJarFile(projectPath, path);
+                }
             }
+
             proc.Close();
+        }
+
+        private static void CreateJarFile(string path, string projectPath)
+        {
+            var process = new Process
+            {
+                StartInfo =
+                {
+                    FileName = "mvn",                        
+                    WorkingDirectory = $@"{path}",
+                    Arguments = "package",
+                }
+            };
+            Thread.Sleep(1000);
+            process.Start();
+
+            process.WaitForExit();
+            RunJar(projectPath);
+
         }
     }
 }

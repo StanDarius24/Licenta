@@ -34,7 +34,7 @@ namespace Interpreter.services.metrics
                 ForeignDataProvider.CalculateFdp(filler);
                 WeightOfaClass.CalculateWoc(filler);
                 BaseClassOverridingRatio.CalculateBOvR(filler);
-                ChangingClasses.CalculateCc(filler); 
+                ChangingClassesMethods.CalculateCcCm(filler); 
                 Console.Out.Write("test");
             }
         }

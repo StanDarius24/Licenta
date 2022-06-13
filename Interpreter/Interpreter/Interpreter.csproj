@@ -145,7 +145,7 @@
         <Compile Include="services\metrics\AccessToForeignData2.cs" />
         <Compile Include="services\metrics\AverageMethodWeight.cs" />
         <Compile Include="services\metrics\BaseClassOverridingRatio.cs" />
-        <Compile Include="services\metrics\ChangingClasses.cs" />
+        <Compile Include="services\metrics\ChangingClassesMethods.cs" />
         <Compile Include="services\metrics\ClassMethodComplexity.cs" />
         <Compile Include="services\metrics\ExternMetrics.cs" />
         <Compile Include="services\metrics\ForeignDataProvider.cs" />
