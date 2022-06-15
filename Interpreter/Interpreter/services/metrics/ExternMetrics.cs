@@ -14,7 +14,7 @@ namespace Interpreter.services.metrics
         {
             if (filler.ExternalClasses == null)
             {
-                filler.ExternalClasses = new MetricsAditionalData();
+                filler.ExternalClasses = new MetricsAditionalData("extern", classOrHeaderWithPath.path);
             }
 
             foreach (var functionDefinition in classOrHeaderWithPath.classOrHeader.methodsWithFunctionCalls)

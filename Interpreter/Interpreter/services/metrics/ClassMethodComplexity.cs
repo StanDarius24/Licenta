@@ -95,9 +95,7 @@ namespace Interpreter.services.metrics
         {
             foreach (var classeElement in classOrHeaderWithPath.classOrHeader.classList)
             {
-                var aditional = new MetricsAditionalData();
-                aditional.name = (classeElement.our_class.name as INameInterface)?.GetWrittenName();
-                aditional.path = classeElement.path;
+                var aditional = new MetricsAditionalData((classeElement.our_class.name as INameInterface)?.GetWrittenName(), classeElement.path);
                 CalculateClassMatrics(classeElement.our_class, aditional, classOrHeaderWithPath, null);
                 filler.classMetrics.Add(aditional); // check for abstract constructor, protected contained fields!
             }

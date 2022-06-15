@@ -35,6 +35,9 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="ClosedXML">
+          <HintPath>..\packages\ClosedXML.0.95.4\lib\net46\ClosedXML.dll</HintPath>
+        </Reference>
         <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
           <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
         </Reference>
@@ -51,6 +54,7 @@
         <Compile Include="Models\metrics\MetricsAditionalData.cs" />
         <Compile Include="Models\metrics\MetricsInFile.cs" />
         <Compile Include="Models\metrics\MetricsModel.cs" />
+        <Compile Include="Models\metrics\MetricsRegistry.cs" />
         <Compile Include="Models\serialize\Project.cs" />
         <Compile Include="Models\serialize\Solution.cs" />
         <Compile Include="Models\serialize\RepositoryModel.cs" />
@@ -137,12 +141,10 @@
         <Compile Include="Models\serialize\VcxprojStructure.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="services\DataMapper.cs" />
         <Compile Include="services\DataRegistry.cs" />
         <Compile Include="services\DeclarationType.cs" />
         <Compile Include="services\DirectiveFinder.cs" />
         <Compile Include="services\metrics\AccessToForeignData.cs" />
-        <Compile Include="services\metrics\AccessToForeignData2.cs" />
         <Compile Include="services\metrics\AverageMethodWeight.cs" />
         <Compile Include="services\metrics\BaseClassOverridingRatio.cs" />
         <Compile Include="services\metrics\ChangingClassesMethods.cs" />
@@ -156,9 +158,9 @@
         <Compile Include="services\metrics\NumberOfPublicAttributes.cs" />
         <Compile Include="services\metrics\WeightedMethodCount.cs" />
         <Compile Include="services\metrics\WeightOfaClass.cs" />
-        <Compile Include="services\RelationsBetweenClassesAndHeaders.cs" />
         <Compile Include="services\RelationType.cs" />
         <Compile Include="Utility\Deserializer.cs" />
+        <Compile Include="Utility\Exporter.cs" />
         <Compile Include="Utility\JarRunner.cs" />
         <Compile Include="Utility\KnownTypesBinder.cs" />
         <Compile Include="Utility\Logic.cs" />

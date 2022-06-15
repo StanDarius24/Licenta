@@ -13,7 +13,7 @@ namespace Interpreter.services.metrics
         {
             var newFiller = new MetricsInFile();
             newFiller.nameSpaceMetrics = new List<MetricsInFile>();
-            newFiller.ExternalClasses = new MetricsAditionalData();
+            newFiller.ExternalClasses = new MetricsAditionalData("extern", classOrHeaderWithPath.path);
             foreach (var nameSpace in classOrHeaderWithPath.classOrHeader.namespaces)
             {
                 foreach (var declaration in nameSpace.declarations)
@@ -21,11 +21,7 @@ namespace Interpreter.services.metrics
                     switch ((declaration as SimpleDeclaration)?.declSpecifier)
                     {
                         case CompositeTypeSpecifier:
-                            var classInterior = new MetricsAditionalData
-                            {
-                                name = nameSpace.name + ":" + (((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier)?.name as INameInterface)?.GetWrittenName(),
-                                path = classOrHeaderWithPath.path
-                            };
+                            var classInterior = new MetricsAditionalData(nameSpace.name + ":" + (((declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier)?.name as INameInterface)?.GetWrittenName(), classOrHeaderWithPath.path);
                             ClassMethodComplexity.CalculateClassMatrics(
                                 (declaration as SimpleDeclaration).declSpecifier as CompositeTypeSpecifier,
                                 classInterior, classOrHeaderWithPath, nameSpace);

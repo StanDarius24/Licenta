@@ -21,9 +21,13 @@ namespace Interpreter.Utility
             }
             catch (Exception e)
             {
-                Console.Out.Write(e);
                 return null;
             }
+        }
+
+        public static List<string> FilterData(List<string> list)
+        {
+            return list.FindAll(e => e.EndsWith(".json"));
         }
         
     }
