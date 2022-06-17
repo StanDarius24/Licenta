@@ -149,6 +149,7 @@
         <Compile Include="services\metrics\BaseClassOverridingRatio.cs" />
         <Compile Include="services\metrics\ChangingClassesMethods.cs" />
         <Compile Include="services\metrics\ClassMethodComplexity.cs" />
+        <Compile Include="services\metrics\CouplingIntensityDispersion.cs" />
         <Compile Include="services\metrics\ExternMetrics.cs" />
         <Compile Include="services\metrics\ForeignDataProvider.cs" />
         <Compile Include="services\metrics\Metrics.cs" />

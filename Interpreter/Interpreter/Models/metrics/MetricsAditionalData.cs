@@ -29,6 +29,8 @@ namespace Interpreter.Models.metrics{
         public float numberOfMethods { set; get; }
         public float numberOfConstructors { set; get; }
         public float numberOfPublicFields { set; get; }
+        
+        public float numberOfMethodCalls { set; get; }
         public float numberOfContainedFields { set; get; }
         public float numberOfProtectedMethodsFields { set; get; }
         public float totalComplexity { set; get; }

@@ -46,17 +46,27 @@ object FunctionDefinitionService {
                 body = ArrayList(),
                 namespace = name
             )
-
+        println()
         DeclarationRegistry.listOfDeclaration.forEach { element ->
             run { functionDefinitionOOp.body!!.add(element) }
         }
 
         FunctionCallsRegistry.listOfFunctionCalls.forEach { element ->
-            run { functionDefinitionOOp.body!!.add(element) }
+            run {
+                val new = FunctionCallsRegistry.generateFunctionWithParent(element, functionDefinition)
+                if (new != null) {
+                functionDefinitionOOp.body!!.add(new)
+                    } else {
+                    functionDefinitionOOp.body!!.add(element)
+                }
+            }
         }
 
         FieldReferenceRegistry.listOfFieldReference.forEach { element ->
-            run { functionDefinitionOOp.body!!.add(element) }
+            run {
+                FieldReferenceRegistry.checkFieldAndGenerate(element, functionDefinition)
+                functionDefinitionOOp.body!!.add(element)
+            }
         }
         FunctionCallsRegistry.listOfFunctionCalls.clear()
         DeclarationRegistry.listOfDeclaration.clear()

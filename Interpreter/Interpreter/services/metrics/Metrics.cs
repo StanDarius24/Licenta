@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
@@ -38,6 +37,7 @@ namespace Interpreter.services.metrics
                 WeightOfaClass.CalculateWoc(filler);
                 BaseClassOverridingRatio.CalculateBOvR(filler);
                 ChangingClassesMethods.CalculateCcCm(filler);
+                
                 MetricsRegistry.metricsList.Add(filler);
                 Exporter.CreateMetricFile(solveDataPath);
                 Console.Out.Write("test");

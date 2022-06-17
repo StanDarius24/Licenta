@@ -42,6 +42,12 @@ namespace Interpreter.services.metrics
             var listOfDeclarations = new ArrayList();
             foreach (var elementInBody in functionDefinition.body)
             {
+
+                if (elementInBody is FunctionCalls)
+                {
+                    Console.WriteLine("test");
+                }
+                
                 if (elementInBody is not DeclWithParent) continue;
                 if ((elementInBody as DeclWithParent).declaration is not DeclarationStatement) continue;
                 foreach (var declaration in (((elementInBody as DeclWithParent).declaration as DeclarationStatement)!)
