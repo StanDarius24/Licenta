@@ -4,7 +4,7 @@ using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services.metrics
+namespace Interpreter.services.metrics.aditionalData
 {
     public class NameSpaceMetrics
     {
@@ -29,7 +29,7 @@ namespace Interpreter.services.metrics
                             break;
                         case SimpleDeclSpecifier:
                         {
-                            Console.Out.Write("test");
+                            Console.WriteLine("test");
                             // ClassMethodComplexity.CheckModifier(declaration as SimpleDeclaration, filler);
                             // foreach (var functionImplementation in classOrHeaderWithPath.classOrHeader
                             //              .methodsWithFunctionCalls)

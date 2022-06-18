@@ -55,7 +55,7 @@ namespace Interpreter.services{
                         }
                         else
                         {
-                            Console.Out.Write("test");
+                            Console.WriteLine("test");
                         }
                     }
                 }

@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
-namespace Interpreter.services.metrics{
+namespace Interpreter.services.metrics.calculation{
     public static class NumberOfPublicAttributes
     {
         public static void CalculateNopa(MetricsInFile filler)

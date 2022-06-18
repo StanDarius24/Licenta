@@ -26,14 +26,14 @@ namespace Interpreter.Utility{
 
             foreach (var solutionPath in listOfSolutions)
             {
-                Console.Write("Started analysing " + solutionPath);
+                Console.WriteLine("Started analysing " + solutionPath);
                 var solution = new Solution();
                 var text = Reader.ReadFromPath(solutionPath);
-                Console.Write("The file has been read " + solutionPath);
+                Console.WriteLine("The file has been read " + solutionPath);
                 DataRegistry.deserializedData = Deserializer.DeserializeData(text);
-                Console.Write("The file has been deserialized " + solutionPath);
+                Console.WriteLine("The file has been deserialized " + solutionPath);
                 dirFinder.LinkDirective();
-                Console.Write("Relations created " + solutionPath);
+                Console.WriteLine("Relations created " + solutionPath);
                 foreach (var repositoryModel in DataRegistry.deserializedData)
                 {
                     solution.deserializedData.Add(repositoryModel);
@@ -41,7 +41,7 @@ namespace Interpreter.Utility{
                 project.solution.Add(solution);
             }
             Metrics.CalculateMetrics(StringService.SolveDataPath(data));
-            Console.Out.Write("test");
+            Console.WriteLine("test");
         }    
     }
 };

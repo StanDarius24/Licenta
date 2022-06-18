@@ -36,7 +36,7 @@ namespace Interpreter.services{
         {
             if (element.path.Contains("LinkageImplementation"))
             {
-                Console.Out.Write("test"); 
+                Console.WriteLine("test"); 
             }
             return false;
         }

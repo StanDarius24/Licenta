@@ -18,6 +18,8 @@ namespace Interpreter.Utility{
                 {
                     knownTypes = new List<Type>
                     {
+                        typeof(FieldReferenceWithParent),
+                        typeof(FunctionCallsWithDeclaration),
                         typeof(DeclWithParent),
                         typeof(NameSpace),
                         typeof(CatchHandler),
@@ -26,7 +28,6 @@ namespace Interpreter.Utility{
                         typeof(DeclarationWithParent),
                         typeof(DeclarationWithClass),
                         typeof(ClassOrHeader),
-                        typeof(FunctionCallWithDeclaration),
                         typeof(ClassOrHeaderWithPath),
                         typeof(AliasDeclaration),      
                         typeof(LabelStatement),

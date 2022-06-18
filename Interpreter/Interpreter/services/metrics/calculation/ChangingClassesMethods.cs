@@ -1,7 +1,6 @@
-﻿using System;
-using Interpreter.Models.metrics;
+﻿using Interpreter.Models.metrics;
 
-namespace Interpreter.services.metrics{
+namespace Interpreter.services.metrics.calculation{
     public class ChangingClassesMethods
     {
         public static void CalculateCcCm(MetricsInFile filler)

@@ -5,7 +5,7 @@ using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
 using Interpreter.Models.serialize.statementTypes;
 
-namespace Interpreter.services.metrics
+namespace Interpreter.services.metrics.aditionalData
 {
     public class ClassMethodComplexity
     {
@@ -47,7 +47,7 @@ namespace Interpreter.services.metrics
                 {
                     if ((declarator as FunctionDeclarator).modifier.Equals("protected:"))
                     {
-                        filler.numberOfProtectedMethodsFields++;
+                        filler.numberOfProtectedMethods++;
                     }
 
                     if (declaration.declSpecifier is SimpleDeclSpecifier)
@@ -66,7 +66,7 @@ namespace Interpreter.services.metrics
                             filler.numberOfPublicFields++;
                             break;
                         case "protected":
-                            filler.numberOfProtectedMethodsFields++;
+                            filler.numberOfProtectedFields++;
                             break;
                     }
                 }
@@ -85,7 +85,7 @@ namespace Interpreter.services.metrics
                 else if (((Declarator) declarator).modifier.Equals("protected") ||
                          ((Declarator) declarator).modifier.Equals("protected:"))
                 {
-                    filler.numberOfProtectedMethodsFields++;
+                    filler.numberOfProtectedFields++;
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace Interpreter.services.metrics
         private static void CalculateClassMethodAndComplexityFunctionDefinition(FunctionDefinition definition,
             MetricsAditionalData filler, ClassOrHeaderWithPath classOrHeaderWithPath)
         {
-            if (Metrics.IsConstructor(definition))
+            if (MethodService.IsConstructor(definition))
             {
                 filler.numberOfConstructors++;
             }
@@ -120,8 +120,8 @@ namespace Interpreter.services.metrics
             {
                 switch (element)
                 {
-                    case FieldReference:
-                        filler.numberOfAccessedAttributes++;
+                    case FieldReferenceWithParent:
+                        filler.numberOfFieldReferenceFromClass++;
                         break;
                     case DeclWithParent parent when parent.declaration is not DeclarationStatement:
                     case DeclWithParent withParent
@@ -145,7 +145,7 @@ namespace Interpreter.services.metrics
                 }
             }
 
-            filler.numberOfattributesDifferentClass = listOfDeclarations.Count;
+            filler.numberOfClassesFieldReference = listOfDeclarations.Count;
             listOfDeclarations.Clear();
         }
 
@@ -179,10 +179,11 @@ namespace Interpreter.services.metrics
                         foreach (var elementInFunctionClassDefinition in
                                  (declarationInClass as FunctionDefinition).body)
                         {
-                            if (elementInFunctionClassDefinition is FunctionCalls)
+                            if (elementInFunctionClassDefinition is FunctionCallsWithDeclaration)
                             {
-                                name = (((elementInFunctionClassDefinition as FunctionCalls).name as FieldReference)!
-                                    .fieldName as INameInterface)!.GetWrittenName();
+                                name = (((elementInFunctionClassDefinition as FunctionCallsWithDeclaration)
+                                        .functionCalls.name as FieldReference)!.fieldName as INameInterface)!
+                                    .GetWrittenName();
                                 if (name.Equals(
                                         ((definition.declarator[0] as FunctionDeclarator)!.name as INameInterface)!
                                         .GetWrittenName()))

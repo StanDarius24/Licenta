@@ -147,6 +147,7 @@ object TranslationUnitRegistry {
                 }
             }
         }
+        println()
     }
 
     private fun removeConstructorDataThat(declarationParent: FunctionDefinition) {

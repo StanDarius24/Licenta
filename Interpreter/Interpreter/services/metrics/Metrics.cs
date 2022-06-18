@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using Interpreter.Models.metrics;
 using Interpreter.Models.serialize.complexStatementTypes;
-using Interpreter.Models.serialize.statementTypes;
+using Interpreter.services.metrics.aditionalData;
+using Interpreter.services.metrics.calculation;
 using Interpreter.Utility;
 
 namespace Interpreter.services.metrics
@@ -13,7 +14,7 @@ namespace Interpreter.services.metrics
         {
             foreach (var repositoryModel in DataRegistry.deserializedData)
             {
-                Console.Write("Starting metrics calculation for " + repositoryModel.vcxprojStructure.path);
+                Console.WriteLine("Starting metrics calculation for " + repositoryModel.vcxprojStructure.path);
                 SolveClassOrHeader(repositoryModel.listOfHeaderFiles, solveDataPath);
                 SolveClassOrHeader(repositoryModel.listOfCppFiles, solveDataPath);
             }
@@ -24,7 +25,7 @@ namespace Interpreter.services.metrics
         {
             foreach (var file in repositoryModelListOfCppFiles)
             {
-                Console.Write("Calcualtion for " + file.path);
+                Console.WriteLine("Calcualtion for " + file.path);
                 var filler = CalculateNumberOfMethodsAndCyclomaticComplexity(file);
                 
                 AverageMethodWeight.CalculateAmw(filler);
@@ -40,25 +41,8 @@ namespace Interpreter.services.metrics
                 
                 MetricsRegistry.metricsList.Add(filler);
                 Exporter.CreateMetricFile(solveDataPath);
-                Console.Out.Write("test");
+                Console.WriteLine("test");
             }
-        }
-
-        public static bool IsConstructor(FunctionDefinition functionDefinition)
-        {
-            if (functionDefinition.declaratorSpecifier is FunctionDefinition)
-            {
-                IsConstructor(functionDefinition.declaratorSpecifier as FunctionDefinition);
-            }
-            else if (functionDefinition.declaratorSpecifier is SimpleDeclSpecifier)
-            {
-                return ((SimpleDeclSpecifier) functionDefinition.declaratorSpecifier).declarationSpecifier.Equals("");
-            } else if (functionDefinition.declaratorSpecifier is INameInterface)
-            {
-                return ((INameInterface) functionDefinition.declaratorSpecifier).GetWrittenName().Equals("");
-            }
-            return false;
-
         }
 
         private static MetricsInFile CalculateNumberOfMethodsAndCyclomaticComplexity(

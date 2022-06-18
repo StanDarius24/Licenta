@@ -1,17 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
-namespace Interpreter.services.metrics{
-    public static class NumberOfProtectedMembers
+namespace Interpreter.services.metrics.calculation{
+    public static class AccessToForeignData
     {
-        public static void CalculateNopm(MetricsInFile filler)
+        public static void CalculateAtfd(MetricsInFile filler)
         {
             CalculateExtern(filler.ExternalClasses);
             CalculateClass(filler.classMetrics);
-            CalculateNamespace(filler.nameSpaceMetrics);
+            CalculateNameSpace(filler.nameSpaceMetrics);
         }
-        private static void CalculateNamespace(IList<MetricsInFile> fillerNameSpaceMetrics)
+
+        private static void CalculateNameSpace(IList<MetricsInFile> fillerNameSpaceMetrics)
         {
             if (fillerNameSpaceMetrics == null) return;
             foreach (var fillerNameSpaceMetric in fillerNameSpaceMetrics)
@@ -20,19 +20,21 @@ namespace Interpreter.services.metrics{
                 CalculateClass(fillerNameSpaceMetric.classMetrics);
             }
         }
+
         private static void CalculateClass(IList<MetricsAditionalData> fillerClassMetrics)
         {
             if (fillerClassMetrics == null) return;
             foreach (var fillerClassMetric in fillerClassMetrics)
             {
-                fillerClassMetric.metricsModel.NProtM = fillerClassMetric.numberOfProtectedMethodsFields;
+                fillerClassMetric.metricsModel.ATFD = fillerClassMetric.numberOfFieldReferenceFromClass;
             }
         }
+
         private static void CalculateExtern(MetricsAditionalData fillerExternalClasses)
         {
             if (fillerExternalClasses != null)
             {
-                fillerExternalClasses.metricsModel.NProtM = fillerExternalClasses.numberOfProtectedMethodsFields;
+                fillerExternalClasses.metricsModel.ATFD = fillerExternalClasses.numberOfFieldReferenceFromClass;
             }
         }
     }

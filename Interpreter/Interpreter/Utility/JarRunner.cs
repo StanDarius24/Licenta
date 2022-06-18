@@ -34,7 +34,7 @@ namespace Interpreter.Utility
             {
                 if (exitCode == 1)
                 {
-                    Console.Out.Write("Jar Not CREATED!");
+                    Console.WriteLine("Jar Not CREATED!");
                     CreateJarFile(projectPath, path);
                 }
             }

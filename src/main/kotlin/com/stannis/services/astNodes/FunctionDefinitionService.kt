@@ -65,7 +65,7 @@ object FunctionDefinitionService {
         FieldReferenceRegistry.listOfFieldReference.forEach { element ->
             run {
                 FieldReferenceRegistry.checkFieldAndGenerate(element, functionDefinition)
-                functionDefinitionOOp.body!!.add(element)
+                    ?.let { functionDefinitionOOp.body!!.add(it) }
             }
         }
         FunctionCallsRegistry.listOfFunctionCalls.clear()

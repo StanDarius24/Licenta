@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
-namespace Interpreter.services.metrics;
+namespace Interpreter.services.metrics.calculation;
 
 public class ForeignDataProvider
 {
@@ -28,7 +27,7 @@ public class ForeignDataProvider
         if (fillerClassMetrics == null) return;
         foreach (var fillerClassMetric in fillerClassMetrics)
         {
-            fillerClassMetric.metricsModel.FDP = fillerClassMetric.numberOfattributesDifferentClass;
+            fillerClassMetric.metricsModel.FDP = fillerClassMetric.numberOfClassesFieldReference;
         }
     }
 
@@ -36,7 +35,7 @@ public class ForeignDataProvider
     {
         if (fillerExternalClasses!= null)
         {
-            fillerExternalClasses.metricsModel.FDP = fillerExternalClasses.numberOfattributesDifferentClass;
+            fillerExternalClasses.metricsModel.FDP = fillerExternalClasses.numberOfClassesFieldReference;
         }
     }
 }

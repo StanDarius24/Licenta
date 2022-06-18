@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
-namespace Interpreter.services.metrics{
+namespace Interpreter.services.metrics.calculation{
     public static class WeightedMethodCount
     {
         public static void CalculateWmc(MetricsInFile filler)
