@@ -41,7 +41,7 @@ namespace Interpreter.Utility{
                 project.solution.Add(solution);
             }
             Metrics.CalculateMetrics(StringService.SolveDataPath(data));
-            Console.WriteLine("test");
+            // Console.WriteLine("test");
         }    
     }
 };

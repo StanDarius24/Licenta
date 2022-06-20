@@ -153,8 +153,11 @@
         <Compile Include="services\metrics\calculation\AverageMethodWeight.cs" />
         <Compile Include="services\metrics\calculation\BaseClassOverridingRatio.cs" />
         <Compile Include="services\metrics\calculation\ChangingClassesMethods.cs" />
+        <Compile Include="services\metrics\calculation\CouplingDispersionIntensity.cs" />
         <Compile Include="services\metrics\calculation\CouplingIntensityDispersion.cs" />
         <Compile Include="services\metrics\calculation\ForeignDataProvider.cs" />
+        <Compile Include="services\metrics\calculation\HeightDepthTree.cs" />
+        <Compile Include="services\metrics\calculation\NumberOfChildren.cs" />
         <Compile Include="services\metrics\calculation\NumberOfMethods.cs" />
         <Compile Include="services\metrics\calculation\NumberOfProtectedMembers.cs" />
         <Compile Include="services\metrics\calculation\NumberOfPublicAttributes.cs" />

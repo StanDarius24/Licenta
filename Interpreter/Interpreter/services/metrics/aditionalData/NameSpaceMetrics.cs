@@ -29,7 +29,7 @@ namespace Interpreter.services.metrics.aditionalData
                             break;
                         case SimpleDeclSpecifier:
                         {
-                            Console.WriteLine("test");
+                            // Console.WriteLine("test");
                             // ClassMethodComplexity.CheckModifier(declaration as SimpleDeclaration, filler);
                             // foreach (var functionImplementation in classOrHeaderWithPath.classOrHeader
                             //              .methodsWithFunctionCalls)

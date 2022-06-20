@@ -38,10 +38,13 @@ namespace Interpreter.services.metrics
                 WeightOfaClass.CalculateWoc(filler);
                 BaseClassOverridingRatio.CalculateBOvR(filler);
                 ChangingClassesMethods.CalculateCcCm(filler);
+                CouplingDispersionIntensity.CalculateCintCdisp(filler);
+                HeightDepthTree.CalculateHitDit(filler);
+                NumberOfChildren.CalculateNOC(filler);
                 
                 MetricsRegistry.metricsList.Add(filler);
                 Exporter.CreateMetricFile(solveDataPath);
-                Console.WriteLine("test");
+                //Console.WriteLine("test");
             }
         }
 

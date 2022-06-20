@@ -55,12 +55,12 @@ namespace Interpreter.services{
         {
             if (element.classOrHeader.internDeclaration != null && element.classOrHeader.internDeclaration.Count != 0)
             {
-                Console.WriteLine("test");
+                // Console.WriteLine("test");
                 foreach (var internDecl in element.classOrHeader.internDeclaration)
                 {
                     if (internDecl != null)
                     {
-                        Console.WriteLine("test");
+                        // Console.WriteLine("test");
 
                     }
 

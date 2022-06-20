@@ -130,7 +130,7 @@ namespace Interpreter.services.metrics.aditionalData
         private static void CallFromDifferentClassesCount(MetricsInFile filler, FunctionDefinition functionDefinition,
             ClassOrHeaderWithPath classOrHeaderWithPath)
         {
-            Console.WriteLine("test");
+            
         }
 
         public static void CheckIfOverridesMethod(MetricsAditionalData filler, FunctionDefinition functionDefinition,

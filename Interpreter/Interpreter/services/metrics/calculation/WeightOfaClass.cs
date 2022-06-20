@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Interpreter.Models.metrics;
 
 namespace Interpreter.services.metrics.calculation
@@ -30,6 +31,13 @@ namespace Interpreter.services.metrics.calculation
                 fillerClassMetric.metricsModel.WOC =
                     (fillerClassMetric.numberOfMethods - fillerClassMetric.numberOfAbstractMethods) /
                     fillerClassMetric.numberOfPublicFields;
+                if (double.IsNaN(fillerClassMetric.metricsModel.WOC))
+                {
+                    fillerClassMetric.metricsModel.WOC = 1;
+                } else if (double.IsInfinity(fillerClassMetric.metricsModel.WOC))
+                {
+                    fillerClassMetric.metricsModel.WOC = 0;
+                }
             }
         }
 
@@ -40,6 +48,13 @@ namespace Interpreter.services.metrics.calculation
                 fillerExternalClasses.metricsModel.WOC =
                     (fillerExternalClasses.numberOfMethods - fillerExternalClasses.numberOfAbstractMethods) /
                     fillerExternalClasses.numberOfPublicFields;
+                if (double.IsNaN(fillerExternalClasses.metricsModel.WOC))
+                {
+                    fillerExternalClasses.metricsModel.WOC = 1;
+                }else if (double.IsInfinity(fillerExternalClasses.metricsModel.WOC))
+                {
+                    fillerExternalClasses.metricsModel.WOC = 0;
+                }
             }
         }
     }

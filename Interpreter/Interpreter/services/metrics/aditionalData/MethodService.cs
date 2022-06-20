@@ -23,7 +23,7 @@ namespace Interpreter.services.metrics.aditionalData{
 
         public static bool IsVirtual(FunctionDefinition functionDefinition)
         {
-            Console.WriteLine("Tets");
+            // Console.WriteLine("Tets");
             return false;
         }
     }

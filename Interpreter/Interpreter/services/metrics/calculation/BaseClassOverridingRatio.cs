@@ -29,6 +29,10 @@ namespace Interpreter.services.metrics.calculation
             {
                 fileClassMetric.metricsModel.BOvR =
                     fileClassMetric.numberOfOverridingMethods / fileClassMetric.numberOfMethods;
+                if (double.IsNaN(fileClassMetric.metricsModel.BOvR))
+                {
+                    fileClassMetric.metricsModel.BOvR = 0;
+                }
             }
         }
 
@@ -38,6 +42,11 @@ namespace Interpreter.services.metrics.calculation
             {
                 fileExternalClasses.metricsModel.BOvR =
                     fileExternalClasses.numberOfOverridingMethods / fileExternalClasses.numberOfMethods;
+                
+                if (double.IsNaN(fileExternalClasses.metricsModel.BOvR))
+                {
+                    fileExternalClasses.metricsModel.BOvR = 0;
+                }
             }
         }
     }
